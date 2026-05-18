@@ -55,8 +55,10 @@ private struct MetallicSlider: View {
     @Binding var value: Double
     let range: ClosedRange<Double>
     let onRelease: () -> Void
+    var onLiveChange: ((Double) -> Void)? = nil
 
     @State private var isDragging = false
+    @State private var lastSentInt: Int? = nil
     private let thumbSize: CGFloat = 20
     private let trackH: CGFloat = 3
 
@@ -87,10 +89,17 @@ private struct MetallicSlider: View {
                     .onChanged { g in
                         isDragging = true
                         let pct = max(0, min(1, (g.location.x - thumbSize / 2) / usable))
-                        value = (range.lowerBound + pct * (range.upperBound - range.lowerBound)).rounded()
+                        let newVal = (range.lowerBound + pct * (range.upperBound - range.lowerBound)).rounded()
+                        value = newVal
+                        let intVal = Int(newVal)
+                        if intVal != lastSentInt {
+                            lastSentInt = intVal
+                            onLiveChange?(newVal)
+                        }
                     }
                     .onEnded { _ in
                         isDragging = false
+                        lastSentInt = nil
                         onRelease()
                     }
             )
@@ -120,13 +129,16 @@ struct AudioSettingsView: View {
             VStack(alignment: .leading, spacing: 16) {
 
                 // ── Sliders ───────────────────────────────────────────────
-                audioSliderRow("SUBWOOFER", value: $subwooferVol, range: -12...12) {
+                audioSliderRow("SUBWOOFER", value: $subwooferVol, range: -12...12,
+                    onLiveChange: { api.setSubwooferVolume(Int($0)) }) {
                     api.setSubwooferVolume(Int(subwooferVol))
                 }
-                audioSliderRow("BASS", value: $bass, range: -12...12) {
+                audioSliderRow("BASS", value: $bass, range: -12...12,
+                    onLiveChange: { api.setToneControl(bass: Int($0), treble: Int(treble)) }) {
                     api.setToneControl(bass: Int(bass), treble: Int(treble))
                 }
-                audioSliderRow("TREBLE", value: $treble, range: -12...12) {
+                audioSliderRow("TREBLE", value: $treble, range: -12...12,
+                    onLiveChange: { api.setToneControl(bass: Int(bass), treble: Int($0)) }) {
                     api.setToneControl(bass: Int(bass), treble: Int(treble))
                 }
 
@@ -235,7 +247,9 @@ struct AudioSettingsView: View {
 
     @ViewBuilder
     private func audioSliderRow(_ label: String, value: Binding<Double>,
-                                 range: ClosedRange<Double>, onRelease: @escaping () -> Void) -> some View {
+                                 range: ClosedRange<Double>,
+                                 onLiveChange: ((Double) -> Void)? = nil,
+                                 onRelease: @escaping () -> Void) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text(label)
@@ -248,7 +262,7 @@ struct AudioSettingsView: View {
                     .foregroundColor(value.wrappedValue == 0 ? Color(white: 0.45) : settings.schemeColor)
                     .frame(width: 32, alignment: .trailing)
             }
-            MetallicSlider(value: value, range: range, onRelease: onRelease)
+            MetallicSlider(value: value, range: range, onRelease: onRelease, onLiveChange: onLiveChange)
         }
     }
 }

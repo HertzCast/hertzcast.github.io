@@ -151,6 +151,17 @@ struct MainWindowView: View {
             }
         }
         .animation(.easeInOut(duration: 0.25), value: uiState.showSettings || uiState.showAudio || uiState.showMusicCenter)
+        .onChange(of: uiState.showMusicCenter) { showing in
+            guard let window = NSApp.windows.first(where: { $0.canBecomeMain }) else { return }
+            let delta: CGFloat = 301
+            var frame = window.frame
+            frame.origin.x += showing ? -delta : delta
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = 0.25
+                ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                window.animator().setFrame(frame, display: true)
+            }
+        }
         .background(WindowConfigurator())
     }
 }

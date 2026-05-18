@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Network
 import UserNotifications
 
 enum PowerState: Equatable {
@@ -63,6 +64,17 @@ class YamahaAPIService: ObservableObject {
     private var pollingTimer: Timer?
     private var playInfoTimer: Timer?
     private var previousState: PowerState = .unknown
+    private var isFetchingStatus = false
+    private var udpListener: NWListener?
+    private var udpDebounce: DispatchWorkItem?
+
+    // URLSession with X-AppName / X-AppPort headers so the receiver
+    // knows to send UDP unicast notifications back to us on port 41100
+    private lazy var session: URLSession = {
+        let cfg = URLSessionConfiguration.default
+        cfg.httpAdditionalHeaders = ["X-AppName": "YamahaController", "X-AppPort": "41100"]
+        return URLSession(configuration: cfg)
+    }()
 
     private init() {}
 
@@ -73,11 +85,12 @@ class YamahaAPIService: ObservableObject {
     // MARK: - Polling
 
     func startPolling() {
+        startUDPListener()
         fetchStatus()
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             self?.fetchStatus()
         }
-        playInfoTimer = Timer.scheduledTimer(withTimeInterval: 8, repeats: true) { [weak self] _ in
+        playInfoTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
             self?.fetchPlayInfoIfNeeded()
         }
         fetchDeviceInfo()
@@ -88,9 +101,55 @@ class YamahaAPIService: ObservableObject {
         pollingTimer = nil
         playInfoTimer?.invalidate()
         playInfoTimer = nil
+        stopUDPListener()
+    }
+
+    // MARK: - UDP Event Listener (port 41100)
+
+    private func startUDPListener() {
+        stopUDPListener()
+        guard let listener = try? NWListener(using: .udp, on: 41100) else { return }
+        udpListener = listener
+        listener.newConnectionHandler = { [weak self] conn in
+            conn.start(queue: .global(qos: .utility))
+            self?.receiveUDP(on: conn)
+        }
+        listener.start(queue: .global(qos: .utility))
+    }
+
+    private func stopUDPListener() {
+        udpListener?.cancel()
+        udpListener = nil
+    }
+
+    private func receiveUDP(on conn: NWConnection) {
+        conn.receiveMessage { [weak self] data, _, _, _ in
+            guard let self, let data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+            self.handleUDPEvent(json)
+        }
+    }
+
+    private func handleUDPEvent(_ json: [String: Any]) {
+        let features = json["features_changed"] as? [String] ?? []
+        let hasMain   = features.isEmpty || features.contains("main")   || json["main"]   != nil
+        let hasNetusb = features.contains("netusb") || json["netusb"] != nil
+        let hasTuner  = features.contains("tuner")  || json["tuner"]  != nil
+
+        udpDebounce?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            if hasMain   { self.fetchStatus() }
+            if hasNetusb { self.fetchPlayInfoIfNeeded() }
+            if hasTuner  { self.fetchTunerInfoIfNeeded() }
+        }
+        udpDebounce = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: work)
     }
 
     func fetchStatus() {
+        guard !isFetchingStatus else { return }
+        isFetchingStatus = true
         guard !YamahaSettings.shared.ipAddress.isEmpty else {
             DispatchQueue.main.async {
                 self.powerState = .unknown
@@ -100,9 +159,10 @@ class YamahaAPIService: ObservableObject {
         }
         guard let url = URL(string: "\(baseURL)/main/getStatus") else { return }
 
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+        session.dataTask(with: url) { [weak self] data, _, error in
             guard let self else { return }
             DispatchQueue.main.async {
+                defer { self.isFetchingStatus = false }
                 if let error = error {
                     self.powerState = .unknown
                     self.lastError = error.localizedDescription
@@ -193,7 +253,7 @@ class YamahaAPIService: ObservableObject {
             completion(URLError(.badURL))
             return
         }
-        URLSession.shared.dataTask(with: url) { _, _, error in
+        session.dataTask(with: url) { _, _, error in
             DispatchQueue.main.async { completion(error) }
         }.resume()
     }
@@ -209,7 +269,7 @@ class YamahaAPIService: ObservableObject {
         nowPlayingTrack = ""
         nowPlayingArtist = ""
         albumArtURLString = ""
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             DispatchQueue.main.async {
                 if error != nil {
                     self?.currentInput = previous
@@ -233,7 +293,7 @@ class YamahaAPIService: ObservableObject {
         let previousDb = actualVolumeDb
         volume = value
         if let base = volumeDbBase { actualVolumeDb = base + Double(value) * 0.5 }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             DispatchQueue.main.async {
                 if error != nil {
                     self?.volume = previous
@@ -250,7 +310,7 @@ class YamahaAPIService: ObservableObject {
             completion(URLError(.badURL))
             return
         }
-        URLSession.shared.dataTask(with: url) { _, _, error in
+        session.dataTask(with: url) { _, _, error in
             DispatchQueue.main.async { completion(error) }
         }.resume()
     }
@@ -259,7 +319,7 @@ class YamahaAPIService: ObservableObject {
         guard !YamahaSettings.shared.ipAddress.isEmpty,
               let url = URL(string: "\(baseURL)/main/recallScene?num=\(num)") else { return }
         setActiveScene(num)
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             DispatchQueue.main.async {
                 if error != nil { self?.setActiveScene(nil) }
             }
@@ -270,13 +330,13 @@ class YamahaAPIService: ObservableObject {
 
     func setPlayback(_ playback: String) {
         guard let url = URL(string: "\(baseURL)/netusb/setPlayback?playback=\(playback)") else { return }
-        URLSession.shared.dataTask(with: url) { _, _, _ in }.resume()
+        session.dataTask(with: url) { _, _, _ in }.resume()
     }
 
     func fetchSoundProgramList(completion: @escaping () -> Void = {}) {
         guard !soundProgramList.isEmpty else {
             guard let url = URL(string: "\(baseURL)/main/getSoundProgramList") else { completion(); return }
-            URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+            session.dataTask(with: url) { [weak self] data, _, _ in
                 guard let self, let data,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                       let list = json["sound_program_list"] as? [String] else {
@@ -300,7 +360,7 @@ class YamahaAPIService: ObservableObject {
             let idx = self.soundProgramList.firstIndex(of: current) ?? -1
             let next = self.soundProgramList[(idx + 1) % self.soundProgramList.count]
             guard let url = URL(string: "\(self.baseURL)/main/setSoundProgram?program=\(next.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? next)") else { return }
-            URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+            session.dataTask(with: url) { [weak self] _, _, error in
                 if error == nil {
                     DispatchQueue.main.async { self?.soundProgram = next }
                 }
@@ -311,23 +371,23 @@ class YamahaAPIService: ObservableObject {
     func setBand(_ band: String) {
         guard let url = URL(string: "\(baseURL)/tuner/setBand?band=\(band)") else { return }
         tunerBand = band
-        URLSession.shared.dataTask(with: url) { _, _, _ in }.resume()
+        session.dataTask(with: url) { _, _, _ in }.resume()
     }
 
     func tuneStep(_ dir: String) {
         guard let url = URL(string: "\(baseURL)/tuner/setFreq?band=\(tunerBand)&tuning=\(dir)") else { return }
-        URLSession.shared.dataTask(with: url) { _, _, _ in }.resume()
+        session.dataTask(with: url) { _, _, _ in }.resume()
     }
 
     func switchTunerPreset(_ dir: String) {
         guard let url = URL(string: "\(baseURL)/tuner/switchPreset?zone=main&dir=\(dir)") else { return }
-        URLSession.shared.dataTask(with: url) { _, _, _ in }.resume()
+        session.dataTask(with: url) { _, _, _ in }.resume()
     }
 
     func toggleShuffle() {
         guard let url = URL(string: "\(baseURL)/netusb/toggleShuffle") else { return }
         shuffleRepeatFrozenUntil = Date().addingTimeInterval(4)
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+        session.dataTask(with: url) { [weak self] data, _, error in
             DispatchQueue.main.async {
                 guard let self else { return }
                 if error != nil { self.shuffleRepeatFrozenUntil = nil; return }
@@ -348,7 +408,7 @@ class YamahaAPIService: ObservableObject {
     func cycleRepeat() {
         guard let url = URL(string: "\(baseURL)/netusb/toggleRepeat") else { return }
         shuffleRepeatFrozenUntil = Date().addingTimeInterval(4)
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+        session.dataTask(with: url) { [weak self] data, _, error in
             DispatchQueue.main.async {
                 guard let self else { return }
                 if error != nil { self.shuffleRepeatFrozenUntil = nil; return }
@@ -385,7 +445,7 @@ class YamahaAPIService: ObservableObject {
         let enable = !isMuted
         guard let url = URL(string: "\(baseURL)/main/setMute?enable=\(enable)") else { return }
         isMuted = enable
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             DispatchQueue.main.async { if error != nil { self?.isMuted = !enable } }
         }.resume()
     }
@@ -394,35 +454,35 @@ class YamahaAPIService: ObservableObject {
 
     func setPureDirect(_ enabled: Bool) {
         guard let url = URL(string: "\(baseURL)/main/setPureDirect?enable=\(enabled)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil { DispatchQueue.main.async { self?.pureDirectMode = enabled } }
         }.resume()
     }
 
     func setEnhancer(_ enabled: Bool) {
         guard let url = URL(string: "\(baseURL)/main/setEnhancer?enable=\(enabled)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil { DispatchQueue.main.async { self?.enhancerMode = enabled } }
         }.resume()
     }
 
     func setExtraBass(_ enabled: Bool) {
         guard let url = URL(string: "\(baseURL)/main/setExtraBass?enable=\(enabled)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil { DispatchQueue.main.async { self?.extraBassMode = enabled } }
         }.resume()
     }
 
     func setAdaptiveDRC(_ enabled: Bool) {
         guard let url = URL(string: "\(baseURL)/main/setAdaptiveDrc?enable=\(enabled)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil { DispatchQueue.main.async { self?.adaptiveDRC = enabled } }
         }.resume()
     }
 
     func setToneControl(bass: Int, treble: Int) {
         guard let url = URL(string: "\(baseURL)/main/setToneControl?mode=manual&bass=\(bass)&treble=\(treble)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil {
                 DispatchQueue.main.async {
                     self?.toneControlBass = bass
@@ -434,7 +494,7 @@ class YamahaAPIService: ObservableObject {
 
     func setSubwooferVolume(_ value: Int) {
         guard let url = URL(string: "\(baseURL)/main/setSubwooferVolume?volume=\(value)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil { DispatchQueue.main.async { self?.subwooferVolume = value } }
         }.resume()
     }
@@ -442,13 +502,13 @@ class YamahaAPIService: ObservableObject {
     func setDialogueLevel(_ value: Int) {
         dialogueLevel = value
         guard let url = URL(string: "\(baseURL)/main/setDialogueLevel?value=\(value)") else { return }
-        URLSession.shared.dataTask(with: url) { _, _, _ in }.resume()
+        session.dataTask(with: url) { _, _, _ in }.resume()
     }
 
     func setSoundProgram(_ program: String) {
         guard let enc = program.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: "\(baseURL)/main/setSoundProgram?program=\(enc)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil { DispatchQueue.main.async { self?.soundProgram = program } }
         }.resume()
     }
@@ -457,7 +517,7 @@ class YamahaAPIService: ObservableObject {
 
     func fetchRecentInfo() {
         guard let url = URL(string: "\(baseURL)/netusb/getRecentInfo") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        session.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let list = json["recent_info"] as? [[String: Any]] else { return }
@@ -475,7 +535,7 @@ class YamahaAPIService: ObservableObject {
 
     func fetchPresetInfo() {
         guard let url = URL(string: "\(baseURL)/netusb/getPresetInfo") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        session.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let list = json["preset_info"] as? [[String: Any]] else { return }
@@ -493,7 +553,7 @@ class YamahaAPIService: ObservableObject {
 
     func fetchFuncStatus() {
         guard let url = URL(string: "\(baseURL)/system/getFuncStatus") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        session.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
             DispatchQueue.main.async {
@@ -511,7 +571,7 @@ class YamahaAPIService: ObservableObject {
 
     func recallRecentItem(_ num: Int) {
         guard let url = URL(string: "\(baseURL)/netusb/recallRecentItem?num=\(num)&zone=main") else { return }
-        URLSession.shared.dataTask(with: url) { _, _, _ in }.resume()
+        session.dataTask(with: url) { _, _, _ in }.resume()
     }
 
     func playPresetInMusicCenter(_ num: Int) {
@@ -530,7 +590,7 @@ class YamahaAPIService: ObservableObject {
     func setSurroundDecoderType(_ type: String) {
         guard let enc = type.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: "\(baseURL)/main/setSurroundDecoderType?type=\(enc)") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
+        session.dataTask(with: url) { [weak self] _, _, error in
             if error == nil { DispatchQueue.main.async { self?.surroundDecoderType = type } }
         }.resume()
     }
@@ -662,14 +722,18 @@ class YamahaAPIService: ObservableObject {
             return
         }
         guard let url = URL(string: "\(baseURL)/netusb/getPlayInfo") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        session.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
             DispatchQueue.main.async {
                 let track  = json["track"]  as? String ?? ""
                 let artist = json["artist"] as? String ?? ""
-                self.nowPlayingTrack  = track
-                self.nowPlayingArtist = artist
+                // Only update if receiver returned meaningful data — avoids
+                // briefly wiping track/artist during Spotify song transitions
+                if !track.isEmpty || !artist.isEmpty {
+                    self.nowPlayingTrack  = track
+                    self.nowPlayingArtist = artist
+                }
 
                 if let pb = json["playback"] as? String { self.playbackStatus = pb }
                 self.shuffleAvailable = (json["shuffle_available"] as? [String])?.isEmpty == false
@@ -696,7 +760,7 @@ class YamahaAPIService: ObservableObject {
         guard powerState == .on,
               currentInput.lowercased() == "tuner",
               let url = URL(string: "\(baseURL)/tuner/getPlayInfo") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        session.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
             DispatchQueue.main.async {
@@ -708,7 +772,7 @@ class YamahaAPIService: ObservableObject {
     func fetchSignalInfo() {
         guard powerState == .on,
               let url = URL(string: "\(baseURL)/main/getSignalInfo") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        session.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   (json["response_code"] as? Int) == 0,
@@ -724,7 +788,7 @@ class YamahaAPIService: ObservableObject {
 
     func fetchDeviceInfo() {
         guard let url = URL(string: "\(baseURL)/system/getDeviceInfo") else { return }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        session.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   (json["response_code"] as? Int) == 0 else { return }

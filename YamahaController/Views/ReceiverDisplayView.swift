@@ -6,35 +6,43 @@ private struct MarqueeText: View {
     let color: Color
     let glow: Color
 
-    @State private var xOffset: CGFloat = 0
+    @State private var textWidth: CGFloat = 0
+    @State private var containerWidth: CGFloat = 0
+    @State private var startDate: Date = .now
+    private let speed: CGFloat = 42   // pts/sec
+
+    private var needsScroll: Bool { textWidth > containerWidth && containerWidth > 0 }
+
+    private func offsetAt(_ date: Date) -> CGFloat {
+        guard needsScroll else { return 0 }
+        let gap: CGFloat = 28
+        let cycle = containerWidth + textWidth + gap
+        let elapsed = CGFloat(date.timeIntervalSince(startDate))
+        let pos = (elapsed * speed).truncatingRemainder(dividingBy: cycle)
+        return containerWidth - pos
+    }
 
     var body: some View {
         GeometryReader { geo in
-            Text(text)
-                .font(font)
-                .foregroundColor(color)
-                .shadow(color: glow, radius: 3)
-                .fixedSize()
-                .offset(x: xOffset)
-                .background(
-                    GeometryReader { textGeo in
-                        Color.clear.onAppear {
-                            let textW = textGeo.size.width
-                            let containerW = geo.size.width
-                            guard textW > containerW else { return }
-                            // Start off-screen to the right, scroll left, exit left with gap, repeat
-                            xOffset = containerW
-                            let gap: CGFloat = 28
-                            let totalDist = containerW + textW + gap
-                            let dur = Double(totalDist) / 42.0
-                            DispatchQueue.main.async {
-                                withAnimation(.linear(duration: dur).repeatForever(autoreverses: false)) {
-                                    xOffset = -(textW + gap)
-                                }
-                            }
-                        }
-                    }
-                )
+            TimelineView(.animation(minimumInterval: 1.0/60.0, paused: !needsScroll)) { tl in
+                Text(text)
+                    .font(font)
+                    .foregroundColor(color)
+                    .shadow(color: glow, radius: 3)
+                    .fixedSize()
+                    .offset(x: offsetAt(tl.date))
+            }
+            .onAppear { containerWidth = geo.size.width }
+            .onChange(of: geo.size.width) { containerWidth = $0 }
+            .background(
+                Text(text)
+                    .font(font)
+                    .fixedSize()
+                    .hidden()
+                    .background(GeometryReader { tg in
+                        Color.clear.onAppear { textWidth = tg.size.width }
+                    })
+            )
         }
         .clipped()
         .id(text)
@@ -128,11 +136,6 @@ struct ReceiverDisplayView: View {
                         .font(.system(size: 7, weight: .medium, design: .monospaced))
                         .foregroundColor(lcdDim).tracking(1.5)
                     Spacer()
-                    Text("MUTE")
-                        .font(.system(size: 7, weight: .bold, design: .monospaced))
-                        .foregroundColor(Color(red: 1.0, green: 0.35, blue: 0.2))
-                        .tracking(1)
-                        .opacity(isOn && api.isMuted ? 1 : 0)
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 8)
