@@ -20,7 +20,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         setupPopover()
         observePowerState()
         YamahaAPIService.shared.startPolling()
-        buildMainMenu()
+        // asyncAfter gives SwiftUI time to finish its default menu setup before we replace it
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { self.buildMainMenu() }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -177,7 +178,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
 
         appMenu.addItem(withTitle: "About Yamaha Controller", action: #selector(showAbout), keyEquivalent: "")
         appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: "Settings…", action: #selector(menuToggleSettings), keyEquivalent: ",")
+        let settingsItem = appMenu.addItem(withTitle: "Settings…", action: #selector(menuToggleSettings), keyEquivalent: ",")
+        settingsItem.keyEquivalentModifierMask = .command
         appMenu.addItem(.separator())
         let hideItem = appMenu.addItem(withTitle: "Hide Yamaha Controller", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
         hideItem.keyEquivalentModifierMask = .command

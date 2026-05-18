@@ -66,8 +66,11 @@ struct ReceiverDisplayView: View {
     // Whether current input has now-playing info
     private var signalLabel: String {
         guard isOn, !api.audioFormat.isEmpty else { return "" }
-        let ch = api.audioChannels.isEmpty ? "" : " \(api.audioChannels)"
-        return (api.audioFormat + ch).uppercased()
+        var parts: [String] = [api.audioFormat.uppercased()]
+        if api.audioBitrate > 0 { parts.append("\(api.audioBitrate) KBPS") }
+        if !api.audioBitDepth.isEmpty { parts.append(api.audioBitDepth.uppercased()) }
+        if !api.audioChannels.isEmpty { parts.append(api.audioChannels.uppercased()) }
+        return parts.joined(separator: " · ")
     }
 
     private var hasNowPlaying: Bool {
@@ -105,20 +108,19 @@ struct ReceiverDisplayView: View {
 
             VStack(spacing: 0) {
 
-                // ── Row 0: Signal format (centered, above INPUT) ─────────
-                if !signalLabel.isEmpty {
-                    Text(signalLabel)
-                        .font(.custom("BitcountPropSingle-ExtraLight", size: 9))
-                        .foregroundColor(lcdAmber)
-                        .shadow(color: lcdAmberGlow, radius: 2)
-                        .tracking(1.2)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.horizontal, 10)
-                        .padding(.top, 6)
-                        .padding(.bottom, 2)
-                }
+                // ── Row 0: Signal format (always present, opacity-gated) ─
+                Text(signalLabel.isEmpty ? " " : signalLabel)
+                    .font(.custom("BitcountPropSingle-ExtraLight", size: 9))
+                    .foregroundColor(lcdAmber)
+                    .shadow(color: lcdAmberGlow, radius: 2)
+                    .tracking(1.2)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.horizontal, 10)
+                    .padding(.top, 6)
+                    .padding(.bottom, 2)
+                    .opacity(signalLabel.isEmpty ? 0 : 1)
 
                 // ── Row 1: INPUT label + status dots ────────────────────
                 HStack {
@@ -126,16 +128,11 @@ struct ReceiverDisplayView: View {
                         .font(.system(size: 7, weight: .medium, design: .monospaced))
                         .foregroundColor(lcdDim).tracking(1.5)
                     Spacer()
-                    if isOn && api.isMuted {
-                        Text("MUTE")
-                            .font(.system(size: 7, weight: .bold, design: .monospaced))
-                            .foregroundColor(Color(red: 1.0, green: 0.35, blue: 0.2))
-                            .tracking(1)
-                    }
-                    Circle()
-                        .fill(isOn ? lcdGreen : Color(white: 0.2))
-                        .frame(width: 5, height: 5)
-                        .shadow(color: isOn ? lcdGreen.opacity(0.9) : .clear, radius: 4)
+                    Text("MUTE")
+                        .font(.system(size: 7, weight: .bold, design: .monospaced))
+                        .foregroundColor(Color(red: 1.0, green: 0.35, blue: 0.2))
+                        .tracking(1)
+                        .opacity(isOn && api.isMuted ? 1 : 0)
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 8)
@@ -150,64 +147,62 @@ struct ReceiverDisplayView: View {
                     .padding(.horizontal, 10)
                     .padding(.top, 4)
 
-                // ── Row 3: Now Playing (Spotify / Radio only) ────────────
-                if hasNowPlaying {
-                    Divider()
-                        .background(Color(white: 0.12))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
+                // ── Row 3: Now Playing (always reserved, opacity-gated) ──
+                Divider()
+                    .background(Color(white: 0.12))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
 
-                    HStack(alignment: .center, spacing: 8) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            if !api.nowPlayingTrack.isEmpty {
-                                MarqueeText(
-                                    text: api.nowPlayingTrack,
-                                    font: .custom("BitcountPropSingle-ExtraLight", size: 14),
-                                    color: lcdGreen,
-                                    glow: lcdGlow
-                                )
-                                .frame(height: 18)
-                            }
-                            if !api.nowPlayingArtist.isEmpty {
-                                MarqueeText(
-                                    text: api.nowPlayingArtist,
-                                    font: .custom("BitcountPropSingle-ExtraLight", size: 14),
-                                    color: lcdAmber,
-                                    glow: lcdAmberGlow
-                                )
-                                .frame(height: 18)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(alignment: .center, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        MarqueeText(
+                            text: api.nowPlayingTrack.isEmpty ? " " : api.nowPlayingTrack,
+                            font: .custom("BitcountPropSingle-ExtraLight", size: 14),
+                            color: lcdGreen,
+                            glow: lcdGlow
+                        )
+                        .frame(height: 18)
+                        .opacity(hasNowPlaying && !api.nowPlayingTrack.isEmpty ? 1 : 0)
 
-                        if hasAlbumArt, let artURL = URL(string: api.albumArtURLString) {
+                        MarqueeText(
+                            text: api.nowPlayingArtist.isEmpty ? " " : api.nowPlayingArtist,
+                            font: .custom("BitcountPropSingle-ExtraLight", size: 14),
+                            color: lcdAmber,
+                            glow: lcdAmberGlow
+                        )
+                        .frame(height: 18)
+                        .opacity(hasNowPlaying && !api.nowPlayingArtist.isEmpty ? 1 : 0)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Group {
+                        if let artURL = URL(string: api.albumArtURLString), !api.albumArtURLString.isEmpty {
                             AsyncImage(url: artURL) { phase in
                                 switch phase {
                                 case .success(let image):
                                     image.resizable().aspectRatio(contentMode: .fill)
-                                case .failure:
-                                    placeholderArt
-                                case .empty:
-                                    placeholderArt
-                                @unknown default:
-                                    placeholderArt
+                                default:
+                                    Color.clear
                                 }
                             }
-                            .frame(width: 52, height: 52)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .overlay(RoundedRectangle(cornerRadius: 4)
-                                .stroke(lcdGreen.opacity(0.75), lineWidth: 1.5))
+                        } else {
+                            Color.clear
                         }
                     }
-                    .padding(.horizontal, 10)
+                    .frame(width: 52, height: 52)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .overlay(RoundedRectangle(cornerRadius: 4)
+                        .stroke(lcdGreen.opacity(hasAlbumArt ? 0.75 : 0), lineWidth: 1.5))
+                    .opacity(hasAlbumArt ? 1 : 0)
                 }
+                .padding(.horizontal, 10)
 
+                // ── Row 4: Volume + [shuffle/repeat] + Mode ─────────────
                 Divider()
                     .background(Color(white: 0.12))
                     .padding(.horizontal, 8)
-                    .padding(.vertical, hasNowPlaying ? 4 : 6)
+                    .padding(.vertical, 4)
 
-                // ── Row 4: Volume + [shuffle/repeat] + Mode ─────────────
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("VOLUME")
@@ -224,25 +219,19 @@ struct ReceiverDisplayView: View {
 
                     Spacer()
 
-                    // Shuffle + Repeat indicators — visible only when active
-                    if isOn && (api.shuffleMode != "off" || api.repeatMode != "off") {
-                        HStack(spacing: 5) {
-                            if api.shuffleMode != "off" {
-                                Image(systemName: "shuffle")
-                                    .font(.system(size: 13, weight: .light))
-                                    .foregroundColor(lcdGreen)
-                                    .shadow(color: lcdGlow, radius: 4)
-                            }
-                            if api.repeatMode != "off" {
-                                Image(systemName: api.repeatMode == "one" ? "repeat.1" : "repeat")
-                                    .font(.system(size: 13, weight: .light))
-                                    .foregroundColor(lcdGreen)
-                                    .shadow(color: lcdGlow, radius: 4)
-                            }
-                        }
-                        .padding(.bottom, 2)
-                        .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                    HStack(spacing: 5) {
+                        Image(systemName: "shuffle")
+                            .font(.system(size: 13, weight: .light))
+                            .foregroundColor(lcdGreen)
+                            .shadow(color: lcdGlow, radius: 4)
+                            .opacity(isOn && api.shuffleMode != "off" ? 1 : 0)
+                        Image(systemName: api.repeatMode == "one" ? "repeat.1" : "repeat")
+                            .font(.system(size: 13, weight: .light))
+                            .foregroundColor(lcdGreen)
+                            .shadow(color: lcdGlow, radius: 4)
+                            .opacity(isOn && api.repeatMode != "off" ? 1 : 0)
                     }
+                    .padding(.bottom, 2)
 
                     Spacer()
 
@@ -257,18 +246,13 @@ struct ReceiverDisplayView: View {
                             .tracking(0.8).lineLimit(1).minimumScaleFactor(0.7)
                     }
                 }
-                .animation(.easeInOut(duration: 0.2), value: api.shuffleMode)
-                .animation(.easeInOut(duration: 0.2), value: api.repeatMode)
                 .padding(.horizontal, 10)
                 .padding(.bottom, 8)
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: (hasAlbumArt ? 150 : (hasNowPlaying ? 130 : 96)) + (signalLabel.isEmpty ? 0 : 18))
+        .frame(height: 168)
         .animation(.easeInOut(duration: 0.3), value: api.powerState)
-        .animation(.easeInOut(duration: 0.25), value: hasNowPlaying)
-        .animation(.easeInOut(duration: 0.25), value: hasAlbumArt)
-        .animation(.easeInOut(duration: 0.25), value: signalLabel)
         .animation(.easeInOut(duration: 0.2), value: api.currentInput)
     }
 

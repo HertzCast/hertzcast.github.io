@@ -23,12 +23,16 @@ struct VolumeKnobView: View {
     @State private var isDragging = false
     @State private var dragStartFraction: Double = 0
     @State private var dragStartAngle: Double = 0
+    @State private var dragVolume: Int? = nil   // local visual state during drag
+    @State private var lastSentDragVolume: Int? = nil
     @State private var scrollAccumulator: CGFloat = 0
     @State private var scrollMonitor: Any? = nil
     @State private var volRef = VolumeRef(0)
 
+    private var displayVolume: Int { dragVolume ?? volume }
+
     private var fraction: Double {
-        maxVolume > 0 ? Double(volume) / Double(maxVolume) : 0
+        maxVolume > 0 ? Double(displayVolume) / Double(maxVolume) : 0
     }
 
     private var rotationDegrees: Double {
@@ -59,7 +63,7 @@ struct VolumeKnobView: View {
                     .offset(y: -(size / 2 - 13))
             }
             .rotationEffect(Angle(degrees: rotationDegrees))
-            .animation(.easeOut(duration: 0.08), value: rotationDegrees)
+            .animation(isDragging ? nil : .easeOut(duration: 0.12), value: rotationDegrees)
 
             minMaxLabels
         }
@@ -191,7 +195,12 @@ struct VolumeKnobView: View {
                 let delta = normalizedDelta(currentAngle - dragStartAngle)
                 let newFrac = max(0, min(1, dragStartFraction + delta / 270.0))
                 let newVol = Int((newFrac * Double(maxVolume)).rounded())
-                if newVol != volume { onCommit(newVol) }
+                dragVolume = newVol
+                if newVol != lastSentDragVolume {
+                    lastSentDragVolume = newVol
+                    volRef.value = newVol
+                    onCommit(newVol)
+                }
             }
             .onEnded { val in
                 guard !isDisabled else { return }
@@ -200,7 +209,12 @@ struct VolumeKnobView: View {
                 let delta = normalizedDelta(currentAngle - dragStartAngle)
                 let newFrac = max(0, min(1, dragStartFraction + delta / 270.0))
                 let newVol = Int((newFrac * Double(maxVolume)).rounded())
-                onCommit(newVol)
+                dragVolume = nil
+                lastSentDragVolume = nil
+                if newVol != volRef.value {
+                    volRef.value = newVol
+                    onCommit(newVol)
+                }
             }
     }
 }

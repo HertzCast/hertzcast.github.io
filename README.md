@@ -21,16 +21,15 @@ A native macOS application for controlling **Yamaha AV receivers** over your loc
 ## Features
 
 ### Receiver Display
-A retro LCD-style panel shows real-time receiver state, rendered in **Bitcount Prop Single ExtraLight** — a bitmap display font that matches the aesthetic of real audio equipment:
-- **Signal format** — audio format and sample rate (e.g. `DOLBY DIGITAL PLUS · 48 KHZ`) shown at the top when available
+A retro LCD-style panel shows real-time receiver state, rendered in **Bitcount Prop Single ExtraLight** — a bitmap display font that matches the aesthetic of real audio equipment. The panel has a fixed size regardless of input source — layout never shifts when switching between sources.
+- **Signal format** — audio codec, bit depth, and sample rate shown centered at the top when available (e.g. `PCM · 16-BIT · 44.1 KHZ`, `AAC · 320 KBPS · 44.1 KHZ`, `DOLBY DIGITAL PLUS · 48 KHZ`)
 - **Current input source** — large phosphor-style display
-- **Volume** — in dB when available, raw value as fallback
+- **Volume** — updates live in dB while dragging the knob; raw value as fallback
 - **Sound mode** — DSP/surround program (Straight, Stereo, Surround Decoder, etc.)
 - **Shuffle / Repeat indicators** — appear between the volume and mode readouts when active; `⇄` for shuffle, `↻` for repeat all, `↻1` for repeat one
 - **Now Playing** — for Spotify and Net Radio inputs, shows the current track title and artist/station name, refreshed every 8 seconds; long names scroll continuously in a right-to-left marquee loop
 - **Album art** — thumbnail with accent-colored border displayed for Spotify (always) and Net Radio (when the station provides it); gracefully falls back to text-only layout when unavailable
 - **Mute indicator** — highlighted in red when active
-- **Power dot** — accent-colored when on, dim when in standby
 
 ### Power Control
 A compact metallic circular button controls the receiver power state:
@@ -42,7 +41,7 @@ A compact metallic circular button controls the receiver power state:
 ### Volume Control
 A rotating metallic knob controls the receiver volume:
 - **Graduation ring** — 31 tick marks around the knob, lit with the accent color up to the current level; MIN / MAX labels at the endpoints
-- **Drag** to set volume — circular arc gesture; the knob rotates to follow in real time
+- **Drag** to set volume — circular arc gesture; the knob rotates and the receiver volume changes in real time while dragging, with a single API call per integer step
 - **Scroll wheel** — mouse wheel and trackpad both work
 - **Keyboard shortcuts** — `Cmd ↑` / `Cmd ↓` volume up/down, `M` toggle mute
 

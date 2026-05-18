@@ -20,6 +20,7 @@ class YamahaAPIService: ObservableObject {
     @Published var soundProgram: String = ""
     @Published var isMuted: Bool = false
     @Published var actualVolumeDb: Double? = nil
+    private var volumeDbBase: Double? = nil   // actualVolumeDb - volume * 0.5, calibrated on first poll
     @Published var nowPlayingTrack: String = ""
     @Published var nowPlayingArtist: String = ""
     @Published var albumArtURLString: String = ""
@@ -36,6 +37,8 @@ class YamahaAPIService: ObservableObject {
     @Published var repeatAvailable: [String] = []
     @Published var audioFormat: String = ""
     @Published var audioChannels: String = ""
+    @Published var audioBitrate: Int = 0
+    @Published var audioBitDepth: String = ""
     @Published var deviceModel: String = ""
     @Published var deviceFirmware: String = ""
 
@@ -138,8 +141,10 @@ class YamahaAPIService: ObservableObject {
                 if let av = json["actual_volume"] as? [String: Any],
                    let val = av["value"] as? Double {
                     self.actualVolumeDb = val
+                    self.volumeDbBase = val - Double(self.volume) * 0.5
                 } else if let val = json["actual_volume"] as? Double {
                     self.actualVolumeDb = val
+                    self.volumeDbBase = val - Double(self.volume) * 0.5
                 }
 
                 // Sound program (DSP mode)
@@ -169,6 +174,8 @@ class YamahaAPIService: ObservableObject {
                     self.repeatMode = "off"
                     self.audioFormat = ""
                     self.audioChannels = ""
+                    self.audioBitrate = 0
+                    self.audioBitDepth = ""
                 } else {
                     self.fetchPlayInfoIfNeeded()
                     self.fetchTunerInfoIfNeeded()
@@ -223,10 +230,15 @@ class YamahaAPIService: ObservableObject {
             return
         }
         let previous = volume
+        let previousDb = actualVolumeDb
         volume = value
+        if let base = volumeDbBase { actualVolumeDb = base + Double(value) * 0.5 }
         URLSession.shared.dataTask(with: url) { [weak self] _, _, error in
             DispatchQueue.main.async {
-                if error != nil { self?.volume = previous }
+                if error != nil {
+                    self?.volume = previous
+                    self?.actualVolumeDb = previousDb
+                }
                 completion(error)
             }
         }.resume()
@@ -702,8 +714,10 @@ class YamahaAPIService: ObservableObject {
                   (json["response_code"] as? Int) == 0,
                   let audio = json["audio"] as? [String: Any] else { return }
             DispatchQueue.main.async {
-                self.audioFormat   = (audio["format"] as? String) ?? ""
-                self.audioChannels = (audio["fs"]     as? String) ?? ""
+                self.audioFormat   = (audio["format"]    as? String) ?? ""
+                self.audioChannels = (audio["fs"]        as? String) ?? ""
+                self.audioBitrate  = (audio["bitrate"]   as? Int)    ?? 0
+                self.audioBitDepth = (audio["bit"] as? String) ?? ""
             }
         }.resume()
     }
