@@ -1,51 +1,137 @@
 import SwiftUI
+import AppKit
 
-private struct MarqueeText: View {
+private struct MarqueeText: NSViewRepresentable {
     let text: String
-    let font: Font
+    let fontName: String
+    let fontSize: CGFloat
     let color: Color
     let glow: Color
 
-    @State private var textWidth: CGFloat = 0
-    @State private var containerWidth: CGFloat = 0
-    @State private var startDate: Date = .now
-    private let speed: CGFloat = 42   // pts/sec
+    func makeNSView(context: Context) -> MarqueeNSView { MarqueeNSView() }
 
-    private var needsScroll: Bool { textWidth > containerWidth && containerWidth > 0 }
+    func updateNSView(_ nsView: MarqueeNSView, context: Context) {
+        nsView.configure(text: text,
+                         fontName: fontName,
+                         fontSize: fontSize,
+                         color: NSColor(color),
+                         glow: NSColor(glow))
+    }
+}
 
-    private func offsetAt(_ date: Date) -> CGFloat {
-        guard needsScroll else { return 0 }
-        let gap: CGFloat = 28
-        let cycle = containerWidth + textWidth + gap
-        let elapsed = CGFloat(date.timeIntervalSince(startDate))
-        let pos = (elapsed * speed).truncatingRemainder(dividingBy: cycle)
-        return containerWidth - pos
+final class MarqueeNSView: NSView {
+    private let contentLayer = CALayer()
+    private let textLayer1 = CATextLayer()
+    private let textLayer2 = CATextLayer()
+    private var currentText: String = ""
+    private var currentFontName: String = ""
+    private var currentFontSize: CGFloat = 0
+    private var lastBoundsWidth: CGFloat = 0
+    private let speed: CGFloat = 42
+    private let gap: CGFloat = 70
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        wantsLayer = true
+        layer = CALayer()
+        layer?.masksToBounds = true
+        let scale = NSScreen.main?.backingScaleFactor ?? 2
+        for tl in [textLayer1, textLayer2] {
+            tl.contentsScale = scale
+            tl.truncationMode = .none
+            tl.isWrapped = false
+            tl.alignmentMode = .left
+            tl.anchorPoint = CGPoint(x: 0, y: 0.5)
+            tl.shadowOpacity = 1.0
+            tl.shadowRadius = 3
+            tl.shadowOffset = .zero
+            contentLayer.addSublayer(tl)
+        }
+        contentLayer.anchorPoint = CGPoint(x: 0, y: 0.5)
+        layer?.addSublayer(contentLayer)
     }
 
-    var body: some View {
-        GeometryReader { geo in
-            TimelineView(.animation(minimumInterval: 1.0/60.0, paused: !needsScroll)) { tl in
-                Text(text)
-                    .font(font)
-                    .foregroundColor(color)
-                    .shadow(color: glow, radius: 3)
-                    .fixedSize()
-                    .offset(x: offsetAt(tl.date))
-            }
-            .onAppear { containerWidth = geo.size.width }
-            .onChange(of: geo.size.width) { containerWidth = $0 }
-            .background(
-                Text(text)
-                    .font(font)
-                    .fixedSize()
-                    .hidden()
-                    .background(GeometryReader { tg in
-                        Color.clear.onAppear { textWidth = tg.size.width }
-                    })
-            )
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func layout() {
+        super.layout()
+        if bounds.width != lastBoundsWidth {
+            lastBoundsWidth = bounds.width
+            rebuildAnimation()
         }
-        .clipped()
-        .id(text)
+    }
+
+    func configure(text: String, fontName: String, fontSize: CGFloat,
+                   color: NSColor, glow: NSColor) {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        for tl in [textLayer1, textLayer2] {
+            tl.foregroundColor = color.cgColor
+            tl.shadowColor = glow.cgColor
+        }
+        CATransaction.commit()
+
+        let textChanged = text != currentText ||
+                          fontName != currentFontName ||
+                          fontSize != currentFontSize
+        if textChanged {
+            currentText = text
+            currentFontName = fontName
+            currentFontSize = fontSize
+            let font = NSFont(name: fontName, size: fontSize) ?? NSFont.systemFont(ofSize: fontSize)
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            for tl in [textLayer1, textLayer2] {
+                tl.font = font
+                tl.fontSize = fontSize
+                tl.string = text
+            }
+            CATransaction.commit()
+            rebuildAnimation()
+        }
+    }
+
+    private func rebuildAnimation() {
+        guard !currentText.isEmpty, bounds.width > 0 else { return }
+        let font = NSFont(name: currentFontName, size: currentFontSize) ?? NSFont.systemFont(ofSize: currentFontSize)
+        let textSize = (currentText as NSString).size(withAttributes: [.font: font])
+        let containerWidth = bounds.width
+        let yCenter = bounds.height / 2
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        contentLayer.removeAllAnimations()
+
+        if textSize.width <= containerWidth {
+            textLayer1.frame = CGRect(x: 0, y: 0, width: textSize.width, height: textSize.height)
+            textLayer1.position = CGPoint(x: 0, y: textSize.height / 2)
+            textLayer2.isHidden = true
+            contentLayer.frame = CGRect(x: 0, y: yCenter - textSize.height / 2,
+                                        width: textSize.width, height: textSize.height)
+            contentLayer.position = CGPoint(x: 0, y: yCenter)
+            CATransaction.commit()
+            return
+        }
+
+        textLayer2.isHidden = false
+        let cycle = textSize.width + gap
+        textLayer1.frame = CGRect(x: 0, y: 0, width: textSize.width, height: textSize.height)
+        textLayer1.position = CGPoint(x: 0, y: textSize.height / 2)
+        textLayer2.frame = CGRect(x: 0, y: 0, width: textSize.width, height: textSize.height)
+        textLayer2.position = CGPoint(x: cycle, y: textSize.height / 2)
+
+        contentLayer.frame = CGRect(x: 0, y: 0, width: cycle * 2, height: textSize.height)
+        contentLayer.position = CGPoint(x: 0, y: yCenter)
+
+        let anim = CABasicAnimation(keyPath: "position.x")
+        anim.fromValue = 0
+        anim.toValue = -cycle
+        anim.duration = CFTimeInterval(cycle / speed)
+        anim.repeatCount = .infinity
+        anim.timingFunction = CAMediaTimingFunction(name: .linear)
+        anim.isRemovedOnCompletion = false
+        contentLayer.add(anim, forKey: "marquee")
+        CATransaction.commit()
     }
 }
 
@@ -160,7 +246,8 @@ struct ReceiverDisplayView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         MarqueeText(
                             text: api.nowPlayingTrack.isEmpty ? " " : api.nowPlayingTrack,
-                            font: .custom("BitcountPropSingle-ExtraLight", size: 14),
+                            fontName: "BitcountPropSingle-ExtraLight",
+                            fontSize: 14,
                             color: lcdGreen,
                             glow: lcdGlow
                         )
@@ -169,7 +256,8 @@ struct ReceiverDisplayView: View {
 
                         MarqueeText(
                             text: api.nowPlayingArtist.isEmpty ? " " : api.nowPlayingArtist,
-                            font: .custom("BitcountPropSingle-ExtraLight", size: 14),
+                            fontName: "BitcountPropSingle-ExtraLight",
+                            fontSize: 14,
                             color: lcdAmber,
                             glow: lcdAmberGlow
                         )
