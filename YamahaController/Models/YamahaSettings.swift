@@ -25,6 +25,9 @@ class YamahaSettings: ObservableObject {
     @Published var morningWeekdays: [Int] {
         didSet { UserDefaults.standard.set(morningWeekdays, forKey: "morning_weekdays"); scheduleMorning() }
     }
+    @Published var morningVolume: Int {
+        didSet { UserDefaults.standard.set(morningVolume, forKey: "morning_volume"); scheduleMorning() }
+    }
     @Published var autoOffEnabled: Bool {
         didSet { UserDefaults.standard.set(autoOffEnabled, forKey: "autooff_enabled"); scheduleAutoOff() }
     }
@@ -52,6 +55,9 @@ class YamahaSettings: ObservableObject {
     @Published var colorScheme: String {
         didSet { UserDefaults.standard.set(colorScheme, forKey: "color_scheme") }
     }
+    @Published var hiddenSources: Set<String> {
+        didSet { UserDefaults.standard.set(Array(hiddenSources), forKey: "hidden_sources") }
+    }
 
     private init() {
         let ud = UserDefaults.standard
@@ -64,6 +70,8 @@ class YamahaSettings: ObservableObject {
         morningPreset  = preset == 0 ? 1 : preset
         let savedDays  = ud.array(forKey: "morning_weekdays") as? [Int]
         morningWeekdays = savedDays ?? [0,1,2,3,4,5,6]
+        let vol = ud.integer(forKey: "morning_volume")
+        morningVolume = vol == 0 ? 50 : vol
         autoOffEnabled  = ud.bool(forKey: "autooff_enabled")
         autoOffHour     = ud.integer(forKey: "autooff_hour")
         autoOffMinute   = ud.integer(forKey: "autooff_minute")
@@ -74,6 +82,7 @@ class YamahaSettings: ObservableObject {
         button3Source   = ud.string(forKey: "button3_source") ?? "spotify"
         button4Source   = ud.string(forKey: "button4_source") ?? "net_radio"
         colorScheme     = ud.string(forKey: "color_scheme") ?? "green"
+        hiddenSources   = Set(ud.array(forKey: "hidden_sources") as? [String] ?? [])
     }
 
     private func scheduleMorning() {
@@ -81,7 +90,7 @@ class YamahaSettings: ObservableObject {
             SchedulerService.shared.scheduleMorningAlarm(
                 hour: morningHour, minute: morningMinute,
                 ip: ipAddress, source: morningSource, preset: morningPreset,
-                weekdays: morningWeekdays
+                weekdays: morningWeekdays, volume: morningVolume
             )
         } else {
             SchedulerService.shared.unscheduleMorningAlarm()

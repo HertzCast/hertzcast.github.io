@@ -111,9 +111,10 @@ struct MusicCenterView: View {
 
                 // ── Sources ───────────────────────────────────────────
                 DisclosureGroup(isExpanded: $sourcesExpanded) {
-                    let inputs = api.availableInputs.isEmpty
+                    let allInputs = api.availableInputs.isEmpty
                         ? YamahaAPIService.allSources.map { $0.value }
                         : api.availableInputs
+                    let inputs = allInputs.filter { !settings.hiddenSources.contains($0) }
 
                     VStack(spacing: 0) {
                         ForEach(inputs, id: \.self) { inputId in
@@ -149,6 +150,36 @@ struct MusicCenterView: View {
                     .padding(.top, 4)
                 } label: {
                     Text("SOURCES")
+                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                        .foregroundColor(Color(white: 0.5))
+                        .tracking(1)
+                }
+                .padding(.vertical, 8)
+
+                // ── Visible Sources ───────────────────────────────────
+                DisclosureGroup {
+                    let allInputs = api.availableInputs.isEmpty
+                        ? YamahaAPIService.allSources.map { $0.value }
+                        : api.availableInputs
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(allInputs, id: \.self) { inputId in
+                            let hidden = settings.hiddenSources.contains(inputId)
+                            Toggle(isOn: Binding(
+                                get: { !hidden },
+                                set: { show in
+                                    if show { settings.hiddenSources.remove(inputId) }
+                                    else    { settings.hiddenSources.insert(inputId) }
+                                }
+                            )) {
+                                Text(YamahaAPIService.formatInput(inputId))
+                                    .font(.system(size: 12))
+                            }
+                            .toggleStyle(.checkbox)
+                        }
+                    }
+                    .padding(.top, 6)
+                } label: {
+                    Text("VISIBLE SOURCES")
                         .font(.system(size: 10, weight: .medium, design: .monospaced))
                         .foregroundColor(Color(white: 0.5))
                         .tracking(1)

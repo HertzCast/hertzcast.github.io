@@ -5,19 +5,18 @@ class AppUIState: ObservableObject {
     @Published var showSettings = false
     @Published var showAudio = false
     @Published var showMusicCenter = false
+    @Published var showZone2 = false
     private init() {}
 
-    func toggleSettings() {
-        showAudio = false          // right-side mutual exclusion
-        showSettings.toggle()
+    private func closeAll() {
+        showSettings = false
+        showAudio = false
+        showMusicCenter = false
+        showZone2 = false
     }
 
-    func toggleAudio() {
-        showSettings = false       // right-side mutual exclusion
-        showAudio.toggle()
-    }
-
-    func toggleMusicCenter() {
-        showMusicCenter.toggle()   // left panel, independent from right panels
-    }
+    func toggleSettings()    { let v = showSettings;    closeAll(); showSettings    = !v }
+    func toggleAudio()       { let v = showAudio;       closeAll(); showAudio       = !v }
+    func toggleMusicCenter() { let v = showMusicCenter; closeAll(); showMusicCenter = !v }
+    func toggleZone2()       { let v = showZone2;       closeAll(); showZone2       = !v }
 }

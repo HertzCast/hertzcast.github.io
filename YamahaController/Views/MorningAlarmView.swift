@@ -67,6 +67,21 @@ struct MorningAlarmView: View {
                         .pickerStyle(.menu).frame(width: 140)
                     }
 
+                    HStack {
+                        Text("Volume")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Slider(value: Binding(
+                            get: { Double(settings.morningVolume) },
+                            set: { settings.morningVolume = Int($0) }
+                        ), in: 1...Double(YamahaAPIService.shared.maxVolume), step: 1)
+                        .frame(width: 100)
+                        Text("\(settings.morningVolume)")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(.secondary)
+                            .frame(width: 28, alignment: .trailing)
+                    }
+
                     if settings.morningSource == "net_radio" {
                         HStack {
                             Text("Preset")

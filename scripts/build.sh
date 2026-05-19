@@ -17,7 +17,7 @@ DIST_DIR="$PROJECT_DIR/dist"
 APP_NAME="Yamaha Controller"
 EXECUTABLE="YamahaController"
 BUNDLE_ID="com.yamaha-controller"
-VERSION="1.3.0"
+VERSION="1.4.0"
 UNIVERSAL=false
 
 while [[ $# -gt 0 ]]; do

@@ -13,15 +13,18 @@ class SchedulerService {
 
     // MARK: - Morning Alarm
 
-    func scheduleMorningAlarm(hour: Int, minute: Int, ip: String, source: String, preset: Int, weekdays: [Int] = [0,1,2,3,4,5,6]) {
+    func scheduleMorningAlarm(hour: Int, minute: Int, ip: String, source: String, preset: Int, weekdays: [Int] = [0,1,2,3,4,5,6], volume: Int = 0) {
         guard !ip.isEmpty else { return }
 
         let scriptURL = launchAgentsURL.appendingPathComponent("\(morningLabel).sh")
         let plistURL  = launchAgentsURL.appendingPathComponent("\(morningLabel).plist")
 
         let base = "http://\(ip)/YamahaExtendedControl/v1"
-        var script = """
-        #!/bin/bash
+        var script = "#!/bin/bash\n"
+        if volume > 0 {
+            script += "/usr/bin/curl -s \"\(base)/main/setVolume?volume=\(volume)\"\n"
+        }
+        script += """
         /usr/bin/curl -s "\(base)/main/setPower?power=on"
         sleep 3
         /usr/bin/curl -s "\(base)/main/setInput?input=\(source)"

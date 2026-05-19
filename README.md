@@ -7,13 +7,21 @@
 A native macOS application for controlling **Yamaha AV receivers** over your local network — no third-party apps, no subscriptions, no cloud.
 
 <p align="center">
-  <img src="screenshots/UI.png" width="220" alt="Main UI" />
+  <img src="screenshots/UI 1.png" width="220" alt="Main UI — Spotify Now Playing" />
+  &nbsp;&nbsp;
+  <img src="screenshots/UI 2.png" width="360" alt="Music Center" />
 </p>
 
 <p align="center">
-  <img src="screenshots/Settings.png" width="360" alt="Music Center + Settings" />
+  <img src="screenshots/UI 3.png" width="360" alt="Audio Settings" />
   &nbsp;&nbsp;
-  <img src="screenshots/Settings 1.png" width="360" alt="Music Center + Audio Settings" />
+  <img src="screenshots/UI 4.png" width="360" alt="Settings" />
+</p>
+
+<p align="center">
+  <img src="screenshots/UI 5.png" width="360" alt="Zone 2" />
+  &nbsp;&nbsp;
+  <img src="screenshots/UI 6.png" width="300" alt="Menu Bar Mini Player" />
 </p>
 
 ---
@@ -43,7 +51,7 @@ A rotating metallic knob controls the receiver volume:
 - **Graduation ring** — 31 tick marks around the knob, lit with the accent color up to the current level; MIN / MAX labels at the endpoints
 - **Drag** to set volume — circular arc gesture; the knob rotates and the receiver volume changes in real time while dragging, with a single API call per integer step
 - **Scroll wheel** — mouse wheel and trackpad both work
-- **Keyboard shortcuts** — `Cmd ↑` / `Cmd ↓` volume up/down, `M` toggle mute
+- **Keyboard shortcuts** — `Cmd ↑` / `Cmd ↓` volume up/down, `M` toggle mute, `P` play/pause, `S` shuffle, `R` repeat cycle, `Cmd ←` previous, `Cmd →` next
 
 ### Mute
 A dedicated Mute button sits next to the volume knob:
@@ -79,32 +87,38 @@ A dedicated panel (accessible via the sliders icon in the header) exposes the fu
 - **Surround Decoder** — dropdown visible only when Sound Program is set to Surround Decoder
 
 ### Music Center
-A panel (accessible via the music notes icon in the header) that slides in from the left, independently of the right-side panels:
+A panel (accessible via the music notes icon in the header) that slides in from the right, mutually exclusive with the other panels:
 - **Recent Played** — list of recently played Net Radio stations; tap to recall and play
 - **Favourites** — the 5 receiver presets with accent-colored number badges; tap to switch to Net Radio and recall preset
 - **Sources** — all available receiver inputs with SF Symbol icons; active source highlighted; tap to switch
-- All three sections are collapsible `DisclosureGroup` menus with persistent open/closed state
+- **Visible Sources** — toggle individual inputs on/off; hidden sources disappear from the Sources list
+- All sections are collapsible `DisclosureGroup` menus with persistent open/closed state
 
 ### Color Scheme
 Five accent colors in Settings — changes the LCD display, button LEDs, power button, volume knob graduation, and all highlights simultaneously:
 
 🔴 Red &nbsp; 🟠 Orange &nbsp; 🟡 Yellow &nbsp; 🟢 Green &nbsp; 🔵 Blue
 
-### Morning Alarm
-Automatically powers on the receiver at a scheduled time using **launchd**:
+### Schedule
+Three schedule controls grouped in a collapsible section in Settings:
+
+**Morning Alarm** — automatically powers on the receiver at a scheduled time:
 - Enable/disable toggle
 - Hour and minute picker
 - **Day-of-week selector** — toggle individual days (Mo Tu We Th Fr Sa Su)
 - **Source selector** — all supported YXC input sources
 - **Preset picker** (1–5) for Net Radio
-- Writes a `launchd` plist to `~/Library/LaunchAgents/` — fires even after Mac sleep/wake
+- **Wake volume** — set the volume level the receiver powers on at; separate from the current volume
+- Managed via `launchd` — fires even after Mac sleep/wake
 
-### Auto Off
-Automatically puts the receiver in standby at a scheduled time:
+**Auto Off** — automatically puts the receiver in standby at a scheduled time:
 - Enable/disable toggle
 - Hour and minute picker
 - **Day-of-week selector** — same per-day granularity as Morning Alarm
-- Also managed via `launchd`
+
+**Sleep Timer** — turns the receiver off after a set time:
+- Picker: Off / 15 / 30 / 45 / 60 / 90 / 120 minutes
+- Applied instantly to the receiver; resets to Off on next power cycle
 
 ### Receiver Discovery
 Automatically finds Yamaha receivers on the local network using Bonjour/mDNS:
@@ -112,8 +126,27 @@ Automatically finds Yamaha receivers on the local network using Bonjour/mDNS:
 - Auto-selects when exactly one receiver is found; shows a list for multiple
 - Manual IP entry available as fallback
 
+### Zone 2
+A dedicated panel (accessible via the zone icon in the header) for controlling a secondary audio zone:
+- **Power** — toggle Zone 2 on/standby independently of the main zone
+- **Input** — switch the Zone 2 input source independently
+- **Volume** — slider + −/+ buttons; displays level in dB
+- **Mute** — toggle Zone 2 mute
+- Polled every 3 seconds; available on any Yamaha receiver with Zone 2 hardware output
+
+### Menu Bar Mini Player
+Clicking the menu bar icon opens a compact mini player instead of the full UI:
+- Album art thumbnail + scrolling track title and artist name (Core Animation marquee)
+- Playback controls: Previous / Stop / Play-Pause / Next / Shuffle / Repeat — keycap style matching the main UI
+- Volume: − / dB label / + buttons + Mute
+- Quit button
+- Falls back gracefully when receiver is off or no track is playing
+
 ### Notifications
 macOS notification when the receiver is turned on or off automatically by a schedule.
+
+### Device Management
+- **Reboot Receiver** — button at the bottom of Settings with confirmation dialog; sends `POST /system/reboot` to restart the receiver remotely
 
 ---
 
@@ -153,12 +186,21 @@ The app communicates with the receiver using the **Yamaha Extended Control (YXC)
 | `GET /tuner/setBand?band=fm\|am` | Switch tuner band |
 | `GET /tuner/setFreq?band={b}&tuning=up\|down` | Step tuner frequency |
 | `GET /tuner/switchPreset?zone=main&dir=next\|previous` | Cycle tuner presets |
+| `GET /main/setSleep?sleep={n}` | Sleep timer (0 = off, minutes) |
 | `GET /system/getDeviceInfo` | Model name and firmware version |
 | `GET /system/getFuncStatus` | Available input sources |
+| `POST /system/reboot` | Reboot the receiver |
+| `GET /zone2/getStatus` | Zone 2 power, volume, mute, input |
+| `GET /zone2/setPower?power=on\|standby` | Zone 2 power on / standby |
+| `GET /zone2/setVolume?volume={n}` | Zone 2 volume |
+| `GET /zone2/setMute?enable=true\|false` | Zone 2 mute |
+| `GET /zone2/setInput?input={input}` | Zone 2 input source |
 
 ### Polling
-- Receiver status polled every **3 seconds**
-- Now Playing info refreshed every **8 seconds** when input is Spotify or Net Radio
+- Receiver status polled continuously (debounced; UDP push events trigger immediate refresh)
+- Now Playing info refreshed every **2 seconds** when input is Spotify or Net Radio
+- Zone 2 status polled every **3 seconds**
+- Album art prefetched into `URLCache` as soon as the URL is known — appears instantly on screen
 - Optimistic UI updates: input and volume changes applied immediately, reverted on API failure
 
 ### Scheduling (launchd)
@@ -199,7 +241,7 @@ No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple framew
 
 ## Installation
 
-1. Download `YamahaController-v1.3.0.dmg` from [Releases](../../releases)
+1. Download `YamahaController-v1.4.0.dmg` from [Releases](../../releases)
 2. Open the DMG and drag **Yamaha Controller** to your Applications folder
 3. Right-click → **Open** on first launch (app is ad-hoc signed, not notarized)
 4. Click the menu bar icon and open **Settings** (gear icon)
@@ -239,14 +281,15 @@ YamahaController/
 │   ├── TransportControlsView.swift # Transport buttons incl. shuffle and repeat
 │   ├── KeycapComponents.swift      # Shared keycap shape and press style
 │   ├── AudioSettingsView.swift     # Audio panel: tone, subwoofer, features, sound program
-│   ├── MusicCenterView.swift       # Music Center: recent played, favourites, sources
-│   ├── SettingsView.swift          # IP + color scheme + source button config + schedules
-│   ├── MorningAlarmView.swift      # Morning alarm controls
+│   ├── MusicCenterView.swift       # Music Center: recent played, favourites, sources, visible sources
+│   ├── SettingsView.swift          # IP + color scheme + source buttons + schedule + sleep timer + reboot
+│   ├── MorningAlarmView.swift      # Morning alarm controls incl. wake volume
 │   ├── AutoOffView.swift           # Auto off controls
+│   ├── Zone2View.swift             # Zone 2: power, input, volume, mute
 │   └── AboutView.swift             # About panel with version, model, firmware
 ├── Models/
 │   ├── YamahaSettings.swift        # UserDefaults-backed settings
-│   ├── AppUIState.swift            # Panel visibility state (Music Center / Audio / Settings)
+│   ├── AppUIState.swift            # Panel visibility state — mutual exclusion (Music Center / Audio / Settings / Zone 2)
 │   └── AppColors.swift             # Color scheme extension
 ├── Services/
 │   ├── YamahaAPIService.swift      # All YXC HTTP calls + polling + models
@@ -283,6 +326,8 @@ All settings stored in `UserDefaults` / `AppStorage`:
 | `autooff_hour` | Int | Auto off hour (0–23) |
 | `autooff_minute` | Int | Auto off minute (0–59) |
 | `autooff_weekdays` | [Int] | Selected days (0=Sun … 6=Sat); default all 7 |
+| `morning_volume` | Int | Wake volume level for Morning Alarm |
+| `hidden_sources` | [String] | Input sources hidden from Music Center Sources list |
 | `mc_recent_expanded` | Bool | Music Center — Recent Played section open/closed |
 | `mc_favourites_expanded` | Bool | Music Center — Favourites section open/closed |
 | `mc_sources_expanded` | Bool | Music Center — Sources section open/closed |

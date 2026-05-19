@@ -15,7 +15,6 @@ private struct WindowConfigurator: NSViewRepresentable {
     }
 }
 
-// Shared header height so all panels align
 private let headerHeight: CGFloat = 44
 
 struct MainWindowView: View {
@@ -23,31 +22,23 @@ struct MainWindowView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            // ── Music Center panel (left) ─────────────────────────────
-            if uiState.showMusicCenter {
-                VStack(spacing: 0) {
-                    HStack {
-                        Text("Music Center")
-                            .font(.headline)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .frame(height: headerHeight)
-
-                    Divider()
-
-                    MusicCenterView()
-                }
-                .frame(width: 300)
-                .transition(.move(edge: .leading).combined(with: .opacity))
-
-                Divider()
-            }
 
             // ── Main panel ────────────────────────────────────────────
             VStack(spacing: 0) {
-                // Header — buttons only; title lives in macOS title bar
+                // Header
                 HStack {
+                    Spacer()
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) { uiState.toggleZone2() }
+                    } label: {
+                        Image(systemName: "rectangle.split.2x1")
+                            .font(.system(size: 14))
+                            .foregroundColor(uiState.showZone2 ? .accentColor : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Zone 2")
+
                     Button {
                         withAnimation(.easeInOut(duration: 0.25)) { uiState.toggleMusicCenter() }
                     } label: {
@@ -57,8 +48,6 @@ struct MainWindowView: View {
                     }
                     .buttonStyle(.plain)
                     .help("Music Center")
-
-                    Spacer()
 
                     Button {
                         withAnimation(.easeInOut(duration: 0.25)) { uiState.toggleAudio() }
@@ -112,7 +101,6 @@ struct MainWindowView: View {
             if uiState.showSettings {
                 Divider()
                 VStack(spacing: 0) {
-                    // Panel header aligned with main header
                     HStack {
                         Text("Settings")
                             .font(.headline)
@@ -129,11 +117,10 @@ struct MainWindowView: View {
                 .transition(.move(edge: .trailing).combined(with: .opacity))
             }
 
-            // ── Audio settings panel ──────────────────────────────────
+            // ── Audio Settings panel ──────────────────────────────────
             if uiState.showAudio {
                 Divider()
                 VStack(spacing: 0) {
-                    // Panel header aligned with main header
                     HStack {
                         Text("Audio Settings")
                             .font(.headline)
@@ -149,19 +136,48 @@ struct MainWindowView: View {
                 .frame(width: 300)
                 .transition(.move(edge: .trailing).combined(with: .opacity))
             }
-        }
-        .animation(.easeInOut(duration: 0.25), value: uiState.showSettings || uiState.showAudio || uiState.showMusicCenter)
-        .onChange(of: uiState.showMusicCenter) { showing in
-            guard let window = NSApp.windows.first(where: { $0.canBecomeMain }) else { return }
-            let delta: CGFloat = 301
-            var frame = window.frame
-            frame.origin.x += showing ? -delta : delta
-            NSAnimationContext.runAnimationGroup { ctx in
-                ctx.duration = 0.25
-                ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-                window.animator().setFrame(frame, display: true)
+
+            // ── Zone 2 panel ──────────────────────────────────────────
+            if uiState.showZone2 {
+                Divider()
+                VStack(spacing: 0) {
+                    HStack {
+                        Text("Zone 2")
+                            .font(.headline)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .frame(height: headerHeight)
+
+                    Divider()
+
+                    Zone2View()
+                }
+                .frame(width: 300)
+                .transition(.move(edge: .trailing).combined(with: .opacity))
+            }
+
+            // ── Music Center panel ────────────────────────────────────
+            if uiState.showMusicCenter {
+                Divider()
+                VStack(spacing: 0) {
+                    HStack {
+                        Text("Music Center")
+                            .font(.headline)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .frame(height: headerHeight)
+
+                    Divider()
+
+                    MusicCenterView()
+                }
+                .frame(width: 300)
+                .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
+        .animation(.easeInOut(duration: 0.25), value: uiState.showSettings || uiState.showAudio || uiState.showMusicCenter || uiState.showZone2)
         .background(WindowConfigurator())
     }
 }

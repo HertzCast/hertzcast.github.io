@@ -2,11 +2,13 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject private var settings = YamahaSettings.shared
+    @ObservedObject private var api = YamahaAPIService.shared
     @StateObject private var discovery = DiscoveryService()
     @State private var draft: String = ""
     @State private var showManual = false
     @State private var scheduleExpanded = false
     @State private var buttonsExpanded = false
+    @State private var showRebootConfirm = false
     @FocusState private var focused: Bool
 
     var body: some View {
@@ -84,7 +86,26 @@ struct SettingsView: View {
                         Divider()
                         AutoOffView()
                             .padding(.top, 6)
-                            .padding(.bottom, 8)
+                            .padding(.bottom, 6)
+                        Divider()
+                        HStack {
+                            Text("Sleep Timer")
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Picker("", selection: Binding(
+                                get: { api.sleepTimer },
+                                set: { api.setSleep($0) }
+                            )) {
+                                Text("Off").tag(0)
+                                ForEach([15, 30, 45, 60, 90, 120], id: \.self) { min in
+                                    Text("\(min) min").tag(min)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .frame(width: 100)
+                        }
+                        .padding(.top, 6)
+                        .padding(.bottom, 8)
                     }
                 } label: {
                     Text("Schedule")
@@ -92,6 +113,20 @@ struct SettingsView: View {
                 }
 
                 Spacer()
+
+                // ── Reboot ───────────────────────────────────────────────
+                Divider()
+                HStack {
+                    Spacer()
+                    Button("Reboot Receiver") { showRebootConfirm = true }
+                        .foregroundColor(.red)
+                        .font(.system(size: 12))
+                }
+                .padding(.top, 8)
+                .confirmationDialog("Reboot receiver?", isPresented: $showRebootConfirm) {
+                    Button("Reboot", role: .destructive) { api.reboot() }
+                    Button("Cancel", role: .cancel) {}
+                }
             }
             .padding()
         }

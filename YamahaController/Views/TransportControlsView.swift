@@ -1,6 +1,6 @@
 import SwiftUI
 
-private struct TransportButton: View {
+struct TransportButton: View {
     let label: String
     let systemImage: String?
     let width: CGFloat

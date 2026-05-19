@@ -37,11 +37,22 @@ class YamahaAPIService: ObservableObject {
     @Published var shuffleAvailable: Bool = false
     @Published var repeatAvailable: [String] = []
     @Published var audioFormat: String = ""
+    @Published var playTime: Int = 0
+    @Published var totalTime: Int = 0
     @Published var audioChannels: String = ""
     @Published var audioBitrate: Int = 0
     @Published var audioBitDepth: String = ""
     @Published var deviceModel: String = ""
     @Published var deviceFirmware: String = ""
+    @Published var sleepTimer: Int = 0
+
+    // Zone 2
+    @Published var zone2Power: PowerState = .unknown
+    @Published var zone2Volume: Int = 0
+    @Published var zone2MaxVolume: Int = 161
+    @Published var zone2IsMuted: Bool = false
+    @Published var zone2Input: String = ""
+    @Published var zone2ActualVolumeDb: Double? = nil
 
     // Music Center
     @Published var recentItems: [NetRadioRecentItem] = []
@@ -63,6 +74,7 @@ class YamahaAPIService: ObservableObject {
 
     private var pollingTimer: Timer?
     private var playInfoTimer: Timer?
+    private var zone2Timer: Timer?
     private var previousState: PowerState = .unknown
     private var isFetchingStatus = false
     private var udpListener: NWListener?
@@ -94,6 +106,10 @@ class YamahaAPIService: ObservableObject {
             self?.fetchPlayInfoIfNeeded()
         }
         fetchDeviceInfo()
+        fetchZone2Status()
+        zone2Timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
+            self?.fetchZone2Status()
+        }
     }
 
     func stopPolling() {
@@ -101,6 +117,8 @@ class YamahaAPIService: ObservableObject {
         pollingTimer = nil
         playInfoTimer?.invalidate()
         playInfoTimer = nil
+        zone2Timer?.invalidate()
+        zone2Timer = nil
         stopUDPListener()
     }
 
@@ -206,6 +224,9 @@ class YamahaAPIService: ObservableObject {
                     self.actualVolumeDb = val
                     self.volumeDbBase = val - Double(self.volume) * 0.5
                 }
+
+                // Sleep timer
+                if let sl = json["sleep"] as? Int { self.sleepTimer = sl }
 
                 // Sound program (DSP mode)
                 if let sp = json["sound_program"] as? String { self.soundProgram = sp }
@@ -513,6 +534,82 @@ class YamahaAPIService: ObservableObject {
         }.resume()
     }
 
+    // MARK: - Zone 2
+
+    func fetchZone2Status() {
+        guard !YamahaSettings.shared.ipAddress.isEmpty,
+              let url = URL(string: "\(baseURL)/zone2/getStatus") else { return }
+        session.dataTask(with: url) { [weak self] data, _, _ in
+            guard let self, let data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  (json["response_code"] as? Int) == 0 else { return }
+            DispatchQueue.main.async {
+                self.zone2Power = (json["power"] as? String) == "on" ? .on : .standby
+                if let v = json["volume"]     as? Int { self.zone2Volume    = v }
+                if let m = json["max_volume"] as? Int { self.zone2MaxVolume = m }
+                if let mu = json["mute"]      as? Bool { self.zone2IsMuted  = mu }
+                if let inp = json["input"]    as? String { self.zone2Input  = inp }
+                if let av = json["actual_volume"] as? [String: Any],
+                   let val = av["value"] as? Double { self.zone2ActualVolumeDb = val }
+            }
+        }.resume()
+    }
+
+    func setZone2Power(_ on: Bool) {
+        let power = on ? "on" : "standby"
+        guard let url = URL(string: "\(baseURL)/zone2/setPower?power=\(power)") else { return }
+        zone2Power = on ? .on : .standby
+        session.dataTask(with: url) { _, _, _ in }.resume()
+    }
+
+    func setZone2Volume(_ value: Int) {
+        let v = max(0, min(value, zone2MaxVolume))
+        zone2Volume = v
+        guard let url = URL(string: "\(baseURL)/zone2/setVolume?volume=\(v)") else { return }
+        session.dataTask(with: url) { _, _, _ in }.resume()
+    }
+
+    func zone2VolumeUp()   { setZone2Volume(zone2Volume + 1) }
+    func zone2VolumeDown() { setZone2Volume(zone2Volume - 1) }
+
+    func toggleZone2Mute() {
+        let newMute = !zone2IsMuted
+        zone2IsMuted = newMute
+        guard let url = URL(string: "\(baseURL)/zone2/setMute?enable=\(newMute)") else { return }
+        session.dataTask(with: url) { _, _, _ in }.resume()
+    }
+
+    func setZone2Input(_ input: String) {
+        guard let enc = input.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "\(baseURL)/zone2/setInput?input=\(enc)") else { return }
+        zone2Input = input
+        session.dataTask(with: url) { _, _, _ in }.resume()
+    }
+
+    private func prefetchArtwork(urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        let req = URLRequest(url: url)
+        guard URLCache.shared.cachedResponse(for: req) == nil else { return }
+        URLSession.shared.dataTask(with: req) { data, response, _ in
+            guard let data, let response else { return }
+            URLCache.shared.storeCachedResponse(
+                CachedURLResponse(response: response, data: data), for: req)
+        }.resume()
+    }
+
+    func setSleep(_ minutes: Int) {
+        sleepTimer = minutes
+        guard let url = URL(string: "\(baseURL)/main/setSleep?sleep=\(minutes)") else { return }
+        session.dataTask(with: url) { _, _, _ in }.resume()
+    }
+
+    func reboot() {
+        guard let url = URL(string: "\(baseURL)/system/reboot") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        session.dataTask(with: request) { _, _, _ in }.resume()
+    }
+
     // MARK: - Music Center
 
     func fetchRecentInfo() {
@@ -716,6 +813,8 @@ class YamahaAPIService: ObservableObject {
             nowPlayingTrack = ""
             nowPlayingArtist = ""
             albumArtURLString = ""
+            playTime = 0
+            totalTime = 0
             if powerState == .on && currentInput.lowercased() == "tuner" {
                 fetchTunerInfoIfNeeded()
             }
@@ -736,6 +835,8 @@ class YamahaAPIService: ObservableObject {
                 }
 
                 if let pb = json["playback"] as? String { self.playbackStatus = pb }
+                self.playTime  = json["play_time"]  as? Int ?? 0
+                self.totalTime = json["total_time"] as? Int ?? 0
                 self.shuffleAvailable = (json["shuffle_available"] as? [String])?.isEmpty == false
                 self.repeatAvailable  = json["repeat_available"]  as? [String] ?? []
                 let frozen = self.shuffleRepeatFrozenUntil.map { Date() < $0 } ?? false
@@ -748,10 +849,13 @@ class YamahaAPIService: ObservableObject {
                    let artId   = json["albumart_id"]  as? Int,
                    artId > 0,
                    !artPath.isEmpty {
-                    self.albumArtURLString = "http://\(YamahaSettings.shared.ipAddress)\(artPath)"
-                } else {
-                    self.albumArtURLString = ""
+                    let newURL = "http://\(YamahaSettings.shared.ipAddress)\(artPath)"
+                    if newURL != self.albumArtURLString {
+                        self.albumArtURLString = newURL
+                        self.prefetchArtwork(urlString: newURL)
+                    }
                 }
+                // artId == 0 means receiver is still loading art — keep showing old artwork
             }
         }.resume()
     }

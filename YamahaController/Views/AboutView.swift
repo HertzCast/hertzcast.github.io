@@ -16,7 +16,7 @@ struct AboutView: View {
                 Text("Yamaha Controller")
                     .font(.title2).bold()
 
-                Text("Version 1.3.0")
+                Text("Version 1.4.0")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -58,5 +58,6 @@ struct AboutView: View {
             Spacer()
         }
         .frame(width: 280, height: 230)
+        .onAppear { api.fetchDeviceInfo() }
     }
 }

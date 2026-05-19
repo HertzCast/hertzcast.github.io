@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-private struct MarqueeText: NSViewRepresentable {
+struct MarqueeText: NSViewRepresentable {
     let text: String
     let fontName: String
     let fontSize: CGFloat
@@ -287,6 +287,7 @@ struct ReceiverDisplayView: View {
                     .opacity(hasAlbumArt ? 1 : 0)
                 }
                 .padding(.horizontal, 10)
+
 
                 // ── Row 4: Volume + [shuffle/repeat] + Mode ─────────────
                 Divider()

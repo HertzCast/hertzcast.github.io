@@ -1,7 +1,7 @@
 # MC Desktop Controller vs Yamaha Controller — Feature Gap Analysis
 
 > MC Desktop Controller v1.19.0 (Electron/React Native Web, by Mathias Berg)  
-> Yamaha Controller v1.3.0 (native SwiftUI, by Dan Butuc)
+> Yamaha Controller v1.4.0 (native SwiftUI, by Dan Butuc)
 
 This document lists everything MC Desktop Controller has that Yamaha Controller does not. Used as a selective roadmap — not everything here will be built, only what's actually useful in daily use.
 
@@ -154,11 +154,15 @@ We have a basic alarm (one per receiver). MC has a much more complete alarm syst
 
 ## 10. Keyboard Shortcuts (extended)
 
-We have volume up/down and mute. MC has more.
+We have volume up/down, mute, play/pause, shuffle, repeat, prev/next. MC has more.
 
 | Shortcut | MC Desktop | Yamaha Controller | Effort |
 |---------|-----------|------------------|--------|
-| Play / Pause (P) | ✅ | ❌ | 🟢 |
+| Play / Pause (P) | ✅ | ✅ | — |
+| Shuffle (S) | ✅ | ✅ | — |
+| Repeat (R) | ✅ | ✅ | — |
+| Previous (Cmd+←) | ✅ | ✅ | — |
+| Next (Cmd+→) | ✅ | ✅ | — |
 | Tooltip on active controls | ✅ | ❌ | 🟢 |
 | Long press arrow — jump to start/end of source row | ✅ | ❌ | 🟢 |
 
@@ -170,7 +174,6 @@ Not everything here should be built — only features with clear daily-use value
 
 ### 🟢 Quick wins (< 2h each, high value)
 - **Sleep Timer** — one picker + `setSleepTimer` API call
-- **Play/Pause keyboard shortcut (P)** — two lines in AppDelegate key monitor
 - **Device reboot** — one button + confirm dialog
 - **Clock auto-sync** — `setClock` with current Mac time
 - **Wake volume on alarm** — add volume picker to existing MorningAlarmView
@@ -197,4 +200,4 @@ Not everything here should be built — only features with clear daily-use value
 
 ---
 
-*Generated 2026-05-12. Last updated 2026-05-13 for v1.3.0 — removed Tone Control, Pure Direct, Enhancer, Bass Extension, Subwoofer Volume, Adaptive DRC, Dialogue Level, Surround Decoder, Device info, Signal info (all implemented).*
+*Generated 2026-05-12. Last updated 2026-05-19 for v1.4.0 — removed Tone Control, Pure Direct, Enhancer, Bass Extension, Subwoofer Volume, Adaptive DRC, Dialogue Level, Surround Decoder, Device info, Signal info (implemented in v1.3). Added Play/Pause (P), Shuffle (S), Repeat (R), Prev (Cmd+←), Next (Cmd+→) keyboard shortcuts as ✅ (implemented in v1.3). Removed Play/Pause shortcut from Quick Wins.*
