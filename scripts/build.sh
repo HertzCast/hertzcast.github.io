@@ -88,7 +88,7 @@ mkdir -p "$APP_BUNDLE/Contents/Resources"
 cp "$BUILD_DIR/$EXECUTABLE" "$APP_BUNDLE/Contents/MacOS/"
 
 # ── Generate app icon ─────────────────────────────────────────────────────────
-ICON_SRC="$PROJECT_DIR/yamaha_white.png"
+ICON_SRC="$PROJECT_DIR/screenshots/icon.png"
 ICON_OUT="$APP_BUNDLE/Contents/Resources/AppIcon.icns"
 if [ -f "$ICON_SRC" ]; then
   echo "▸ Generating AppIcon.icns..."
@@ -96,7 +96,7 @@ if [ -f "$ICON_SRC" ]; then
   # Also copy PNG to Resources for menu bar use
   cp "$ICON_SRC" "$APP_BUNDLE/Contents/Resources/yamaha_white.png"
 else
-  echo "⚠  yamaha_white.png not found — skipping icon"
+  echo "⚠  icon.png not found — skipping icon"
 fi
 
 # ── Copy image assets ─────────────────────────────────────────────────────────
