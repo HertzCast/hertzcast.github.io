@@ -2,4 +2,7 @@ CLAUDE.md
 build/
 .DS_Store
 *.xcuserstate
-xcuserdata/
+xcuserdata/MC_COMPARISON.md
+appstore-submission-plan.md
+sandbox-migration-plan.md
+dist/

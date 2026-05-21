@@ -153,7 +153,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             closePopover()
         } else {
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-            NSApp.activate(ignoringOtherApps: true)
             DispatchQueue.main.async { [weak self] in
                 self?.popover?.contentViewController?.view.window?.makeKey()
             }

@@ -43,7 +43,7 @@ final class MarqueeNSView: NSView {
             tl.alignmentMode = .left
             tl.anchorPoint = CGPoint(x: 0, y: 0.5)
             tl.shadowOpacity = 1.0
-            tl.shadowRadius = 3
+            tl.shadowRadius = 6
             tl.shadowOffset = .zero
             contentLayer.addSublayer(tl)
         }
@@ -157,6 +157,18 @@ struct ReceiverDisplayView: View {
         return api.soundProgram.replacingOccurrences(of: "_", with: " ").uppercased()
     }
 
+    private var decoderLabel: String {
+        guard isOn, api.soundProgram == "surr_decoder", !api.surroundDecoderType.isEmpty else { return "" }
+        let map: [String: String] = [
+            "dolby_pl2x_music":  "DPL MUSIC",
+            "dolby_pl2x_movie":  "DPL MOVIE",
+            "dolby_pl2x_game":   "DPL GAME",
+            "dts_neo6_cinema":   "NEO:6 CIN",
+            "dts_neo6_music":    "NEO:6 MUS",
+        ]
+        return map[api.surroundDecoderType] ?? api.surroundDecoderType.replacingOccurrences(of: "_", with: " ").uppercased()
+    }
+
     // Whether current input has now-playing info
     private var signalLabel: String {
         guard isOn, !api.audioFormat.isEmpty else { return "" }
@@ -229,8 +241,8 @@ struct ReceiverDisplayView: View {
                 // ── Row 2: Input name (big) ──────────────────────────────
                 Text(inputLabel)
                     .font(.custom("BitcountPropSingle-ExtraLight", size: 22))
-                    .foregroundColor(isOn ? lcdGreen : lcdDim)
-                    .shadow(color: isOn ? lcdGlow : .clear, radius: 4)
+                    .foregroundColor(isOn ? lcdAmber : lcdDim)
+                    .shadow(color: isOn ? lcdAmberGlow : .clear, radius: 4)
                     .tracking(2).lineLimit(1).minimumScaleFactor(0.6)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 10)
@@ -303,9 +315,9 @@ struct ReceiverDisplayView: View {
                         Text(volumeLabel)
                             .font(.custom("BitcountPropSingle-ExtraLight", size: 16))
                             .foregroundColor(isOn
-                                ? (api.isMuted ? Color(red: 1.0, green: 0.35, blue: 0.2) : lcdGreen)
+                                ? (api.isMuted ? Color(red: 1.0, green: 0.35, blue: 0.2) : lcdAmber)
                                 : lcdDim)
-                            .shadow(color: isOn && !api.isMuted ? lcdGlow : .clear, radius: 3)
+                            .shadow(color: isOn && !api.isMuted ? lcdAmberGlow : .clear, radius: 3)
                             .tracking(1)
                     }
 
@@ -315,12 +327,12 @@ struct ReceiverDisplayView: View {
                         Image(systemName: "shuffle")
                             .font(.system(size: 13, weight: .light))
                             .foregroundColor(lcdGreen)
-                            .shadow(color: lcdGlow, radius: 4)
+                            .shadow(color: lcdGlow, radius: 7)
                             .opacity(isOn && api.shuffleMode != "off" ? 1 : 0)
                         Image(systemName: api.repeatMode == "one" ? "repeat.1" : "repeat")
                             .font(.system(size: 13, weight: .light))
                             .foregroundColor(lcdGreen)
-                            .shadow(color: lcdGlow, radius: 4)
+                            .shadow(color: lcdGlow, radius: 7)
                             .opacity(isOn && api.repeatMode != "off" ? 1 : 0)
                     }
                     .padding(.bottom, 2)
@@ -336,6 +348,13 @@ struct ReceiverDisplayView: View {
                             .foregroundColor(isOn ? lcdAmber : lcdDim)
                             .shadow(color: isOn ? lcdAmberGlow : .clear, radius: 3)
                             .tracking(0.8).lineLimit(1).minimumScaleFactor(0.7)
+                        if !decoderLabel.isEmpty {
+                            Text(decoderLabel)
+                                .font(.custom("BitcountPropSingle-ExtraLight", size: 9))
+                                .foregroundColor(lcdAmber.opacity(0.7))
+                                .shadow(color: lcdAmberGlow, radius: 2)
+                                .tracking(0.5).lineLimit(1)
+                        }
                     }
                 }
                 .padding(.horizontal, 10)
