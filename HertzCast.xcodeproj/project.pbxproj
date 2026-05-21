@@ -1,0 +1,555 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0834F64886BC178C12F53599 /* SceneButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27C5A9E6A37139434000269 /* SceneButtonsView.swift */; };
+		130CA23781B3D4434B5E5C5A /* Volume.png in Resources */ = {isa = PBXBuildFile; fileRef = C27B864036248B2F9C02484F /* Volume.png */; };
+		1384FA9E339F1D60D1F150DF /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957D9023B303F92F5260AC78 /* PopoverView.swift */; };
+		17138E47C1E64E7E06DDAF84 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495CCCE3528F4B0C639CD795 /* AppDelegate.swift */; };
+		19EE85040A47D6E16EC9D56E /* Zone2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0E63D44D4EAB61B02F37C6 /* Zone2View.swift */; };
+		21F69D0946D48C21C41F5794 /* TransportControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BFF14842B7C6D4E27BCA9B /* TransportControlsView.swift */; };
+		2631AF8CB1D06CF4E364E0DA /* PowerButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F6471E3DE296229045BC6E /* PowerButtonView.swift */; };
+		43E1B794B1E9D6C18A1F31D6 /* MorningAlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0348B90BEA086FA5015D6C /* MorningAlarmView.swift */; };
+		475386038A1A0BBFF40C30E4 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F6A17E065568AC6CE8D6888 /* AboutView.swift */; };
+		4F46B6AFEFAD80D055126BF5 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867203715B09D5419F80C58E /* main.swift */; };
+		615312447BA5E99A687030CB /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FF9209E3BDDC1A727F040825 /* PrivacyInfo.xcprivacy */; };
+		66A0B10D098351E968283D11 /* VolumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599372C3D3A70190327E8864 /* VolumeView.swift */; };
+		6F885F0B710261991159280B /* BitcountPropSingle-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4597CC7C6930B02A0A7964DC /* BitcountPropSingle-Regular.ttf */; };
+		7585C1B1CB65949159B5DA3D /* YamahaAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D68BB049B8C247F2DE782A /* YamahaAPIService.swift */; };
+		8000FCEC5E900C56426A602A /* YamahaSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72161BF2B39EFEFC0F423C23 /* YamahaSettings.swift */; };
+		82AC81A8647DBA3AA6195568 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29346C7BD26866FF126F3581 /* SettingsView.swift */; };
+		8539D6EB6D35B925C2AE2EC8 /* Button.png in Resources */ = {isa = PBXBuildFile; fileRef = F9D43B7F236A8AA4C221D1CC /* Button.png */; };
+		917A87BE54F159A88937CFF0 /* AppUIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED3D071AC10E00C822EEFC8 /* AppUIState.swift */; };
+		96B153C5B469284774D6FF34 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C9CB87A362B11ECF7688D0 /* AppColors.swift */; };
+		A21598A5AD4F5BEE1876AE6A /* StatusSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D7F0075C6F62D1DDC1500D /* StatusSectionView.swift */; };
+		A23D11BB7BC4AE6BAE1C6A09 /* ReceiverDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F3F7FDBDB793587066446C4 /* ReceiverDisplayView.swift */; };
+		A5B72AC5B19CE9CC8233E0CC /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53105B13741DDD5DD2663468 /* MainWindowView.swift */; };
+		AAE06653AE09D3A9F4D32632 /* DiscoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC4DAF39C0CE698B86076C6 /* DiscoveryService.swift */; };
+		AC90F801E6BD377FAA8FE244 /* PowerButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8BB918472D2BB5610F872A8A /* PowerButton.png */; };
+		BD6433D6BC85CC27E10FCB38 /* BitcountPropSingle-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A8EE3A9B3E90028CF67D4E0A /* BitcountPropSingle-ExtraLight.ttf */; };
+		C9FCF6D04DE6D7451DFA9457 /* SchedulerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CD68FD9D89B3D9AAD07E7B /* SchedulerService.swift */; };
+		CA7ACABBB656CF7722D1C9F4 /* VolumeKnobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DC58D537AD616F14F35816 /* VolumeKnobView.swift */; };
+		CE8B858759898EB80501DA8A /* AudioSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95287BEC920BD2C26D21F01C /* AudioSettingsView.swift */; };
+		D323CACA557E89B9EFFF951E /* ManualControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9BD8B530865D5F560018F0 /* ManualControlsView.swift */; };
+		DF2E3C5E786D1F1D5A7F6756 /* YamahaControllerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479BF8BB9542068171A760F6 /* YamahaControllerApp.swift */; };
+		EE2A97E1B50AB041760FE8BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4E5519B1407017C62C88FF9 /* Assets.xcassets */; };
+		F9F013FD21D23686D908B49D /* KeycapComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99BB7A226A1A07EC6E31BBA /* KeycapComponents.swift */; };
+		FA515476BD3AC8879EB77532 /* MusicCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62BD951281278B36218A10EF /* MusicCenterView.swift */; };
+		FBE8298D803418DA74E75A3E /* AutoOffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8857EBCD9498EAA2D5EBDDB0 /* AutoOffView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00DC58D537AD616F14F35816 /* VolumeKnobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKnobView.swift; sourceTree = "<group>"; };
+		0F3F7FDBDB793587066446C4 /* ReceiverDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverDisplayView.swift; sourceTree = "<group>"; };
+		14C9CB87A362B11ECF7688D0 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
+		29346C7BD26866FF126F3581 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		36F6471E3DE296229045BC6E /* PowerButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerButtonView.swift; sourceTree = "<group>"; };
+		3F6A17E065568AC6CE8D6888 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		4597CC7C6930B02A0A7964DC /* BitcountPropSingle-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BitcountPropSingle-Regular.ttf"; sourceTree = "<group>"; };
+		45D68BB049B8C247F2DE782A /* YamahaAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamahaAPIService.swift; sourceTree = "<group>"; };
+		479BF8BB9542068171A760F6 /* YamahaControllerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamahaControllerApp.swift; sourceTree = "<group>"; };
+		495CCCE3528F4B0C639CD795 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4ED3D071AC10E00C822EEFC8 /* AppUIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIState.swift; sourceTree = "<group>"; };
+		53105B13741DDD5DD2663468 /* MainWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowView.swift; sourceTree = "<group>"; };
+		599372C3D3A70190327E8864 /* VolumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeView.swift; sourceTree = "<group>"; };
+		62BD951281278B36218A10EF /* MusicCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicCenterView.swift; sourceTree = "<group>"; };
+		6D0E63D44D4EAB61B02F37C6 /* Zone2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone2View.swift; sourceTree = "<group>"; };
+		72161BF2B39EFEFC0F423C23 /* YamahaSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamahaSettings.swift; sourceTree = "<group>"; };
+		7C9BD8B530865D5F560018F0 /* ManualControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualControlsView.swift; sourceTree = "<group>"; };
+		83CD68FD9D89B3D9AAD07E7B /* SchedulerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerService.swift; sourceTree = "<group>"; };
+		867203715B09D5419F80C58E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		8857EBCD9498EAA2D5EBDDB0 /* AutoOffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoOffView.swift; sourceTree = "<group>"; };
+		8BB918472D2BB5610F872A8A /* PowerButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PowerButton.png; sourceTree = "<group>"; };
+		95287BEC920BD2C26D21F01C /* AudioSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSettingsView.swift; sourceTree = "<group>"; };
+		957D9023B303F92F5260AC78 /* PopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverView.swift; sourceTree = "<group>"; };
+		A8EE3A9B3E90028CF67D4E0A /* BitcountPropSingle-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BitcountPropSingle-ExtraLight.ttf"; sourceTree = "<group>"; };
+		AAC4DAF39C0CE698B86076C6 /* DiscoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryService.swift; sourceTree = "<group>"; };
+		AEA0011095E6E8D6C4289022 /* HertzCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HertzCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C27B864036248B2F9C02484F /* Volume.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Volume.png; sourceTree = "<group>"; };
+		C2BFF14842B7C6D4E27BCA9B /* TransportControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportControlsView.swift; sourceTree = "<group>"; };
+		CD894A00F86FCF645BDFA94D /* HertzCastHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HertzCastHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8D7F0075C6F62D1DDC1500D /* StatusSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusSectionView.swift; sourceTree = "<group>"; };
+		E99BB7A226A1A07EC6E31BBA /* KeycapComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeycapComponents.swift; sourceTree = "<group>"; };
+		EA0348B90BEA086FA5015D6C /* MorningAlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningAlarmView.swift; sourceTree = "<group>"; };
+		F27C5A9E6A37139434000269 /* SceneButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneButtonsView.swift; sourceTree = "<group>"; };
+		F4E5519B1407017C62C88FF9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F9D43B7F236A8AA4C221D1CC /* Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Button.png; sourceTree = "<group>"; };
+		FF9209E3BDDC1A727F040825 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1275174DDB53728A23977173 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AAC4DAF39C0CE698B86076C6 /* DiscoveryService.swift */,
+				83CD68FD9D89B3D9AAD07E7B /* SchedulerService.swift */,
+				45D68BB049B8C247F2DE782A /* YamahaAPIService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		34C039CE6DE1E2DAE6E95A0B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A8EE3A9B3E90028CF67D4E0A /* BitcountPropSingle-ExtraLight.ttf */,
+				4597CC7C6930B02A0A7964DC /* BitcountPropSingle-Regular.ttf */,
+				F9D43B7F236A8AA4C221D1CC /* Button.png */,
+				8BB918472D2BB5610F872A8A /* PowerButton.png */,
+				C27B864036248B2F9C02484F /* Volume.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		52C91BAF19121B8CE3C444FD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3F6A17E065568AC6CE8D6888 /* AboutView.swift */,
+				95287BEC920BD2C26D21F01C /* AudioSettingsView.swift */,
+				8857EBCD9498EAA2D5EBDDB0 /* AutoOffView.swift */,
+				E99BB7A226A1A07EC6E31BBA /* KeycapComponents.swift */,
+				53105B13741DDD5DD2663468 /* MainWindowView.swift */,
+				7C9BD8B530865D5F560018F0 /* ManualControlsView.swift */,
+				EA0348B90BEA086FA5015D6C /* MorningAlarmView.swift */,
+				62BD951281278B36218A10EF /* MusicCenterView.swift */,
+				957D9023B303F92F5260AC78 /* PopoverView.swift */,
+				36F6471E3DE296229045BC6E /* PowerButtonView.swift */,
+				0F3F7FDBDB793587066446C4 /* ReceiverDisplayView.swift */,
+				F27C5A9E6A37139434000269 /* SceneButtonsView.swift */,
+				29346C7BD26866FF126F3581 /* SettingsView.swift */,
+				D8D7F0075C6F62D1DDC1500D /* StatusSectionView.swift */,
+				C2BFF14842B7C6D4E27BCA9B /* TransportControlsView.swift */,
+				00DC58D537AD616F14F35816 /* VolumeKnobView.swift */,
+				599372C3D3A70190327E8864 /* VolumeView.swift */,
+				6D0E63D44D4EAB61B02F37C6 /* Zone2View.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7B80A21E1516B2DB9374E1FB = {
+			isa = PBXGroup;
+			children = (
+				993DEA78A470CE3AC7246DC9 /* HertzCastHelper */,
+				B98883DA4B7A4EEF4C7E6A19 /* YamahaController */,
+				EAB5D0517F26EDFA2BC50110 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		993DEA78A470CE3AC7246DC9 /* HertzCastHelper */ = {
+			isa = PBXGroup;
+			children = (
+				867203715B09D5419F80C58E /* main.swift */,
+			);
+			path = HertzCastHelper;
+			sourceTree = "<group>";
+		};
+		B98883DA4B7A4EEF4C7E6A19 /* YamahaController */ = {
+			isa = PBXGroup;
+			children = (
+				495CCCE3528F4B0C639CD795 /* AppDelegate.swift */,
+				F4E5519B1407017C62C88FF9 /* Assets.xcassets */,
+				FF9209E3BDDC1A727F040825 /* PrivacyInfo.xcprivacy */,
+				479BF8BB9542068171A760F6 /* YamahaControllerApp.swift */,
+				B9CEE59BDD3BC5E6AF4468DD /* Models */,
+				34C039CE6DE1E2DAE6E95A0B /* Resources */,
+				1275174DDB53728A23977173 /* Services */,
+				52C91BAF19121B8CE3C444FD /* Views */,
+			);
+			path = YamahaController;
+			sourceTree = "<group>";
+		};
+		B9CEE59BDD3BC5E6AF4468DD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				14C9CB87A362B11ECF7688D0 /* AppColors.swift */,
+				4ED3D071AC10E00C822EEFC8 /* AppUIState.swift */,
+				72161BF2B39EFEFC0F423C23 /* YamahaSettings.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		EAB5D0517F26EDFA2BC50110 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AEA0011095E6E8D6C4289022 /* HertzCast.app */,
+				CD894A00F86FCF645BDFA94D /* HertzCastHelper.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1026E5781ABEA219F314BCE2 /* HertzCast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6C997785815CD46BF89159DC /* Build configuration list for PBXNativeTarget "HertzCast" */;
+			buildPhases = (
+				6A658FF0F4D479B761834491 /* Sources */,
+				8CB3E16253A108E2DCB67F8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HertzCast;
+			packageProductDependencies = (
+			);
+			productName = HertzCast;
+			productReference = AEA0011095E6E8D6C4289022 /* HertzCast.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D060580EE45A9C11B01F9A21 /* HertzCastHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A074149340FE4B2B0DD48201 /* Build configuration list for PBXNativeTarget "HertzCastHelper" */;
+			buildPhases = (
+				A9F3EEC4239A2DED7E078D05 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HertzCastHelper;
+			packageProductDependencies = (
+			);
+			productName = HertzCastHelper;
+			productReference = CD894A00F86FCF645BDFA94D /* HertzCastHelper.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2956E55CB68522E935B79F4C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					1026E5781ABEA219F314BCE2 = {
+						ProvisioningStyle = Automatic;
+					};
+					D060580EE45A9C11B01F9A21 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = F952F4630A639E4CD158FD21 /* Build configuration list for PBXProject "HertzCast" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 7B80A21E1516B2DB9374E1FB;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EAB5D0517F26EDFA2BC50110 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1026E5781ABEA219F314BCE2 /* HertzCast */,
+				D060580EE45A9C11B01F9A21 /* HertzCastHelper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8CB3E16253A108E2DCB67F8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE2A97E1B50AB041760FE8BC /* Assets.xcassets in Resources */,
+				BD6433D6BC85CC27E10FCB38 /* BitcountPropSingle-ExtraLight.ttf in Resources */,
+				6F885F0B710261991159280B /* BitcountPropSingle-Regular.ttf in Resources */,
+				8539D6EB6D35B925C2AE2EC8 /* Button.png in Resources */,
+				AC90F801E6BD377FAA8FE244 /* PowerButton.png in Resources */,
+				615312447BA5E99A687030CB /* PrivacyInfo.xcprivacy in Resources */,
+				130CA23781B3D4434B5E5C5A /* Volume.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6A658FF0F4D479B761834491 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				475386038A1A0BBFF40C30E4 /* AboutView.swift in Sources */,
+				96B153C5B469284774D6FF34 /* AppColors.swift in Sources */,
+				17138E47C1E64E7E06DDAF84 /* AppDelegate.swift in Sources */,
+				917A87BE54F159A88937CFF0 /* AppUIState.swift in Sources */,
+				CE8B858759898EB80501DA8A /* AudioSettingsView.swift in Sources */,
+				FBE8298D803418DA74E75A3E /* AutoOffView.swift in Sources */,
+				AAE06653AE09D3A9F4D32632 /* DiscoveryService.swift in Sources */,
+				F9F013FD21D23686D908B49D /* KeycapComponents.swift in Sources */,
+				A5B72AC5B19CE9CC8233E0CC /* MainWindowView.swift in Sources */,
+				D323CACA557E89B9EFFF951E /* ManualControlsView.swift in Sources */,
+				43E1B794B1E9D6C18A1F31D6 /* MorningAlarmView.swift in Sources */,
+				FA515476BD3AC8879EB77532 /* MusicCenterView.swift in Sources */,
+				1384FA9E339F1D60D1F150DF /* PopoverView.swift in Sources */,
+				2631AF8CB1D06CF4E364E0DA /* PowerButtonView.swift in Sources */,
+				A23D11BB7BC4AE6BAE1C6A09 /* ReceiverDisplayView.swift in Sources */,
+				0834F64886BC178C12F53599 /* SceneButtonsView.swift in Sources */,
+				C9FCF6D04DE6D7451DFA9457 /* SchedulerService.swift in Sources */,
+				82AC81A8647DBA3AA6195568 /* SettingsView.swift in Sources */,
+				A21598A5AD4F5BEE1876AE6A /* StatusSectionView.swift in Sources */,
+				21F69D0946D48C21C41F5794 /* TransportControlsView.swift in Sources */,
+				CA7ACABBB656CF7722D1C9F4 /* VolumeKnobView.swift in Sources */,
+				66A0B10D098351E968283D11 /* VolumeView.swift in Sources */,
+				7585C1B1CB65949159B5DA3D /* YamahaAPIService.swift in Sources */,
+				DF2E3C5E786D1F1D5A7F6756 /* YamahaControllerApp.swift in Sources */,
+				8000FCEC5E900C56426A602A /* YamahaSettings.swift in Sources */,
+				19EE85040A47D6E16EC9D56E /* Zone2View.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F3EEC4239A2DED7E078D05 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F46B6AFEFAD80D055126BF5 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		123A5DB2B8CEC2ED60238B31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HertzCastHelper/HertzCastHelper.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = HertzCastHelper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.danbutuc.hertzcast.helper;
+				PRODUCT_NAME = HertzCastHelper;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		62C4D34FE8578AEB30382E7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HertzCastHelper/HertzCastHelper.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = HertzCastHelper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.danbutuc.hertzcast.helper;
+				PRODUCT_NAME = HertzCastHelper;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B08532D8128BCD1C1D8E1434 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HertzCast/HertzCast.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = HertzCast/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.danbutuc.hertzcast;
+				PRODUCT_NAME = HertzCast;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C1DD7E223D5C1983D87DED5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		F376DBF81FBA12CAB71B63CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HertzCast/HertzCast.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = YES;
+				INFOPLIST_FILE = HertzCast/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.danbutuc.hertzcast;
+				PRODUCT_NAME = HertzCast;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FDAB1AB4C2920FD693C027AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6C997785815CD46BF89159DC /* Build configuration list for PBXNativeTarget "HertzCast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F376DBF81FBA12CAB71B63CE /* Debug */,
+				B08532D8128BCD1C1D8E1434 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A074149340FE4B2B0DD48201 /* Build configuration list for PBXNativeTarget "HertzCastHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62C4D34FE8578AEB30382E7D /* Debug */,
+				123A5DB2B8CEC2ED60238B31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F952F4630A639E4CD158FD21 /* Build configuration list for PBXProject "HertzCast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1DD7E223D5C1983D87DED5E /* Debug */,
+				FDAB1AB4C2920FD693C027AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2956E55CB68522E935B79F4C /* Project object */;
+}

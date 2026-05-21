@@ -44,15 +44,12 @@ for (filename, px) in sizes {
         bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
     ) else { continue }
 
-    // Dark rounded-rect background (macOS-style app icon shape)
-    let radius = CGFloat(px) * 0.22
-    let rect   = CGRect(x: 0, y: 0, width: px, height: px)
-    ctx.setFillColor(CGColor(red: 0.07, green: 0.07, blue: 0.12, alpha: 1))
-    let path = CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
-    ctx.addPath(path); ctx.fillPath()
+    // Dark background to fill squircle corners
+    ctx.setFillColor(CGColor(red: 0.07, green: 0.07, blue: 0.07, alpha: 1))
+    ctx.fill(CGRect(x: 0, y: 0, width: px, height: px))
 
-    // Draw Yamaha logo centered with padding, flipped for CG coordinate system
-    let pad      = CGFloat(px) * 0.14
+    // Draw logo slightly oversized so the circle fills the square edge-to-edge
+    let pad = CGFloat(px) * 0.04
     let logoRect = CGRect(x: pad, y: pad, width: CGFloat(px) - pad*2, height: CGFloat(px) - pad*2)
     ctx.saveGState()
     ctx.translateBy(x: 0, y: CGFloat(px))

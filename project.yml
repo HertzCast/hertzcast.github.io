@@ -1,0 +1,104 @@
+name: HertzCast
+options:
+  bundleIdPrefix: com.danbutuc
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+
+  # ── Main App ──────────────────────────────────────────────────────────
+  HertzCast:
+    type: application
+    platform: macOS
+    bundleIdPrefix: com.danbutuc
+    info:
+      path: HertzCast/Info.plist
+      properties:
+        CFBundleIdentifier: com.danbutuc.hertzcast
+        CFBundleName: HertzCast
+        CFBundleDisplayName: HertzCast
+        CFBundleExecutable: HertzCast
+        CFBundleVersion: "2.0.0"
+        CFBundleShortVersionString: "2.0.0"
+        CFBundleIconFile: AppIcon
+        NSHighResolutionCapable: true
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSUserNotificationsUsageDescription: "HertzCast sends notifications when your receiver is turned on or off by a schedule."
+        ATSApplicationFontsPath: "."
+        LSUIElement: false
+        SMPrivilegedExecutables: {}
+    entitlements:
+      path: HertzCast/HertzCast.entitlements
+    settings:
+      base:
+        PRODUCT_NAME: HertzCast
+        PRODUCT_BUNDLE_IDENTIFIER: com.danbutuc.hertzcast
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_APP_SANDBOX: YES
+    dependencies:
+      - target: HertzCastHelper
+        embed: false
+        link: false
+    postBuildScripts:
+      - name: Embed Login Item Helper
+        script: |
+          set -e
+          SRC="${BUILT_PRODUCTS_DIR}/HertzCastHelper.app"
+          DEST="${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Contents/Library/LoginItems"
+          mkdir -p "$DEST"
+          rsync -a --delete "$SRC" "$DEST/"
+        inputFiles:
+          - $(BUILT_PRODUCTS_DIR)/HertzCastHelper.app
+        outputFiles:
+          - $(BUILT_PRODUCTS_DIR)/$(WRAPPER_NAME)/Contents/Library/LoginItems/HertzCastHelper.app
+        showEnvVars: false
+    sources:
+      - path: HertzCast
+        excludes:
+          - "**/*.entitlements"
+          - "**/Info.plist"
+    resources:
+      - path: HertzCast/Resources
+      - path: screenshots/hertz_logo.png
+      - path: screenshots/hertz_green.png
+      - path: screenshots/hertz_red.png
+
+  # ── Helper (Login Item) ───────────────────────────────────────────────
+  HertzCastHelper:
+    type: application
+    platform: macOS
+    bundleIdPrefix: com.danbutuc
+    info:
+      path: HertzCastHelper/Info.plist
+      properties:
+        CFBundleIdentifier: com.danbutuc.hertzcast.helper
+        CFBundleName: HertzCastHelper
+        CFBundleExecutable: HertzCastHelper
+        CFBundleVersion: "2.0.0"
+        CFBundleShortVersionString: "2.0.0"
+        LSUIElement: true
+        LSBackgroundOnly: true
+    entitlements:
+      path: HertzCastHelper/HertzCastHelper.entitlements
+    settings:
+      base:
+        PRODUCT_NAME: HertzCastHelper
+        PRODUCT_BUNDLE_IDENTIFIER: com.danbutuc.hertzcast.helper
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_APP_SANDBOX: YES
+    sources:
+      - path: HertzCastHelper
+        excludes:
+          - "**/*.entitlements"
+          - "**/Info.plist"

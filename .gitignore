@@ -4,7 +4,6 @@ build/
 *.xcuserstate
 xcuserdata/
 MC_COMPARISON.md
-appstore-submission-plan.md
-sandbox-migration-plan.md
 dist/
 yamaha_white.png
+*.psd

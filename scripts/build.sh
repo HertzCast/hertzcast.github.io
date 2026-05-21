@@ -10,14 +10,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-SOURCE_DIR="$PROJECT_DIR/YamahaController"
+SOURCE_DIR="$PROJECT_DIR/HertzCast"
 BUILD_DIR="$PROJECT_DIR/build"
 DIST_DIR="$PROJECT_DIR/dist"
 
-APP_NAME="Yamaha Controller"
-EXECUTABLE="YamahaController"
-BUNDLE_ID="com.yamaha-controller"
-VERSION="1.4.0"
+APP_NAME="HertzCast"
+EXECUTABLE="HertzCast"
+BUNDLE_ID="com.danbutuc.hertzcast"
+VERSION="2.0.0"
 UNIVERSAL=false
 
 while [[ $# -gt 0 ]]; do
@@ -32,7 +32,7 @@ SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
 HOST_ARCH="$(uname -m)"
 
 echo "╔══════════════════════════════════════╗"
-echo "║  Building Yamaha Controller v$VERSION"
+echo "║  Building HertzCast v$VERSION"
 echo "╚══════════════════════════════════════╝"
 echo ""
 
@@ -88,16 +88,20 @@ mkdir -p "$APP_BUNDLE/Contents/Resources"
 cp "$BUILD_DIR/$EXECUTABLE" "$APP_BUNDLE/Contents/MacOS/"
 
 # ── Generate app icon ─────────────────────────────────────────────────────────
-ICON_SRC="$PROJECT_DIR/screenshots/icon.png"
+ICON_SRC="$PROJECT_DIR/screenshots/hertz_logo.png"
 ICON_OUT="$APP_BUNDLE/Contents/Resources/AppIcon.icns"
 if [ -f "$ICON_SRC" ]; then
   echo "▸ Generating AppIcon.icns..."
   swift "$PROJECT_DIR/scripts/make_icon.swift" "$ICON_SRC" "$ICON_OUT"
-  # Also copy PNG to Resources for menu bar use
-  cp "$ICON_SRC" "$APP_BUNDLE/Contents/Resources/yamaha_white.png"
 else
-  echo "⚠  icon.png not found — skipping icon"
+  echo "⚠  hertz_logo.png not found — skipping icon"
 fi
+
+# Copy menu bar icons
+for icon in hertz_green hertz_red; do
+  src="$PROJECT_DIR/screenshots/${icon}.png"
+  [ -f "$src" ] && cp "$src" "$APP_BUNDLE/Contents/Resources/" && echo "▸ Copied ${icon}.png"
+done
 
 # ── Copy image assets ─────────────────────────────────────────────────────────
 RESOURCES_SRC="$SOURCE_DIR/Resources"
@@ -141,7 +145,7 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<PLIST
         <true/>
     </dict>
     <key>NSUserNotificationsUsageDescription</key>
-    <string>Yamaha Controller sends notifications when your receiver is turned on or off automatically.</string>
+    <string>HertzCast sends notifications when your receiver is turned on or off automatically.</string>
 </dict>
 </plist>
 PLIST
@@ -150,7 +154,7 @@ PLIST
 xattr -cr "$APP_BUNDLE"
 
 # ── Ad-hoc code sign ──────────────────────────────────────────────────────────
-ENTITLEMENTS="$SOURCE_DIR/YamahaController.entitlements"
+ENTITLEMENTS="$SOURCE_DIR/HertzCast-dev.entitlements"
 if [ -f "$ENTITLEMENTS" ]; then
   codesign --force --deep --sign - --entitlements "$ENTITLEMENTS" "$APP_BUNDLE"
 else

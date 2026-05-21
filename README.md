@@ -1,7 +1,7 @@
-# Yamaha Controller
+# HertzCast
 
 <p align="center">
-  <img src="screenshots/icon.png" width="100" alt="App Icon" />
+  <img src="screenshots/hertz_logo.png" width="100" alt="App Icon" />
 </p>
 
 A native macOS application for controlling **Yamaha AV receivers** over your local network — no third-party apps, no subscriptions, no cloud.
@@ -90,6 +90,7 @@ A dedicated panel (accessible via the sliders icon in the header) exposes the fu
 A panel (accessible via the music notes icon in the header) that slides in from the right, mutually exclusive with the other panels:
 - **Recent Played** — list of recently played Net Radio stations; tap to recall and play
 - **Favourites** — the 5 receiver presets with accent-colored number badges; tap to switch to Net Radio and recall preset
+- **Net Radio Browser** — full hierarchical browser for the Net Radio directory tree; navigate folders, search within any level, and tap a station to play instantly
 - **Sources** — all available receiver inputs with SF Symbol icons; active source highlighted; tap to switch
 - **Visible Sources** — toggle individual inputs on/off; hidden sources disappear from the Sources list
 - All sections are collapsible `DisclosureGroup` menus with persistent open/closed state
@@ -109,7 +110,7 @@ Three schedule controls grouped in a collapsible section in Settings:
 - **Source selector** — all supported YXC input sources
 - **Preset picker** (1–5) for Net Radio
 - **Wake volume** — set the volume level the receiver powers on at; separate from the current volume
-- Managed via `launchd` — fires even after Mac sleep/wake
+- Managed via a background **Login Item** (`HertzCastHelper`) — fires even after Mac sleep/wake
 
 **Auto Off** — automatically puts the receiver in standby at a scheduled time:
 - Enable/disable toggle
@@ -146,7 +147,7 @@ Clicking the menu bar icon opens a compact mini player instead of the full UI:
 macOS notification when the receiver is turned on or off automatically by a schedule.
 
 ### Device Management
-- **Reboot Receiver** — button at the bottom of Settings with confirmation dialog; sends `POST /system/reboot` to restart the receiver remotely
+- **Reboot Receiver** — button at the bottom of Settings with confirmation dialog; sends `GET /system/requestSystemReboot` to restart the receiver remotely
 
 ---
 
@@ -182,6 +183,10 @@ The app communicates with the receiver using the **Yamaha Extended Control (YXC)
 | `GET /netusb/setPlayback?playback={action}` | Play / pause / stop / previous / next |
 | `GET /netusb/toggleShuffle` | Toggle shuffle on/off |
 | `GET /netusb/toggleRepeat` | Cycle repeat mode (off → all → one) |
+| `GET /netusb/getListInfo?input=net_radio&index={n}&size={n}&lang=en` | Net Radio directory listing (paged) |
+| `GET /netusb/setListControl?list_id={layer}&type=select&index={n}&zone=main` | Navigate into a Net Radio folder |
+| `GET /netusb/setListControl?list_id={layer}&type=play&index={n}&zone=main` | Play a Net Radio station |
+| `GET /netusb/setSearchString?list_id={layer}&string={q}&index={n}&zone=main` | Search within Net Radio |
 | `GET /tuner/getPlayInfo` | Tuner band and frequency |
 | `GET /tuner/setBand?band=fm\|am` | Switch tuner band |
 | `GET /tuner/setFreq?band={b}&tuning=up\|down` | Step tuner frequency |
@@ -189,7 +194,7 @@ The app communicates with the receiver using the **Yamaha Extended Control (YXC)
 | `GET /main/setSleep?sleep={n}` | Sleep timer (0 = off, minutes) |
 | `GET /system/getDeviceInfo` | Model name and firmware version |
 | `GET /system/getFuncStatus` | Available input sources |
-| `POST /system/reboot` | Reboot the receiver |
+| `GET /system/requestSystemReboot` | Reboot the receiver |
 | `GET /zone2/getStatus` | Zone 2 power, volume, mute, input |
 | `GET /zone2/setPower?power=on\|standby` | Zone 2 power on / standby |
 | `GET /zone2/setVolume?volume={n}` | Zone 2 volume |
@@ -203,13 +208,13 @@ The app communicates with the receiver using the **Yamaha Extended Control (YXC)
 - Album art prefetched into `URLCache` as soon as the URL is known — appears instantly on screen
 - Optimistic UI updates: input and volume changes applied immediately, reverted on API failure
 
-### Scheduling (launchd)
-The app dynamically writes and manages `.plist` files in `~/Library/LaunchAgents/`:
+### Scheduling (HertzCastHelper)
+Scheduling is handled by **HertzCastHelper** — a sandboxed background app bundled inside HertzCast and registered as a macOS **Login Item** via `SMAppService`. This replaces the previous `launchd` plist approach and is fully compatible with the macOS App Sandbox.
 
-| Schedule | Plist label |
-|----------|-------------|
-| Morning Alarm | `com.yamaha-controller.morning` |
-| Auto Off | `com.yamaha-controller.poweroff` |
+- The helper starts automatically at login and runs in the background
+- It checks alarms at the start of every minute and immediately after the Mac wakes from sleep
+- Settings are shared between the main app and the helper via **App Group UserDefaults** (`group.com.danbutuc.hertzcast`)
+- The helper fires the same YXC HTTP calls directly — no dependency on the main app being open
 
 ---
 
@@ -220,12 +225,13 @@ The app dynamically writes and manages `.plist` files in `~/Library/LaunchAgents
 | Language | Swift 5 |
 | UI Framework | SwiftUI |
 | Networking | URLSession (native, no dependencies) |
-| Scheduling | launchd via `launchctl` + shell scripts |
-| Persistence | UserDefaults / AppStorage |
+| Scheduling | `HertzCastHelper` Login Item via `SMAppService` |
+| Persistence | App Group UserDefaults / AppStorage |
 | Notifications | UserNotifications framework |
 | Fonts | Bitcount Prop Single ExtraLight (OFL) |
-| Build | `swiftc` via custom `scripts/build.sh` |
-| Distribution | DMG (ad-hoc signed) |
+| Project | XcodeGen (`project.yml`) → `HertzCast.xcodeproj` |
+| Build (dev) | `swiftc` via `scripts/build.sh` |
+| Distribution | DMG (ad-hoc signed) / Mac App Store |
 
 No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple frameworks only.
 
@@ -235,14 +241,14 @@ No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple framew
 
 - macOS 13.0 (Ventura) or later
 - Yamaha receiver with YXC API support on the same local network
-- The app is **not sandboxed** — required for writing launchd plist files to `~/Library/LaunchAgents/`
+- The app is **sandboxed** and App Store compatible — no special permissions required
 
 ---
 
 ## Installation
 
-1. Download `YamahaController-v1.4.0.dmg` from [Releases](../../releases)
-2. Open the DMG and drag **Yamaha Controller** to your Applications folder
+1. Download `HertzCast-v2.0.0.dmg` from [Releases](../../releases)
+2. Open the DMG and drag **HertzCast** to your Applications folder
 3. Right-click → **Open** on first launch (app is ad-hoc signed, not notarized)
 4. Click the menu bar icon and open **Settings** (gear icon)
 5. Click **Discover Receiver** — the app will find your Yamaha automatically
@@ -252,24 +258,34 @@ No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple framew
 
 ## Building from Source
 
+### Using Xcode (recommended)
+
 ```bash
-git clone https://github.com/theDanButuc/Yamaha-Controller.git
-cd Yamaha-Controller
+git clone https://github.com/theDanButuc/HertzCast.git
+cd HertzCast
+brew install xcodegen
+xcodegen generate
+open HertzCast.xcodeproj
+```
+
+Build and run the **HertzCast** scheme in Xcode.
+
+### Using the build script (dev DMG)
+
+```bash
 bash scripts/build.sh
 ```
 
-Requires Xcode Command Line Tools (`xcode-select --install`). No Xcode.app needed.
-
-The build script compiles all Swift sources with `swiftc`, assembles the `.app` bundle, signs it ad-hoc, and creates a DMG in `dist/`.
+Requires Xcode Command Line Tools (`xcode-select --install`). Compiles only the main app target with `swiftc`, signs ad-hoc, and produces a DMG in `dist/`. Does not build `HertzCastHelper` — scheduling features require an Xcode build.
 
 ---
 
 ## Project Structure
 
 ```
-YamahaController/
+HertzCast/
 ├── AppDelegate.swift               # NSStatusItem, NSPopover, menu bar icon, main menu
-├── YamahaControllerApp.swift       # App entry point (@main), WindowGroup + Settings scene
+├── HertzCastApp.swift              # App entry point (@main), WindowGroup + Settings scene
 ├── Views/
 │   ├── MainWindowView.swift        # Main window layout with sliding left/right panels
 │   ├── PopoverView.swift           # Menu bar popover layout
@@ -281,34 +297,46 @@ YamahaController/
 │   ├── TransportControlsView.swift # Transport buttons incl. shuffle and repeat
 │   ├── KeycapComponents.swift      # Shared keycap shape and press style
 │   ├── AudioSettingsView.swift     # Audio panel: tone, subwoofer, features, sound program
-│   ├── MusicCenterView.swift       # Music Center: recent played, favourites, sources, visible sources
+│   ├── MusicCenterView.swift       # Music Center: recent played, favourites, net radio browser, sources
+│   ├── NetRadioBrowserView.swift   # Hierarchical Net Radio browser with search
 │   ├── SettingsView.swift          # IP + color scheme + source buttons + schedule + sleep timer + reboot
 │   ├── MorningAlarmView.swift      # Morning alarm controls incl. wake volume
 │   ├── AutoOffView.swift           # Auto off controls
 │   ├── Zone2View.swift             # Zone 2: power, input, volume, mute
 │   └── AboutView.swift             # About panel with version, model, firmware
 ├── Models/
-│   ├── YamahaSettings.swift        # UserDefaults-backed settings
-│   ├── AppUIState.swift            # Panel visibility state — mutual exclusion (Music Center / Audio / Settings / Zone 2)
-│   └── AppColors.swift             # Color scheme extension
+│   ├── HertzSettings.swift         # App Group UserDefaults-backed settings
+│   ├── AppUIState.swift            # Panel visibility state — mutual exclusion
+│   ├── AppColors.swift             # Color scheme extension
+│   └── NetRadioBrowserState.swift  # Net Radio browser navigation stack + search state
 ├── Services/
-│   ├── YamahaAPIService.swift      # All YXC HTTP calls + polling + models
-│   ├── SchedulerService.swift      # launchd plist management
+│   ├── HertzAPIService.swift       # All YXC HTTP calls + polling + models
+│   ├── SchedulerService.swift      # SMAppService Login Item registration/unregistration
 │   └── DiscoveryService.swift      # Bonjour/mDNS receiver discovery
 ├── Resources/
 │   ├── Volume.png                  # Metallic knob asset
-│   ├── Button.png                  # Circular button asset (power, source keys, mute, sliders)
-│   ├── BitcountPropSingle-ExtraLight.ttf  # Display font (OFL)
+│   ├── Button.png                  # Circular button asset
+│   ├── BitcountPropSingle-ExtraLight.ttf
 │   └── BitcountPropSingle-Regular.ttf
-└── scripts/
-    └── build.sh                    # Compile + bundle + sign + DMG
+├── HertzCast.entitlements          # App Store / sandbox entitlements
+├── HertzCast-dev.entitlements      # Dev entitlements (no sandbox, for build.sh)
+└── Info.plist
+
+HertzCastHelper/
+├── main.swift                      # Background Login Item: alarm checker + wake listener
+├── HertzCastHelper.entitlements
+└── Info.plist
+
+project.yml                         # XcodeGen project definition (both targets)
+scripts/
+└── build.sh                        # swiftc dev build + DMG
 ```
 
 ---
 
 ## Settings Persistence
 
-All settings stored in `UserDefaults` / `AppStorage`:
+All settings stored in **App Group UserDefaults** (`group.com.danbutuc.hertzcast`) — shared between the main app and `HertzCastHelper`:
 
 | Key | Type | Description |
 |-----|------|-------------|
@@ -336,4 +364,4 @@ All settings stored in `UserDefaults` / `AppStorage`:
 
 ## License
 
-MIT License. Feel free to use Yamaha Controller and contribute.
+MIT License. Feel free to use HertzCast and contribute.
