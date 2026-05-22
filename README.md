@@ -245,14 +245,44 @@ No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple framew
 
 ---
 
-## Installation
+## Getting Started
+
+### 1. Install
 
 1. Download `HertzCast-v2.0.0.dmg` from [Releases](../../releases)
 2. Open the DMG and drag **HertzCast** to your Applications folder
-3. Right-click → **Open** on first launch (app is ad-hoc signed, not notarized)
-4. Click the menu bar icon and open **Settings** (gear icon)
-5. Click **Discover Receiver** — the app will find your Yamaha automatically
-6. If discovery fails, use the **Change** link to enter the IP address manually
+3. Eject the DMG
+
+### 2. First Launch
+
+Because HertzCast is not notarized by Apple, macOS will block it on the first open:
+
+1. Find **HertzCast** in Applications
+2. **Right-click → Open** (do not double-click)
+3. Click **Open** in the dialog that appears
+4. HertzCast will appear in your menu bar as a small icon
+
+> After the first launch you can open it normally by clicking the menu bar icon.
+
+### 3. Connect to Your Receiver
+
+HertzCast communicates with your Yamaha receiver over your local Wi-Fi or Ethernet network.
+
+**Automatic discovery (recommended):**
+
+1. Click the HertzCast icon in the menu bar
+2. Click the **gear icon** (⚙) to open Settings
+3. Click **Discover Receiver** — the app will scan your network and find your Yamaha automatically
+4. If a single receiver is found it is selected automatically; if multiple are found, choose yours from the list
+
+**Manual entry (fallback):**
+
+1. Find your receiver's IP address — check your router's connected devices list or the receiver's network settings menu
+2. In Settings, click the IP address field and type the address (e.g. `192.168.1.45`), then press Return
+
+### 4. You're Ready
+
+Once connected, the menu bar icon turns **green** when your receiver is on and **red** when it is in standby. Click the icon to open the full controller.
 
 ---
 
