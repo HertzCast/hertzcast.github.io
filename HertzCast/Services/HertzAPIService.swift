@@ -17,7 +17,7 @@ class HertzAPIService: ObservableObject {
     @Published var lastError: String? = nil
     @Published var currentInput: String = ""
     @Published var volume: Int = 0
-    @Published var maxVolume: Int = 100
+    @Published var maxVolume: Int = 161
     @Published var soundProgram: String = ""
     @Published var isMuted: Bool = false
     @Published var actualVolumeDb: Double? = nil
@@ -57,6 +57,7 @@ class HertzAPIService: ObservableObject {
     // Music Center
     @Published var recentItems: [NetRadioRecentItem] = []
     @Published var presetItems: [NetRadioPreset] = []
+    @Published var totalPresetSlots: Int = 40
     @Published var availableInputs: [String] = []
 
     // Audio settings
@@ -84,7 +85,7 @@ class HertzAPIService: ObservableObject {
     // knows to send UDP unicast notifications back to us on port 41100
     private lazy var session: URLSession = {
         let cfg = URLSessionConfiguration.default
-        cfg.httpAdditionalHeaders = ["X-AppName": "YamahaController", "X-AppPort": "41100"]
+        cfg.httpAdditionalHeaders = ["X-AppName": "MusicCast/1.50(macOS)", "X-AppPort": "41100"]
         return URLSession(configuration: cfg)
     }()
 
@@ -99,7 +100,7 @@ class HertzAPIService: ObservableObject {
     func startPolling() {
         startUDPListener()
         fetchStatus()
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             self?.fetchStatus()
         }
         playInfoTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
@@ -305,22 +306,22 @@ class HertzAPIService: ObservableObject {
         }.resume()
     }
 
-    func setVolume(_ value: Int, completion: @escaping (Error?) -> Void) {
+    func setVolume(_ target: Int, completion: @escaping (Error?) -> Void) {
+        // The receiver firmware caps network setVolume at max_volume (161 = 80.5).
+        // Clamp to the receiver's own reported max — same as the official MC app.
+        let clamped = max(0, min(target, maxVolume))
         guard !HertzSettings.shared.ipAddress.isEmpty,
-              let url = URL(string: "\(baseURL)/main/setVolume?volume=\(value)") else {
-            completion(URLError(.badURL))
-            return
+              let url = URL(string: "\(baseURL)/main/setVolume?volume=\(clamped)") else {
+            completion(URLError(.badURL)); return
         }
-        let previous = volume
-        let previousDb = actualVolumeDb
-        volume = value
-        if let base = volumeDbBase { actualVolumeDb = base + Double(value) * 0.5 }
+        let prev = volume
+        let prevDb = actualVolumeDb
+        volume = clamped
+        if let base = volumeDbBase { actualVolumeDb = base + Double(clamped) * 0.5 }
+
         session.dataTask(with: url) { [weak self] _, _, error in
             DispatchQueue.main.async {
-                if error != nil {
-                    self?.volume = previous
-                    self?.actualVolumeDb = previousDb
-                }
+                if error != nil { self?.volume = prev; self?.actualVolumeDb = prevDb }
                 completion(error)
             }
         }.resume()
@@ -460,8 +461,21 @@ class HertzAPIService: ObservableObject {
 
     // MARK: - Volume / Mute Helpers
 
-    func volumeUp()   { setVolume(min(volume + 1, maxVolume)) { _ in } }
-    func volumeDown() { setVolume(max(volume - 1, 0))         { _ in } }
+    func volumeUp() {
+        guard !HertzSettings.shared.ipAddress.isEmpty,
+              let url = URL(string: "\(baseURL)/main/setVolume?volume=up") else { return }
+        volume = min(volume + 1, maxVolume)
+        if let base = volumeDbBase { actualVolumeDb = base + Double(volume) * 0.5 }
+        session.dataTask(with: url) { _, _, _ in }.resume()
+    }
+
+    func volumeDown() {
+        guard !HertzSettings.shared.ipAddress.isEmpty,
+              let url = URL(string: "\(baseURL)/main/setVolume?volume=down") else { return }
+        volume = max(volume - 1, 0)
+        if let base = volumeDbBase { actualVolumeDb = base + Double(volume) * 0.5 }
+        session.dataTask(with: url) { _, _, _ in }.resume()
+    }
 
     func toggleMute() {
         let enable = !isMuted
@@ -636,6 +650,7 @@ class HertzAPIService: ObservableObject {
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let list = json["preset_info"] as? [[String: Any]] else { return }
             DispatchQueue.main.async {
+                if !list.isEmpty { self.totalPresetSlots = list.count }
                 self.presetItems = list.enumerated().compactMap { idx, item in
                     let inputId = item["input"] as? String ?? "unknown"
                     let text    = item["text"]  as? String ?? ""
@@ -802,6 +817,46 @@ class HertzAPIService: ObservableObject {
         session.dataTask(with: url) { [weak self] _, _, _ in
             DispatchQueue.main.async { self?.fetchPresetInfo() }
         }.resume()
+    }
+
+    func clearPreset(_ num: Int) {
+        guard let url = URL(string: "\(baseURL)/netusb/clearPreset?num=\(num)") else { return }
+        session.dataTask(with: url) { [weak self] _, _, _ in
+            DispatchQueue.main.async { self?.fetchPresetInfo() }
+        }.resume()
+    }
+
+    func presetSlot(for text: String) -> Int? {
+        presetItems.first(where: { $0.text == text })?.id
+    }
+
+    func saveRecentToPreset(_ item: NetRadioRecentItem) {
+        if let slot = presetSlot(for: item.text) {
+            clearPreset(slot)
+            return
+        }
+        guard let freeSlot = firstFreePresetSlot else { return }
+        recallRecentItem(item.id + 1)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            self?.storePreset(freeSlot)
+        }
+    }
+
+    var currentPresetSlot: Int? {
+        return presetItems.first(where: { preset in
+            (!nowPlayingTrack.isEmpty && preset.text == nowPlayingTrack) ||
+            (!nowPlayingArtist.isEmpty && preset.text == nowPlayingArtist)
+        })?.id
+    }
+
+    var nowPlayingStationName: String {
+        if !nowPlayingTrack.isEmpty { return nowPlayingTrack }
+        return nowPlayingArtist
+    }
+
+    var firstFreePresetSlot: Int? {
+        let used = Set(presetItems.map(\.id))
+        return (1...totalPresetSlots).first(where: { !used.contains($0) })
     }
 
     func playPresetInMusicCenter(_ num: Int) {

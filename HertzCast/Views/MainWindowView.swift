@@ -17,6 +17,47 @@ private struct WindowConfigurator: NSViewRepresentable {
 
 private let headerHeight: CGFloat = 44
 
+private struct HeaderButton: View {
+    let icon: String
+    let iconSize: CGFloat
+    let isActive: Bool
+    let help: String
+    let onTap: () -> Void
+
+    @ObservedObject private var settings = HertzSettings.shared
+    @State private var isPressed = false
+
+    private let size: CGFloat = 32
+
+    private var buttonImage: NSImage {
+        if let url = Bundle.main.url(forResource: "Button", withExtension: "png"),
+           let img = NSImage(contentsOf: url) { return img }
+        return NSImage()
+    }
+
+    var body: some View {
+        ZStack {
+            Image(nsImage: buttonImage)
+                .resizable()
+                .frame(width: size, height: size)
+            Image(systemName: icon)
+                .font(.system(size: iconSize, weight: .semibold))
+                .foregroundColor(isActive ? settings.schemeColor : Color.white.opacity(0.7))
+                .shadow(color: isActive ? settings.schemeMid.opacity(0.9) : .clear, radius: 4)
+                .animation(.easeInOut(duration: 0.15), value: isActive)
+        }
+        .frame(width: size, height: size)
+        .scaleEffect(isPressed ? 0.91 : 1.0)
+        .animation(.spring(response: 0.16, dampingFraction: 0.52), value: isPressed)
+        .help(help)
+        .onTapGesture {
+            isPressed = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { isPressed = false }
+            onTap()
+        }
+    }
+}
+
 struct MainWindowView: View {
     @ObservedObject private var uiState = AppUIState.shared
 
@@ -26,48 +67,20 @@ struct MainWindowView: View {
             // ── Main panel ────────────────────────────────────────────
             VStack(spacing: 0) {
                 // Header
-                HStack {
+                HStack(spacing: 8) {
                     Spacer()
-
-                    Button {
+                    HeaderButton(icon: "rectangle.split.2x1", iconSize: 12, isActive: uiState.showZone2, help: "Zone 2") {
                         withAnimation(.easeInOut(duration: 0.25)) { uiState.toggleZone2() }
-                    } label: {
-                        Image(systemName: "rectangle.split.2x1")
-                            .font(.system(size: 14))
-                            .foregroundColor(uiState.showZone2 ? .accentColor : .secondary)
                     }
-                    .buttonStyle(.plain)
-                    .help("Zone 2")
-
-                    Button {
+                    HeaderButton(icon: "music.note.list", iconSize: 13, isActive: uiState.showMusicCenter, help: "Music Center") {
                         withAnimation(.easeInOut(duration: 0.25)) { uiState.toggleMusicCenter() }
-                    } label: {
-                        Image(systemName: "music.note.list")
-                            .font(.system(size: 15))
-                            .foregroundColor(uiState.showMusicCenter ? .accentColor : .secondary)
                     }
-                    .buttonStyle(.plain)
-                    .help("Music Center")
-
-                    Button {
+                    HeaderButton(icon: "slider.horizontal.3", iconSize: 13, isActive: uiState.showAudio, help: "Audio Settings") {
                         withAnimation(.easeInOut(duration: 0.25)) { uiState.toggleAudio() }
-                    } label: {
-                        Image(systemName: "slider.horizontal.3")
-                            .font(.system(size: 15))
-                            .foregroundColor(uiState.showAudio ? .accentColor : .secondary)
                     }
-                    .buttonStyle(.plain)
-                    .help("Audio Settings")
-
-                    Button {
+                    HeaderButton(icon: "gearshape", iconSize: 14, isActive: uiState.showSettings, help: "Settings") {
                         withAnimation(.easeInOut(duration: 0.25)) { uiState.toggleSettings() }
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .font(.system(size: 16))
-                            .foregroundColor(uiState.showSettings ? .accentColor : .secondary)
                     }
-                    .buttonStyle(.plain)
-                    .help("Settings")
                 }
                 .padding(.horizontal)
                 .frame(height: headerHeight)

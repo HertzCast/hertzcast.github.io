@@ -124,8 +124,7 @@ struct PopoverView: View {
     private var volumeLabel: String {
         guard api.powerState == .on else { return "– – –" }
         if api.isMuted { return "MUTED" }
-        if let db = api.actualVolumeDb { return String(format: "%.1f dB", db) }
-        return "VOL \(api.volume)"
+        return String(format: "%.1f", Double(api.volume) * 0.5)
     }
 
     private var artPlaceholder: some View {

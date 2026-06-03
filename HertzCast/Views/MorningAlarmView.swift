@@ -76,10 +76,12 @@ struct MorningAlarmView: View {
                             set: { settings.morningVolume = Int($0) }
                         ), in: 1...Double(HertzAPIService.shared.maxVolume), step: 1)
                         .frame(width: 100)
-                        Text("\(settings.morningVolume)")
+                        // Show the Yamaha numeric scale (raw × 0.5 → 0.5…80.5),
+                        // matching the main volume knob. morningVolume stays raw for the API.
+                        Text(String(format: "%.1f", Double(settings.morningVolume) * 0.5))
                             .font(.system(size: 11, design: .monospaced))
                             .foregroundColor(.secondary)
-                            .frame(width: 28, alignment: .trailing)
+                            .frame(width: 34, alignment: .trailing)
                     }
 
                     if settings.morningSource == "net_radio" {

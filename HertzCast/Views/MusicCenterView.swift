@@ -27,25 +27,36 @@ struct MusicCenterView: View {
                     } else {
                         VStack(spacing: 0) {
                             ForEach(api.recentItems) { item in
-                                Button {
-                                    api.recallRecentItem(item.id + 1)
-                                } label: {
-                                    HStack(spacing: 10) {
-                                        Image(systemName: "dot.radiowaves.left.and.right")
-                                            .font(.system(size: 13))
-                                            .foregroundColor(Color(white: 0.5))
-                                            .frame(width: 20)
-                                        Text(item.text)
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.primary)
-                                            .lineLimit(1)
-                                        Spacer()
+                                HStack(spacing: 10) {
+                                    Button {
+                                        api.recallRecentItem(item.id + 1)
+                                    } label: {
+                                        HStack(spacing: 10) {
+                                            Image(systemName: "dot.radiowaves.left.and.right")
+                                                .font(.system(size: 13))
+                                                .foregroundColor(Color(white: 0.5))
+                                                .frame(width: 20)
+                                            Text(item.text)
+                                                .font(.system(size: 12))
+                                                .foregroundColor(.primary)
+                                                .lineLimit(1)
+                                            Spacer()
+                                        }
+                                        .padding(.vertical, 7)
+                                        .contentShape(Rectangle())
                                     }
-                                    .padding(.horizontal, 4)
-                                    .padding(.vertical, 7)
-                                    .contentShape(Rectangle())
+                                    .buttonStyle(.plain)
+                                    let isFav = api.presetSlot(for: item.text) != nil
+                                    Button {
+                                        api.saveRecentToPreset(item)
+                                    } label: {
+                                        Image(systemName: isFav ? "heart.fill" : "heart")
+                                            .font(.system(size: 13))
+                                            .foregroundColor(isFav ? settings.schemeColor : Color(white: 0.4))
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                                .padding(.horizontal, 4)
                                 if item.id != api.recentItems.last?.id {
                                     Divider().padding(.leading, 34)
                                 }
@@ -73,29 +84,46 @@ struct MusicCenterView: View {
                     } else {
                         VStack(spacing: 0) {
                             ForEach(api.presetItems) { preset in
-                                Button {
-                                    api.playPresetInMusicCenter(preset.id)
-                                } label: {
-                                    HStack(spacing: 10) {
-                                        ZStack {
-                                            Circle()
-                                                .fill(settings.schemeColor.opacity(0.15))
-                                                .frame(width: 20, height: 20)
-                                            Text("\(preset.id)")
-                                                .font(.system(size: 9, weight: .bold, design: .monospaced))
-                                                .foregroundColor(settings.schemeColor)
+                                HStack(spacing: 10) {
+                                    Button {
+                                        api.playPresetInMusicCenter(preset.id)
+                                    } label: {
+                                        HStack(spacing: 10) {
+                                            ZStack {
+                                                Circle()
+                                                    .fill(settings.schemeColor.opacity(0.15))
+                                                    .frame(width: 20, height: 20)
+                                                Text("\(preset.id)")
+                                                    .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                                    .foregroundColor(settings.schemeColor)
+                                            }
+                                            Text(preset.text)
+                                                .font(.system(size: 12))
+                                                .foregroundColor(.primary)
+                                                .lineLimit(1)
+                                            Spacer()
                                         }
-                                        Text(preset.text)
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.primary)
-                                            .lineLimit(1)
-                                        Spacer()
+                                        .padding(.vertical, 7)
+                                        .contentShape(Rectangle())
                                     }
-                                    .padding(.horizontal, 4)
-                                    .padding(.vertical, 7)
-                                    .contentShape(Rectangle())
+                                    .buttonStyle(.plain)
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            api.clearPreset(preset.id)
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                    }
+                                    Button {
+                                        api.clearPreset(preset.id)
+                                    } label: {
+                                        Image(systemName: "heart.fill")
+                                            .font(.system(size: 13))
+                                            .foregroundColor(settings.schemeColor)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+                                .padding(.horizontal, 4)
                                 if preset.id != api.presetItems.last?.id {
                                     Divider().padding(.leading, 34)
                                 }
@@ -115,7 +143,7 @@ struct MusicCenterView: View {
                            api.currentInput.lowercased() == "net_radio" &&
                            !api.nowPlayingTrack.isEmpty {
                             Menu {
-                                ForEach(1...5, id: \.self) { slot in
+                                ForEach(1...api.totalPresetSlots, id: \.self) { slot in
                                     Button("Save to Preset \(slot)") {
                                         api.storePreset(slot)
                                     }

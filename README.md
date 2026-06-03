@@ -7,21 +7,21 @@
 A native macOS application for controlling **Yamaha AV receivers** over your local network — no third-party apps, no subscriptions, no cloud.
 
 <p align="center">
-  <img src="screenshots/UI 1.png" width="220" alt="Main UI — Spotify Now Playing" />
-  &nbsp;&nbsp;
-  <img src="screenshots/UI 2.png" width="360" alt="Music Center" />
-</p>
-
-<p align="center">
-  <img src="screenshots/UI 3.png" width="360" alt="Audio Settings" />
-  &nbsp;&nbsp;
-  <img src="screenshots/UI 4.png" width="360" alt="Settings" />
-</p>
-
-<p align="center">
-  <img src="screenshots/UI 5.png" width="360" alt="Zone 2" />
+  <img src="screenshots/UI 1.png" height="450" alt="Main UI — Net Radio Now Playing" />
   &nbsp;&nbsp;
   <img src="screenshots/UI 6.png" width="300" alt="Menu Bar Mini Player" />
+</p>
+
+<p align="center">
+  <img src="screenshots/UI 3.png" height="450" alt="Audio Settings" />
+  &nbsp;&nbsp;
+  <img src="screenshots/UI 4.png" height="450" alt="Settings" />
+</p>
+
+<p align="center">
+  <img src="screenshots/UI 5.png" height="450" alt="Zone 2" />
+  &nbsp;&nbsp;
+  <img src="screenshots/UI 2.png" height="450" alt="Music Center" />
 </p>
 
 ---
@@ -38,6 +38,7 @@ A retro LCD-style panel shows real-time receiver state, rendered in **Bitcount P
 - **Now Playing** — for Spotify and Net Radio inputs, shows the current track title and artist/station name, refreshed every 8 seconds; long names scroll continuously in a right-to-left marquee loop
 - **Album art** — thumbnail with accent-colored border displayed for Spotify (always) and Net Radio (when the station provides it); gracefully falls back to text-only layout when unavailable
 - **Mute indicator** — highlighted in red when active
+- **Favourites heart** — while on Net Radio, a heart icon appears below the station name. Filled accent-colored heart = station is already saved in presets; empty heart = not yet saved. Tap to add or remove from Favourites instantly; shows an alert if all preset slots are full
 
 ### Power Control
 A compact metallic circular button controls the receiver power state:
@@ -52,6 +53,14 @@ A rotating metallic knob controls the receiver volume:
 - **Drag** to set volume — circular arc gesture; the knob rotates and the receiver volume changes in real time while dragging, with a single API call per integer step
 - **Scroll wheel** — mouse wheel and trackpad both work
 - **Keyboard shortcuts** — `Cmd ↑` / `Cmd ↓` volume up/down, `M` toggle mute, `P` play/pause, `S` shuffle, `R` repeat cycle, `Cmd ←` previous, `Cmd →` next
+
+### Header Controls
+Four metallic circular buttons in the window header — same design as the Mute button — give access to side panels:
+- **Zone 2** (`⊟`) — open/close the Zone 2 panel
+- **Music Center** (`♫`) — open/close the Music Center panel
+- **Audio Settings** (`≡`) — open/close the Audio Settings panel
+- **Settings** (`⚙`) — open/close the Settings panel
+- Active panel button glows with the accent color; inactive buttons show white
 
 ### Mute
 A dedicated Mute button sits next to the volume knob:
@@ -88,8 +97,8 @@ A dedicated panel (accessible via the sliders icon in the header) exposes the fu
 
 ### Music Center
 A panel (accessible via the music notes icon in the header) that slides in from the right, mutually exclusive with the other panels:
-- **Recent Played** — list of recently played Net Radio stations; tap to recall and play
-- **Favourites** — the 5 receiver presets with accent-colored number badges; tap to switch to Net Radio and recall preset
+- **Recent Played** — list of recently played Net Radio stations; tap to recall and play. Each station has a heart button: tap to save it as a preset (plays it first, then stores), or remove it if already saved
+- **Favourites** — receiver presets with accent-colored number badges (slot count read dynamically from the receiver — no fixed limit); tap to switch to Net Radio and recall preset. Each favourite has a filled heart; tap to remove it from presets. Right-click for a Delete context menu
 - **Net Radio Browser** — full hierarchical browser for the Net Radio directory tree; navigate folders, search within any level, and tap a station to play instantly
 - **Sources** — all available receiver inputs with SF Symbol icons; active source highlighted; tap to switch
 - **Visible Sources** — toggle individual inputs on/off; hidden sources disappear from the Sources list
@@ -176,6 +185,8 @@ The app communicates with the receiver using the **Yamaha Extended Control (YXC)
 | `GET /main/setDialogueLevel?value={n}` | Dialogue level (0–3) |
 | `GET /main/getSignalInfo` | Current audio format and sample rate |
 | `GET /netusb/recallPreset?zone=main&num={n}` | Recall Net Radio preset |
+| `GET /netusb/storePreset?zone=main&num={n}` | Save currently playing station to preset slot |
+| `GET /netusb/clearPreset?num={n}` | Remove a preset slot (delete from Favourites) |
 | `GET /netusb/getPresetInfo` | Fetch saved presets (Favourites) |
 | `GET /netusb/getRecentInfo` | Recently played Net Radio stations |
 | `GET /netusb/recallRecentItem?num={n}&zone=main` | Play a recent station |
@@ -249,7 +260,7 @@ No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple framew
 
 ### 1. Install
 
-1. Download `HertzCast-v2.0.0.dmg` from [Releases](../../releases)
+1. Download `HertzCast-v2.1.0.dmg` from [Releases](../../releases)
 2. Open the DMG and drag **HertzCast** to your Applications folder
 3. Launch **HertzCast** — it will appear in your menu bar as a small icon
 
@@ -378,6 +389,7 @@ All settings stored in **App Group UserDefaults** (`group.com.danbutuc.hertzcast
 | `mc_recent_expanded` | Bool | Music Center — Recent Played section open/closed |
 | `mc_favourites_expanded` | Bool | Music Center — Favourites section open/closed |
 | `mc_sources_expanded` | Bool | Music Center — Sources section open/closed |
+| `mc_browse_expanded` | Bool | Music Center — Browse Net Radio section open/closed |
 
 ---
 

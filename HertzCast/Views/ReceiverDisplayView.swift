@@ -138,6 +138,7 @@ final class MarqueeNSView: NSView {
 struct ReceiverDisplayView: View {
     @ObservedObject private var api = HertzAPIService.shared
     @ObservedObject private var settings = HertzSettings.shared
+    @State private var showReplaceAlert = false
 
     private var inputLabel: String {
         api.powerState == .on && !api.currentInput.isEmpty
@@ -148,8 +149,7 @@ struct ReceiverDisplayView: View {
     private var volumeLabel: String {
         guard api.powerState == .on else { return "– – –" }
         if api.isMuted { return "MUTE" }
-        if let db = api.actualVolumeDb { return String(format: "%.1f dB", db) }
-        return "VOL \(api.volume)"
+        return String(format: "%.1f", Double(api.volume) * 0.5)
     }
 
     private var soundLabel: String {
@@ -191,7 +191,7 @@ struct ReceiverDisplayView: View {
     private var isOn: Bool { api.powerState == .on }
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             // Panel background
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color(red: 0.04, green: 0.06, blue: 0.05))
@@ -228,15 +228,13 @@ struct ReceiverDisplayView: View {
                     .padding(.bottom, 2)
                     .opacity(signalLabel.isEmpty ? 0 : 1)
 
-                // ── Row 1: INPUT label + status dots ────────────────────
-                HStack {
-                    Text("INPUT")
-                        .font(.system(size: 7, weight: .medium, design: .monospaced))
-                        .foregroundColor(lcdDim).tracking(1.5)
-                    Spacer()
-                }
-                .padding(.horizontal, 10)
-                .padding(.top, 8)
+                // ── Row 1: INPUT label ───────────────────────────────────
+                Text("INPUT")
+                    .font(.system(size: 7, weight: .medium, design: .monospaced))
+                    .foregroundColor(lcdDim).tracking(1.5)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 10)
+                    .padding(.top, 8)
 
                 // ── Row 2: Input name (big) ──────────────────────────────
                 Text(inputLabel)
@@ -254,8 +252,8 @@ struct ReceiverDisplayView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
 
-                HStack(alignment: .center, spacing: 8) {
-                    VStack(alignment: .leading, spacing: 2) {
+                HStack(alignment: .top, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 1) {
                         MarqueeText(
                             text: api.nowPlayingTrack.isEmpty ? " " : api.nowPlayingTrack,
                             fontName: "BitcountPropSingle-ExtraLight",
@@ -275,6 +273,17 @@ struct ReceiverDisplayView: View {
                         )
                         .frame(height: 18)
                         .opacity(hasNowPlaying && !api.nowPlayingArtist.isEmpty ? 1 : 0)
+
+                        if hasNowPlaying && api.currentInput.lowercased() == "net_radio" {
+                            Button { handleFavouriteTap() } label: {
+                                Image(systemName: api.currentPresetSlot != nil ? "heart.fill" : "heart")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(api.currentPresetSlot != nil ? lcdGreen : Color(white: 0.5))
+                                    .shadow(color: api.currentPresetSlot != nil ? lcdGlow : .clear, radius: 4)
+                            }
+                            .buttonStyle(.plain)
+                            .frame(height: 14)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -365,6 +374,21 @@ struct ReceiverDisplayView: View {
         .frame(height: 168)
         .animation(.easeInOut(duration: 0.3), value: api.powerState)
         .animation(.easeInOut(duration: 0.2), value: api.currentInput)
+        .alert("All presets are used", isPresented: $showReplaceAlert) {
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Right-click a Favourite in Music Center to remove it, then save \"\(api.nowPlayingStationName)\".")
+        }
+    }
+
+    private func handleFavouriteTap() {
+        if let slot = api.currentPresetSlot {
+            api.clearPreset(slot)
+        } else if let freeSlot = api.firstFreePresetSlot {
+            api.storePreset(freeSlot)
+        } else {
+            showReplaceAlert = true
+        }
     }
 
     private var placeholderArt: some View {

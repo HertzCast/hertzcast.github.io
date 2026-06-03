@@ -207,7 +207,7 @@ struct ManualControlsView: View {
                 // Volume knob — centered
                 VolumeKnobView(
                     volume: api.volume,
-                    maxVolume: api.maxVolume > 0 ? api.maxVolume : 100,
+                    maxVolume: api.maxVolume,
                     isDisabled: api.powerState != .on,
                     onCommit: { newVol in api.setVolume(newVol) { _ in } }
                 )
