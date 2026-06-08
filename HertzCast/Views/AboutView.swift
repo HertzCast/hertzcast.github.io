@@ -16,7 +16,7 @@ struct AboutView: View {
                 Text("HertzCast")
                     .font(.title2).bold()
 
-                Text("Version 2.0.0")
+                Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "–")")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
