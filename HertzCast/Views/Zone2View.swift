@@ -17,21 +17,6 @@ struct Zone2View: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
 
-                // ── Power ─────────────────────────────────────────────
-                HStack {
-                    Text("Power")
-                        .foregroundColor(.secondary)
-                    Spacer()
-                    Toggle("", isOn: Binding(
-                        get: { isOn },
-                        set: { api.setZone2Power($0) }
-                    ))
-                    .toggleStyle(.switch)
-                    .labelsHidden()
-                }
-
-                Divider()
-
                 // ── Input ─────────────────────────────────────────────
                 HStack {
                     Text("Input")

@@ -127,7 +127,7 @@ struct IndustrialPowerSwitch: View {
                     .font(.system(size: 8, weight: .black, design: .monospaced))
                     .foregroundColor(settings.schemeColor)
                     .tracking(1)
-                    .shadow(color: settings.schemeMid.opacity(0.8), radius: 5)
+                    .shadow(color: settings.isLight ? .clear : settings.schemeMid.opacity(0.8), radius: 5)
                     .opacity(isOn ? 1 : 0)
             }
             .animation(.easeInOut(duration: 0.15), value: isOn)
@@ -161,30 +161,33 @@ private struct MuteButton: View {
 
     @ObservedObject private var settings = HertzSettings.shared
     @State private var isPressed = false
+    @State private var cachedButtonImage: NSImage = NSImage()
 
     private let size: CGFloat = 40
 
-    private var buttonImage: NSImage {
-        if let url = Bundle.main.url(forResource: "Button", withExtension: "png"),
-           let img = NSImage(contentsOf: url) { return img }
-        return NSImage()
+    private func loadButtonImage() {
+        let name = settings.isLight ? "Button White" : "Button"
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let img = NSImage(contentsOf: url) { cachedButtonImage = img }
     }
 
     var body: some View {
         ZStack {
-            Image(nsImage: buttonImage)
+            Image(nsImage: cachedButtonImage)
                 .resizable()
                 .frame(width: size, height: size)
 
             Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(isMuted ? settings.schemeColor : Color.white)
-                .shadow(color: isMuted ? settings.schemeMid.opacity(0.9) : .clear, radius: 5)
+                .foregroundColor(isMuted ? settings.schemeColor : (settings.isLight ? .black : .white))
+                .shadow(color: isMuted && !settings.isLight ? settings.schemeMid.opacity(0.9) : .clear, radius: 5)
                 .animation(.easeInOut(duration: 0.15), value: isMuted)
         }
         .frame(width: size, height: size)
         .scaleEffect(isPressed ? 0.91 : 1.0)
         .animation(.spring(response: 0.16, dampingFraction: 0.52), value: isPressed)
+        .onAppear { loadButtonImage() }
+        .onChange(of: settings.isLight) { _ in loadButtonImage() }
         .onTapGesture {
             isPressed = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { isPressed = false }
@@ -242,7 +245,7 @@ struct ManualControlsView: View {
                     Spacer()
                     Text("VOLUME")
                         .font(.system(size: 10, weight: .medium, design: .monospaced))
-                        .foregroundColor(Color(white: 0.50))
+                        .foregroundColor(settings.appTextDim)
                         .tracking(1.5)
                         .padding(.bottom, 10)
                 }

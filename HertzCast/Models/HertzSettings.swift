@@ -60,6 +60,10 @@ class HertzSettings: ObservableObject {
     @Published var colorScheme: String {
         didSet { UserDefaults.standard.set(colorScheme, forKey: "color_scheme") }
     }
+    @Published var appTheme: String {
+        didSet { UserDefaults.standard.set(appTheme, forKey: "app_theme") }
+    }
+    var isLight: Bool { appTheme == "light" }
     @Published var hiddenSources: Set<String> {
         didSet { UserDefaults.standard.set(Array(hiddenSources), forKey: "hidden_sources") }
     }
@@ -86,6 +90,7 @@ class HertzSettings: ObservableObject {
         button3Source   = std.string(forKey: "button3_source") ?? "spotify"
         button4Source   = std.string(forKey: "button4_source") ?? "net_radio"
         colorScheme     = std.string(forKey: "color_scheme") ?? "green"
+        appTheme        = std.string(forKey: "app_theme") ?? "dark"
         hiddenSources   = Set(std.array(forKey: "hidden_sources") as? [String] ?? [])
 
         // Migrate IP from any previous app version (standard UserDefaults or old bundle)

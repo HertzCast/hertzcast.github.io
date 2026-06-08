@@ -7,13 +7,14 @@ private struct KeycapButton: View {
     let onTap: () -> Void
 
     @ObservedObject private var settings = HertzSettings.shared
+    @State private var cachedButtonImage: NSImage = NSImage()
 
     private let size: CGFloat = 52
 
-    private var buttonImage: NSImage {
-        if let url = Bundle.main.url(forResource: "Button", withExtension: "png"),
-           let img = NSImage(contentsOf: url) { return img }
-        return NSImage()
+    private func loadButtonImage() {
+        let name = settings.isLight ? "Button White" : "Button"
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let img = NSImage(contentsOf: url) { cachedButtonImage = img }
     }
 
     var body: some View {
@@ -22,7 +23,7 @@ private struct KeycapButton: View {
                 VStack(spacing: 0) {
                     ZStack {
                         // PNG base
-                        Image(nsImage: buttonImage)
+                        Image(nsImage: cachedButtonImage)
                             .resizable()
                             .frame(width: size, height: size)
 
@@ -30,8 +31,8 @@ private struct KeycapButton: View {
                         Text(label)
                             .font(.system(size: label.count > 5 ? 7 : 9,
                                           weight: .bold, design: .monospaced))
-                            .foregroundColor(isActive ? settings.schemeColor : Color.white)
-                            .shadow(color: isActive ? settings.schemeMid.opacity(0.8) : .clear, radius: 4)
+                            .foregroundColor(isActive ? settings.schemeColor : (settings.isLight ? Color(white: 0.15) : Color.white))
+                            .shadow(color: isActive && !settings.isLight ? settings.schemeMid.opacity(0.8) : .clear, radius: 4)
                             .tracking(0.5)
                             .animation(.easeInOut(duration: 0.15), value: isActive)
                     }
@@ -39,17 +40,18 @@ private struct KeycapButton: View {
 
                     // LED indicator
                     ZStack {
-                        if isActive {
+                        if isActive && !settings.isLight {
                             Circle()
                                 .fill(settings.schemeMid.opacity(0.5))
                                 .blur(radius: 4)
                                 .frame(width: 10, height: 10)
                         }
                         Circle()
-                            .fill(isActive ? settings.schemeColor : Color(white: 0.10))
+                            .fill(isActive ? settings.schemeColor : Color(white: settings.isLight ? 0.65 : 0.10))
                             .frame(width: 4, height: 4)
                             .overlay(Circle().stroke(Color(white: 0.22), lineWidth: 0.5))
-                            .shadow(color: isActive ? settings.schemeMid : .clear, radius: 3)
+                            .shadow(color: isActive && !settings.isLight ? settings.schemeMid : .clear,
+                                    radius: isActive && !settings.isLight ? 3 : 0)
                     }
                     .frame(height: 14)
                     .animation(.easeInOut(duration: 0.15), value: isActive)
@@ -57,8 +59,10 @@ private struct KeycapButton: View {
             }
         }
         .buttonStyle(KeycapPressStyle(isDisabled: isDisabled))
-        .shadow(color: .black.opacity(0.75), radius: 8, x: 0, y: 4)
+        .shadow(color: .black.opacity(settings.isLight ? 0.15 : 0.75), radius: settings.isLight ? 4 : 8, x: 0, y: 4)
         .opacity(1.0)
+        .onAppear { loadButtonImage() }
+        .onChange(of: settings.isLight) { _ in loadButtonImage() }
     }
 }
 

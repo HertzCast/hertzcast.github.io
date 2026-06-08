@@ -29,27 +29,31 @@ private struct HeaderButton: View {
 
     private let size: CGFloat = 32
 
-    private var buttonImage: NSImage {
-        if let url = Bundle.main.url(forResource: "Button", withExtension: "png"),
-           let img = NSImage(contentsOf: url) { return img }
-        return NSImage()
+    @State private var cachedButtonImage: NSImage = NSImage()
+
+    private func loadButtonImage() {
+        let name = settings.isLight ? "Button White" : "Button"
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let img = NSImage(contentsOf: url) { cachedButtonImage = img }
     }
 
     var body: some View {
         ZStack {
-            Image(nsImage: buttonImage)
+            Image(nsImage: cachedButtonImage)
                 .resizable()
                 .frame(width: size, height: size)
             Image(systemName: icon)
                 .font(.system(size: iconSize, weight: .semibold))
-                .foregroundColor(isActive ? settings.schemeColor : Color.white.opacity(0.7))
-                .shadow(color: isActive ? settings.schemeMid.opacity(0.9) : .clear, radius: 4)
+                .foregroundColor(isActive ? settings.schemeColor : settings.appText.opacity(0.7))
+                .shadow(color: isActive && !settings.isLight ? settings.schemeMid.opacity(0.9) : .clear, radius: 4)
                 .animation(.easeInOut(duration: 0.15), value: isActive)
         }
         .frame(width: size, height: size)
         .scaleEffect(isPressed ? 0.91 : 1.0)
         .animation(.spring(response: 0.16, dampingFraction: 0.52), value: isPressed)
         .help(help)
+        .onAppear { loadButtonImage() }
+        .onChange(of: settings.isLight) { _ in loadButtonImage() }
         .onTapGesture {
             isPressed = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { isPressed = false }
@@ -60,6 +64,8 @@ private struct HeaderButton: View {
 
 struct MainWindowView: View {
     @ObservedObject private var uiState = AppUIState.shared
+    @ObservedObject private var settings = HertzSettings.shared
+    @ObservedObject private var api = HertzAPIService.shared
 
     var body: some View {
         HStack(spacing: 0) {
@@ -158,6 +164,12 @@ struct MainWindowView: View {
                         Text("Zone 2")
                             .font(.headline)
                         Spacer()
+                        PowerButtonView(
+                            isOn: api.zone2Power == .on,
+                            isDisabled: false,
+                            isBusy: false,
+                            onTap: { api.setZone2Power(api.zone2Power != .on) }
+                        )
                     }
                     .padding(.horizontal)
                     .frame(height: headerHeight)
@@ -191,6 +203,8 @@ struct MainWindowView: View {
             }
         }
         .animation(.easeInOut(duration: 0.25), value: uiState.showSettings || uiState.showAudio || uiState.showMusicCenter || uiState.showZone2)
+        .background(settings.appBackground.ignoresSafeArea())
         .background(WindowConfigurator())
+        .preferredColorScheme(settings.isLight ? .light : .dark)
     }
 }

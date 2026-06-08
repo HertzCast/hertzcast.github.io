@@ -194,29 +194,31 @@ struct ReceiverDisplayView: View {
         ZStack(alignment: .top) {
             // Panel background
             RoundedRectangle(cornerRadius: 8)
-                .fill(Color(red: 0.04, green: 0.06, blue: 0.05))
+                .fill(settings.isLight ? Color(white: 0.949) : Color(red: 0.04, green: 0.06, blue: 0.05))
                 .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color(white: 0.15), lineWidth: 1))
+                    .stroke(settings.isLight ? Color(white: 0.88) : Color(white: 0.15), lineWidth: 1))
 
-            // Scanlines
-            GeometryReader { _ in
-                Canvas { context, size in
-                    var y: CGFloat = 0
-                    while y < size.height {
-                        context.fill(Path(CGRect(x: 0, y: y, width: size.width, height: 1)),
-                                     with: .color(Color.black.opacity(0.12)))
-                        y += 3
+            // Scanlines (doar în Dark mode)
+            if !settings.isLight {
+                GeometryReader { _ in
+                    Canvas { context, size in
+                        var y: CGFloat = 0
+                        while y < size.height {
+                            context.fill(Path(CGRect(x: 0, y: y, width: size.width, height: 1)),
+                                         with: .color(Color.black.opacity(0.12)))
+                            y += 3
+                        }
                     }
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .allowsHitTesting(false)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .allowsHitTesting(false)
             }
 
             VStack(spacing: 0) {
 
                 // ── Row 0: Signal format (always present, opacity-gated) ─
                 Text(signalLabel.isEmpty ? " " : signalLabel)
-                    .font(.custom("BitcountPropSingle-ExtraLight", size: 9))
+                    .font(.custom(lcdFontName, size: 9))
                     .foregroundColor(lcdAmber)
                     .shadow(color: lcdAmberGlow, radius: 2)
                     .tracking(1.2)
@@ -238,7 +240,7 @@ struct ReceiverDisplayView: View {
 
                 // ── Row 2: Input name (big) ──────────────────────────────
                 Text(inputLabel)
-                    .font(.custom("BitcountPropSingle-ExtraLight", size: 22))
+                    .font(.custom(lcdFontName, size: 22))
                     .foregroundColor(isOn ? lcdAmber : lcdDim)
                     .shadow(color: isOn ? lcdAmberGlow : .clear, radius: 4)
                     .tracking(2).lineLimit(1).minimumScaleFactor(0.6)
@@ -256,7 +258,7 @@ struct ReceiverDisplayView: View {
                     VStack(alignment: .leading, spacing: 1) {
                         MarqueeText(
                             text: api.nowPlayingTrack.isEmpty ? " " : api.nowPlayingTrack,
-                            fontName: "BitcountPropSingle-ExtraLight",
+                            fontName: lcdFontName,
                             fontSize: 14,
                             color: lcdGreen,
                             glow: lcdGlow
@@ -266,7 +268,7 @@ struct ReceiverDisplayView: View {
 
                         MarqueeText(
                             text: api.nowPlayingArtist.isEmpty ? " " : api.nowPlayingArtist,
-                            fontName: "BitcountPropSingle-ExtraLight",
+                            fontName: lcdFontName,
                             fontSize: 14,
                             color: lcdAmber,
                             glow: lcdAmberGlow
@@ -322,7 +324,7 @@ struct ReceiverDisplayView: View {
                             .font(.system(size: 7, weight: .medium, design: .monospaced))
                             .foregroundColor(lcdDim).tracking(1.5)
                         Text(volumeLabel)
-                            .font(.custom("BitcountPropSingle-ExtraLight", size: 16))
+                            .font(.custom(lcdFontName, size: 16))
                             .foregroundColor(isOn
                                 ? (api.isMuted ? Color(red: 1.0, green: 0.35, blue: 0.2) : lcdAmber)
                                 : lcdDim)
@@ -353,13 +355,13 @@ struct ReceiverDisplayView: View {
                             .font(.system(size: 7, weight: .medium, design: .monospaced))
                             .foregroundColor(lcdDim).tracking(1.5)
                         Text(soundLabel)
-                            .font(.custom("BitcountPropSingle-ExtraLight", size: 11))
+                            .font(.custom(lcdFontName, size: 11))
                             .foregroundColor(isOn ? lcdAmber : lcdDim)
                             .shadow(color: isOn ? lcdAmberGlow : .clear, radius: 3)
                             .tracking(0.8).lineLimit(1).minimumScaleFactor(0.7)
                         if !decoderLabel.isEmpty {
                             Text(decoderLabel)
-                                .font(.custom("BitcountPropSingle-ExtraLight", size: 9))
+                                .font(.custom(lcdFontName, size: 9))
                                 .foregroundColor(lcdAmber.opacity(0.7))
                                 .shadow(color: lcdAmberGlow, radius: 2)
                                 .tracking(0.5).lineLimit(1)
@@ -369,6 +371,7 @@ struct ReceiverDisplayView: View {
                 .padding(.horizontal, 10)
                 .padding(.bottom, 8)
             }
+
         }
         .frame(maxWidth: .infinity)
         .frame(height: 168)
@@ -401,9 +404,18 @@ struct ReceiverDisplayView: View {
             )
     }
 
+    private var lcdFontName: String {
+        settings.isLight ? "BitcountPropSingle-Regular" : "BitcountPropSingle-ExtraLight"
+    }
     private var lcdGreen:     Color { settings.schemeColor }
     private var lcdGlow:      Color { settings.schemeGlow }
-    private var lcdAmber:     Color { Color(red: 1.00, green: 0.75, blue: 0.10) }
-    private var lcdAmberGlow: Color { Color(red: 1.00, green: 0.65, blue: 0.00).opacity(0.5) }
-    private var lcdDim:       Color { settings.schemeLcdDim }
+    private var lcdAmber:     Color {
+        settings.isLight ? Color(red: 0.72, green: 0.02, blue: 0.02) : Color(red: 1.00, green: 0.75, blue: 0.10)
+    }
+    private var lcdAmberGlow: Color {
+        settings.isLight ? .clear : Color(red: 1.00, green: 0.65, blue: 0.00).opacity(0.5)
+    }
+    private var lcdDim: Color {
+        settings.isLight ? Color(white: 0.22) : settings.schemeLcdDim
+    }
 }

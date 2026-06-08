@@ -1,14 +1,6 @@
 import SwiftUI
 import AppKit
 
-// MARK: - Shared button image
-
-private func buttonNSImage() -> NSImage {
-    if let url = Bundle.main.url(forResource: "Button", withExtension: "png"),
-       let img = NSImage(contentsOf: url) { return img }
-    return NSImage()
-}
-
 // MARK: - MetallicToggleButton
 
 private struct MetallicToggleButton: View {
@@ -18,13 +10,20 @@ private struct MetallicToggleButton: View {
 
     @ObservedObject private var settings = HertzSettings.shared
     @State private var isPressed = false
+    @State private var cachedImage: NSImage = NSImage()
 
     let size: CGFloat
     var fontSize: CGFloat? = nil
 
+    private func loadImage() {
+        let name = settings.isLight ? "Button White" : "Button"
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let img = NSImage(contentsOf: url) { cachedImage = img }
+    }
+
     var body: some View {
         ZStack {
-            Image(nsImage: buttonNSImage())
+            Image(nsImage: cachedImage)
                 .resizable()
                 .frame(width: size, height: size)
 
@@ -33,14 +32,16 @@ private struct MetallicToggleButton: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .tracking(0.4)
-                .foregroundColor(isActive ? settings.schemeColor : .white)
-                .shadow(color: isActive ? settings.schemeMid.opacity(0.9) : .clear, radius: 5)
+                .foregroundColor(isActive ? settings.schemeColor : (settings.isLight ? Color(white: 0.15) : .white))
+                .shadow(color: isActive && !settings.isLight ? settings.schemeMid.opacity(0.9) : .clear, radius: 5)
                 .frame(width: size - 8)
                 .animation(.easeInOut(duration: 0.15), value: isActive)
         }
         .frame(width: size, height: size)
         .scaleEffect(isPressed ? 0.91 : 1.0)
         .animation(.spring(response: 0.16, dampingFraction: 0.52), value: isPressed)
+        .onAppear { loadImage() }
+        .onChange(of: settings.isLight) { _ in loadImage() }
         .onTapGesture {
             isPressed = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { isPressed = false }
@@ -57,10 +58,18 @@ private struct MetallicSlider: View {
     let onRelease: () -> Void
     var onLiveChange: ((Double) -> Void)? = nil
 
+    @ObservedObject private var settings = HertzSettings.shared
     @State private var isDragging = false
     @State private var lastSentInt: Int? = nil
+    @State private var cachedThumbImage: NSImage = NSImage()
     private let thumbSize: CGFloat = 20
     private let trackH: CGFloat = 3
+
+    private func loadThumbImage() {
+        let name = settings.isLight ? "Button White" : "Button"
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let img = NSImage(contentsOf: url) { cachedThumbImage = img }
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -71,18 +80,20 @@ private struct MetallicSlider: View {
             ZStack(alignment: .leading) {
                 // Continuous full-width track
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(Color(white: 0.25))
+                    .fill(Color(white: settings.isLight ? 0.70 : 0.25))
                     .frame(height: trackH)
                     .padding(.horizontal, thumbSize / 2)
 
                 // Thumb on top
-                Image(nsImage: buttonNSImage())
+                Image(nsImage: cachedThumbImage)
                     .resizable()
                     .frame(width: thumbSize, height: thumbSize)
                     .offset(x: thumbX)
                     .scaleEffect(isDragging ? 0.88 : 1.0)
                     .animation(.spring(response: 0.16, dampingFraction: 0.52), value: isDragging)
             }
+            .onAppear { loadThumbImage() }
+            .onChange(of: settings.isLight) { _ in loadThumbImage() }
             .contentShape(Rectangle())
             .highPriorityGesture(
                 DragGesture(minimumDistance: 0)

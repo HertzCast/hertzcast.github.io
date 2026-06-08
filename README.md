@@ -104,10 +104,10 @@ A panel (accessible via the music notes icon in the header) that slides in from 
 - **Visible Sources** — toggle individual inputs on/off; hidden sources disappear from the Sources list
 - All sections are collapsible `DisclosureGroup` menus with persistent open/closed state
 
-### Color Scheme
-Five accent colors in Settings — changes the LCD display, button LEDs, power button, volume knob graduation, and all highlights simultaneously:
-
-🔴 Red &nbsp; 🟠 Orange &nbsp; 🟡 Yellow &nbsp; 🟢 Green &nbsp; 🔵 Blue
+### Theme
+A pill-shaped Moon/Sun toggle in Settings switches between **Dark** and **Light** mode:
+- **Dark mode** — green accent color, phosphor-style LCD, dark surfaces, glowing LEDs
+- **Light mode** — red accent color, bold LCD font, light surfaces, no halos or glows
 
 ### Schedule
 Three schedule controls grouped in a collapsible section in Settings:
@@ -138,7 +138,7 @@ Automatically finds Yamaha receivers on the local network using Bonjour/mDNS:
 
 ### Zone 2
 A dedicated panel (accessible via the zone icon in the header) for controlling a secondary audio zone:
-- **Power** — toggle Zone 2 on/standby independently of the main zone
+- **Power** — On/Standby button in the Zone 2 panel header, same design as the main power button
 - **Input** — switch the Zone 2 input source independently
 - **Volume** — slider + −/+ buttons; displays level in dB
 - **Mute** — toggle Zone 2 mute
@@ -239,7 +239,7 @@ Scheduling is handled by **HertzCastHelper** — a sandboxed background app bund
 | Scheduling | `HertzCastHelper` Login Item via `SMAppService` |
 | Persistence | App Group UserDefaults / AppStorage |
 | Notifications | UserNotifications framework |
-| Fonts | Bitcount Prop Single ExtraLight (OFL) |
+| Fonts | Bitcount Prop Single ExtraLight + Regular (OFL) |
 | Project | XcodeGen (`project.yml`) → `HertzCast.xcodeproj` |
 | Build (dev) | `swiftc` via `scripts/build.sh` |
 | Distribution | DMG (ad-hoc signed) / Mac App Store |
@@ -260,7 +260,7 @@ No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple framew
 
 ### 1. Install
 
-1. Download `HertzCast-v2.1.0.dmg` from [Releases](../../releases)
+1. Download `HertzCast-v2.2.0.dmg` from [Releases](../../releases)
 2. Open the DMG and drag **HertzCast** to your Applications folder
 3. Launch **HertzCast** — it will appear in your menu bar as a small icon
 
@@ -283,6 +283,8 @@ HertzCast communicates with your Yamaha receiver over your local Wi-Fi or Ethern
 ### 3. You're Ready
 
 Once connected, the menu bar icon turns **green** when your receiver is on and **red** when it is in standby. Click the icon to open the full controller.
+
+The theme defaults to **Dark** mode. Switch to **Light** mode anytime via the Moon/Sun toggle in Settings.
 
 ---
 
@@ -329,7 +331,8 @@ HertzCast/
 │   ├── AudioSettingsView.swift     # Audio panel: tone, subwoofer, features, sound program
 │   ├── MusicCenterView.swift       # Music Center: recent played, favourites, net radio browser, sources
 │   ├── NetRadioBrowserView.swift   # Hierarchical Net Radio browser with search
-│   ├── SettingsView.swift          # IP + color scheme + source buttons + schedule + sleep timer + reboot
+│   ├── ThemeToggleView.swift       # Moon/Sun pill toggle for Dark/Light mode
+│   ├── SettingsView.swift          # IP + theme toggle + source buttons + schedule + sleep timer + reboot
 │   ├── MorningAlarmView.swift      # Morning alarm controls incl. wake volume
 │   ├── AutoOffView.swift           # Auto off controls
 │   ├── Zone2View.swift             # Zone 2: power, input, volume, mute
@@ -371,7 +374,7 @@ All settings stored in **App Group UserDefaults** (`group.com.danbutuc.hertzcast
 | Key | Type | Description |
 |-----|------|-------------|
 | `yamaha_ip` | String | Receiver IP address |
-| `color_scheme` | String | UI accent color (`red`, `orange`, `yellow`, `green`, `blue`) |
+| `app_theme` | String | UI theme (`dark` or `light`) |
 | `button1_source` … `button4_source` | String | Input source for each scene button |
 | `last_input` | String | Last active input — restored on manual power on |
 | `morning_enabled` | Bool | Morning alarm toggle |

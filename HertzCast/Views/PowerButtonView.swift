@@ -9,18 +9,19 @@ struct PowerButtonView: View {
 
     @ObservedObject private var settings = HertzSettings.shared
     @State private var isPressed = false
+    @State private var cachedButtonImage: NSImage = NSImage()
 
     private let size: CGFloat = 40
 
-    private var buttonImage: NSImage {
-        if let url = Bundle.main.url(forResource: "Button", withExtension: "png"),
-           let img = NSImage(contentsOf: url) { return img }
-        return NSImage()
+    private func loadButtonImage() {
+        let name = settings.isLight ? "Button White" : "Button"
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let img = NSImage(contentsOf: url) { cachedButtonImage = img }
     }
 
     var body: some View {
         ZStack {
-            Image(nsImage: buttonImage)
+            Image(nsImage: cachedButtonImage)
                 .resizable()
                 .frame(width: size, height: size)
 
@@ -29,14 +30,16 @@ struct PowerButtonView: View {
             } else {
                 Image(systemName: "power")
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
-                    .shadow(color: isOn ? settings.schemeMid.opacity(0.9) : .clear, radius: 5)
+                    .foregroundColor(isOn ? settings.schemeColor : (settings.isLight ? .black : .white))
+                    .shadow(color: isOn && !settings.isLight ? settings.schemeMid.opacity(0.9) : .clear, radius: 5)
                     .animation(.easeInOut(duration: 0.15), value: isOn)
             }
         }
         .frame(width: size, height: size)
         .scaleEffect(isPressed ? 0.91 : 1.0)
         .animation(.spring(response: 0.16, dampingFraction: 0.52), value: isPressed)
+        .onAppear { loadButtonImage() }
+        .onChange(of: settings.isLight) { _ in loadButtonImage() }
         .onTapGesture {
             guard !isDisabled && !isBusy else { return }
             isPressed = true

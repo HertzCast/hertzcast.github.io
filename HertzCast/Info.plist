@@ -35,6 +35,8 @@
 	</dict>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSQuitAlwaysKeepsWindows</key>
+	<false/>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>HertzCast sends notifications when your receiver is turned on or off by a schedule.</string>
 	<key>SMPrivilegedExecutables</key>

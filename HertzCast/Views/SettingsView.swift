@@ -1,5 +1,56 @@
 import SwiftUI
 
+private struct SettingsActionButton: View {
+    let label: String
+    var systemImage: String? = nil
+    var isDestructive: Bool = false
+    let onTap: () -> Void
+
+    @ObservedObject private var settings = HertzSettings.shared
+    @State private var isPressed = false
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 6) {
+                if let img = systemImage {
+                    Image(systemName: img).font(.system(size: 11, weight: .medium))
+                }
+                Text(label)
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .tracking(0.3)
+            }
+            .foregroundColor(
+                isDestructive
+                    ? Color(red: 1.0, green: 0.30, blue: 0.25)
+                    : (settings.isLight ? Color(white: 0.15) : .white)
+            )
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(LinearGradient(
+                        colors: settings.isLight
+                            ? [Color(white: 0.98), Color(white: 0.93)]
+                            : [Color(white: 0.17), Color(white: 0.11)],
+                        startPoint: .top, endPoint: .bottom
+                    ))
+                    .overlay(RoundedRectangle(cornerRadius: 5)
+                        .stroke(
+                            settings.isLight ? Color(white: 0.82) : Color(white: 0.25),
+                            lineWidth: 0.5
+                        ))
+            )
+        }
+        .buttonStyle(.plain)
+        .scaleEffect(isPressed ? 0.97 : 1.0)
+        .animation(.spring(response: 0.16, dampingFraction: 0.52), value: isPressed)
+        .simultaneousGesture(DragGesture(minimumDistance: 0)
+            .onChanged { _ in isPressed = true }
+            .onEnded   { _ in isPressed = false }
+        )
+    }
+}
+
 struct SettingsView: View {
     @ObservedObject private var settings = HertzSettings.shared
     @ObservedObject private var api = HertzAPIService.shared
@@ -20,28 +71,12 @@ struct SettingsView: View {
 
                 Divider()
 
-                // ── Appearance ───────────────────────────────────────────
+                // ── Theme ────────────────────────────────────────────────
                 HStack {
-                    Text("Color Scheme")
+                    Text("Theme")
                         .foregroundColor(.secondary)
                     Spacer()
-                    HStack(spacing: 8) {
-                        ForEach([
-                            ("red",    Color(red: 1.00, green: 0.30, blue: 0.25)),
-                            ("orange", Color(red: 1.00, green: 0.60, blue: 0.10)),
-                            ("yellow", Color(red: 1.00, green: 0.95, blue: 0.15)),
-                            ("green",  Color(red: 0.18, green: 0.95, blue: 0.55)),
-                            ("blue",   Color(red: 0.25, green: 0.75, blue: 1.00)),
-                        ], id: \.0) { scheme, color in
-                            let selected = settings.colorScheme == scheme
-                            Circle()
-                                .fill(color)
-                                .frame(width: 16, height: 16)
-                                .overlay(Circle().stroke(Color.white.opacity(selected ? 0.9 : 0), lineWidth: 2))
-                                .shadow(color: selected ? color.opacity(0.8) : .clear, radius: 4)
-                                .onTapGesture { settings.colorScheme = scheme }
-                        }
-                    }
+                    ThemeToggleView()
                 }
 
                 Divider()
@@ -116,12 +151,11 @@ struct SettingsView: View {
 
                 // ── Reboot ───────────────────────────────────────────────
                 Divider()
-                HStack {
-                    Spacer()
-                    Button("Reboot Receiver") { showRebootConfirm = true }
-                        .foregroundColor(.red)
-                        .font(.system(size: 12))
-                }
+                SettingsActionButton(
+                    label: "Reboot Receiver",
+                    systemImage: "arrow.clockwise",
+                    isDestructive: true
+                ) { showRebootConfirm = true }
                 .padding(.top, 8)
                 .alert("Reboot Receiver?", isPresented: $showRebootConfirm) {
                     Button("Reboot", role: .destructive) { api.reboot() }
@@ -155,14 +189,10 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             } else {
-                Button {
-                    discovery.startScan()
-                } label: {
-                    Label("Discover Receiver", systemImage: "antenna.radiowaves.left.and.right")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
+                SettingsActionButton(
+                    label: "Discover Receiver",
+                    systemImage: "antenna.radiowaves.left.and.right"
+                ) { discovery.startScan() }
             }
 
             // ── Discovery results ─────────────────────────────────────────
@@ -182,8 +212,22 @@ struct SettingsView: View {
                         .onSubmit { commit() }
                         .focused($focused)
                     Button("Save") { commit() }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.small)
+                        .buttonStyle(.plain)
+                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .foregroundColor(settings.isLight ? Color(white: 0.15) : .white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(LinearGradient(
+                                    colors: settings.isLight
+                                        ? [Color(white: 0.98), Color(white: 0.93)]
+                                        : [Color(white: 0.17), Color(white: 0.11)],
+                                    startPoint: .top, endPoint: .bottom
+                                ))
+                                .overlay(RoundedRectangle(cornerRadius: 5)
+                                    .stroke(settings.isLight ? Color(white: 0.82) : Color(white: 0.25), lineWidth: 0.5))
+                        )
                         .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 if !settings.ipAddress.isEmpty {
@@ -243,6 +287,7 @@ struct SettingsView: View {
     }
 
     private func commit() {
+
         settings.ipAddress = draft.trimmingCharacters(in: .whitespaces)
         focused = false
         showManual = false

@@ -20,8 +20,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         setupPopover()
         observePowerState()
         HertzAPIService.shared.startPolling()
-        // asyncAfter gives SwiftUI time to finish its default menu setup before we replace it
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { self.buildMainMenu() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            if let window = NSApp.windows.first(where: { $0.canBecomeMain }) {
+                window.center()
+                window.makeKeyAndOrderFront(nil)
+            }
+            NSApp.activate(ignoringOtherApps: true)
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

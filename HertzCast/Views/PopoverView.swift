@@ -33,7 +33,7 @@ struct PopoverView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     MarqueeText(
                         text: trackTitle,
-                        fontName: "BitcountPropSingle-ExtraLight",
+                        fontName: popoverFontName,
                         fontSize: 13,
                         color: settings.schemeColor,
                         glow: settings.schemeGlow
@@ -43,10 +43,14 @@ struct PopoverView: View {
 
                     MarqueeText(
                         text: artistName.isEmpty ? " " : artistName,
-                        fontName: "BitcountPropSingle-ExtraLight",
+                        fontName: popoverFontName,
                         fontSize: 12,
-                        color: Color(red: 1.00, green: 0.75, blue: 0.10),
-                        glow: Color(red: 1.00, green: 0.65, blue: 0.00).opacity(0.5)
+                        color: settings.isLight
+                            ? Color(red: 0.72, green: 0.02, blue: 0.02)
+                            : Color(red: 1.00, green: 0.75, blue: 0.10),
+                        glow: settings.isLight
+                            ? Color.clear
+                            : Color(red: 1.00, green: 0.65, blue: 0.00).opacity(0.5)
                     )
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(height: 15)
@@ -107,6 +111,8 @@ struct PopoverView: View {
             .padding(.vertical, 10)
         }
         .frame(width: 280)
+        .background(settings.appBackground)
+        .preferredColorScheme(settings.isLight ? .light : .dark)
     }
 
     private var trackTitle: String {
@@ -127,13 +133,17 @@ struct PopoverView: View {
         return String(format: "%.1f", Double(api.volume) * 0.5)
     }
 
+    private var popoverFontName: String {
+        settings.isLight ? "BitcountPropSingle-Regular" : "BitcountPropSingle-ExtraLight"
+    }
+
     private var artPlaceholder: some View {
         RoundedRectangle(cornerRadius: 5)
-            .fill(Color(white: 0.12))
+            .fill(settings.appSurface)
             .overlay(
                 Image(systemName: "music.note")
                     .font(.system(size: 14))
-                    .foregroundColor(Color(white: 0.35))
+                    .foregroundColor(settings.appTextDim)
             )
     }
 }

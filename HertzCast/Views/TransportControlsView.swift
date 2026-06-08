@@ -23,7 +23,7 @@ struct TransportButton: View {
     private let h: CGFloat = 15
 
     private var iconColor: Color {
-        isActive ? settings.schemeColor : .white
+        isActive ? settings.schemeColor : (settings.isLight ? Color(white: 0.15) : .white)
     }
 
     var body: some View {
@@ -32,7 +32,7 @@ struct TransportButton: View {
 
                 // Housing
                 KeycapShape(cornerRadius: 3, cutSize: 4)
-                    .fill(Color(white: 0.05))
+                    .fill(Color(white: settings.isLight ? 0.88 : 0.05))
                     .frame(width: width, height: h + 2)
                     .offset(y: 1)
 
@@ -40,21 +40,25 @@ struct TransportButton: View {
                 ZStack {
                     KeycapShape(cornerRadius: 3, cutSize: 4)
                         .fill(LinearGradient(
-                            colors: [Color(white: 0.17), Color(white: 0.11)],
+                            colors: settings.isLight
+                                ? [Color(white: 0.98), Color(white: 0.93)]
+                                : [Color(white: 0.17), Color(white: 0.11)],
                             startPoint: .top, endPoint: .bottom
                         ))
 
                     KeycapShape(cornerRadius: 3, cutSize: 4)
                         .stroke(
                             LinearGradient(
-                                colors: [Color(white: 0.30), Color(white: 0.08)],
+                                colors: settings.isLight
+                                    ? [Color(white: 1.0), Color(white: 0.82)]
+                                    : [Color(white: 0.30), Color(white: 0.08)],
                                 startPoint: .topLeading, endPoint: .bottomTrailing
                             ),
                             lineWidth: 0.5
                         )
 
                     LinearGradient(
-                        colors: [Color(white: 1.0, opacity: 0.06), .clear],
+                        colors: [Color(white: settings.isLight ? 0.0 : 1.0, opacity: 0.06), .clear],
                         startPoint: .top, endPoint: .init(x: 0.5, y: 0.4)
                     )
                     .clipShape(KeycapShape(cornerRadius: 3, cutSize: 4))
@@ -80,7 +84,7 @@ struct TransportButton: View {
             .frame(width: width, height: h + 4)
         }
         .buttonStyle(KeycapPressStyle(isDisabled: isDisabled))
-        .shadow(color: .black.opacity(0.6), radius: 3, x: 0, y: 2)
+        .shadow(color: .black.opacity(settings.isLight ? 0.07 : 0.6), radius: 3, x: 0, y: 2)
         .opacity(isDisabled ? 0.35 : 1)
     }
 }

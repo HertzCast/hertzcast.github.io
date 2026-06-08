@@ -23,11 +23,12 @@ struct VolumeKnobView: View {
     @State private var isDragging = false
     @State private var dragStartFraction: Double = 0
     @State private var dragStartAngle: Double = 0
-    @State private var dragVolume: Int? = nil   // local visual state during drag
+    @State private var dragVolume: Int? = nil
     @State private var lastSentDragVolume: Int? = nil
     @State private var scrollAccumulator: CGFloat = 0
     @State private var scrollMonitor: Any? = nil
     @State private var volRef = VolumeRef(0)
+    @State private var cachedKnobImage: NSImage = NSImage()
 
     private var displayVolume: Int { dragVolume ?? volume }
 
@@ -39,10 +40,10 @@ struct VolumeKnobView: View {
         startAngle + fraction * (endAngle - startAngle)
     }
 
-    private var knobImage: NSImage {
-        if let url = Bundle.main.url(forResource: "Volume", withExtension: "png"),
-           let img = NSImage(contentsOf: url) { return img }
-        return NSImage()
+    private func loadKnobImage() {
+        let name = settings.isLight ? "Volume White" : "Volume"
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let img = NSImage(contentsOf: url) { cachedKnobImage = img }
     }
 
     var body: some View {
@@ -51,7 +52,7 @@ struct VolumeKnobView: View {
 
             // Knob + indicator rotate together
             ZStack {
-                Image(nsImage: knobImage)
+                Image(nsImage: cachedKnobImage)
                     .resizable()
                     .frame(width: size, height: size)
 
@@ -59,7 +60,7 @@ struct VolumeKnobView: View {
                 Circle()
                     .fill(settings.schemeColor)
                     .frame(width: 8, height: 8)
-                    .shadow(color: settings.schemeMid.opacity(0.95), radius: 5)
+                    .shadow(color: settings.isLight ? .clear : settings.schemeMid.opacity(0.95), radius: 5)
                     .offset(y: -(size / 2 - 13))
             }
             .rotationEffect(Angle(degrees: rotationDegrees))
@@ -71,8 +72,10 @@ struct VolumeKnobView: View {
         .gesture(dragGesture)
         .onAppear {
             volRef.value = volume
+            loadKnobImage()
             setupScrollMonitor()
         }
+        .onChange(of: settings.isLight) { _ in loadKnobImage() }
         .onChange(of: volume) { newVal in
             if !isDragging { volRef.value = newVal }
         }
@@ -89,6 +92,7 @@ struct VolumeKnobView: View {
         let innerR = size / 2 + 5.0
         let center = CGPoint(x: totalSize / 2, y: totalSize / 2)
         let litColor = settings.schemeColor
+        let isLightTheme = settings.isLight
 
         return Canvas { ctx, _ in
             for i in 0..<tickCount {
@@ -113,11 +117,14 @@ struct VolumeKnobView: View {
                 if isLit {
                     color = litColor.opacity(isMajor ? 1.0 : 0.75)
                 } else {
-                    color = Color.white.opacity(isMajor ? 0.28 : 0.16)
+                    color = isLightTheme
+                        ? Color.black.opacity(isMajor ? 0.30 : 0.18)
+                        : Color.white.opacity(isMajor ? 0.28 : 0.16)
                 }
                 ctx.stroke(path, with: .color(color), lineWidth: isMajor ? 2.0 : 1.2)
             }
         }
+        .drawingGroup()
         .frame(width: totalSize, height: totalSize)
     }
 
@@ -130,13 +137,13 @@ struct VolumeKnobView: View {
         return ZStack {
             Text("MIN")
                 .font(.system(size: 8, weight: .medium, design: .monospaced))
-                .foregroundColor(Color(white: 0.38))
+                .foregroundColor(settings.appTextDim)
                 .tracking(0.5)
                 .offset(x: CGFloat(sin(minRad)) * labelR,
                         y: -CGFloat(cos(minRad)) * labelR + 4)
             Text("MAX")
                 .font(.system(size: 8, weight: .medium, design: .monospaced))
-                .foregroundColor(Color(white: 0.38))
+                .foregroundColor(settings.appTextDim)
                 .tracking(0.5)
                 .offset(x: CGFloat(sin(maxRad)) * labelR,
                         y: -CGFloat(cos(maxRad)) * labelR + 4)
