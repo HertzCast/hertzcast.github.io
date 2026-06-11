@@ -84,7 +84,7 @@ struct TransportButton: View {
             .frame(width: width, height: h + 4)
         }
         .buttonStyle(KeycapPressStyle(isDisabled: isDisabled))
-        .shadow(color: .black.opacity(settings.isLight ? 0.07 : 0.6), radius: 3, x: 0, y: 2)
+        .shadow(color: .black.opacity(settings.isLight ? 0 : 0.6), radius: 3, x: 0, y: 2)
         .opacity(isDisabled ? 0.35 : 1)
     }
 }

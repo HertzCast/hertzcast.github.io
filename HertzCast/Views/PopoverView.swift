@@ -4,6 +4,9 @@ struct PopoverView: View {
     @ObservedObject private var api      = HertzAPIService.shared
     @ObservedObject private var settings = HertzSettings.shared
 
+    @State private var sliderVolume: Double = 0
+    @State private var isDraggingVolume: Bool = false
+
     private let btnW: CGFloat = 38
 
     var body: some View {
@@ -91,23 +94,40 @@ struct PopoverView: View {
 
             // ── Volume + Mute + Quit ──────────────────────────────────
             HStack(spacing: 6) {
-                Spacer()
-                TransportButton(label: "−", width: btnW,
-                                isDisabled: !api.powerState.isOn) { api.volumeDown() }
+                Image(systemName: "speaker.fill")
+                    .font(.system(size: 11))
+                    .foregroundColor(api.powerState.isOn ? .secondary : .secondary.opacity(0.35))
+                    .frame(width: 14)
+
+                VolumeSlider(
+                    value: $sliderVolume,
+                    range: 0...Double(max(api.maxVolume, 1)),
+                    isDisabled: !api.powerState.isOn,
+                    onEditingChanged: { editing in
+                        isDraggingVolume = editing
+                        if !editing {
+                            api.setVolume(Int(sliderVolume)) { _ in }
+                        }
+                    }
+                )
+                .onChange(of: api.volume) { newVal in
+                    if !isDraggingVolume { sliderVolume = Double(newVal) }
+                }
+                .onAppear { sliderVolume = Double(api.volume) }
+
                 Text(volumeLabel)
                     .font(.system(size: 10, design: .monospaced))
                     .foregroundColor(api.isMuted ? Color(red: 1.0, green: 0.35, blue: 0.2) : .primary)
-                    .frame(minWidth: 64, alignment: .center)
-                TransportButton(label: "+", width: btnW,
-                                isDisabled: !api.powerState.isOn) { api.volumeUp() }
+                    .frame(minWidth: 42, alignment: .center)
+
                 TransportButton(label: "", systemImage: api.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill",
                                 width: btnW, isActive: api.isMuted,
                                 isDisabled: !api.powerState.isOn) { api.toggleMute() }
                 TransportButton(label: "QUIT", width: btnW, isDisabled: false) {
                     NSApplication.shared.terminate(nil)
                 }
-                Spacer()
             }
+            .padding(.horizontal, 10)
             .padding(.vertical, 10)
         }
         .frame(width: 280)
@@ -150,4 +170,71 @@ struct PopoverView: View {
 
 private extension PowerState {
     var isOn: Bool { self == .on }
+}
+
+private struct VolumeSlider: View {
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+    let isDisabled: Bool
+    let onEditingChanged: (Bool) -> Void
+
+    @ObservedObject private var settings = HertzSettings.shared
+    @State private var isDragging = false
+    @State private var thumbImg: NSImage? = nil
+
+    private let thumbSize: CGFloat = 18
+    private let trackHeight: CGFloat = 3
+
+    var body: some View {
+        GeometryReader { geo in
+            let trackWidth = geo.size.width - thumbSize
+            let fraction = (value - range.lowerBound) / (range.upperBound - range.lowerBound)
+            let thumbX = thumbSize / 2 + fraction * trackWidth
+
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color.secondary.opacity(0.2))
+                    .frame(height: trackHeight)
+
+                Capsule()
+                    .fill(settings.schemeColor.opacity(isDisabled ? 0.3 : 0.85))
+                    .frame(width: max(thumbX, 0), height: trackHeight)
+
+                Group {
+                    if let img = thumbImg {
+                        Image(nsImage: img)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    } else {
+                        Circle().fill(Color.white).shadow(radius: 1)
+                    }
+                }
+                .frame(width: thumbSize, height: thumbSize)
+                .offset(x: thumbX - thumbSize / 2)
+                .opacity(isDisabled ? 0.4 : 1)
+            }
+            .frame(height: thumbSize)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { drag in
+                        if !isDragging { isDragging = true; onEditingChanged(true) }
+                        let f = (drag.location.x - thumbSize / 2) / max(trackWidth, 1)
+                        value = (range.lowerBound + max(0, min(1, f)) * (range.upperBound - range.lowerBound)).rounded()
+                    }
+                    .onEnded { _ in isDragging = false; onEditingChanged(false) }
+            )
+            .disabled(isDisabled)
+        }
+        .frame(height: thumbSize)
+        .onAppear { loadThumb() }
+        .onChange(of: settings.isLight) { _ in loadThumb() }
+    }
+
+    private func loadThumb() {
+        let name = settings.isLight ? "Button White" : "Button"
+        if let path = Bundle.main.path(forResource: name, ofType: "png") {
+            thumbImg = NSImage(contentsOfFile: path)
+        }
+    }
 }

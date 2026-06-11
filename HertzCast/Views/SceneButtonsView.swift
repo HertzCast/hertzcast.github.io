@@ -59,7 +59,7 @@ private struct KeycapButton: View {
             }
         }
         .buttonStyle(KeycapPressStyle(isDisabled: isDisabled))
-        .shadow(color: .black.opacity(settings.isLight ? 0.15 : 0.75), radius: settings.isLight ? 4 : 8, x: 0, y: 4)
+        .shadow(color: .black.opacity(settings.isLight ? 0 : 0.75), radius: 8, x: 0, y: 4)
         .opacity(1.0)
         .onAppear { loadButtonImage() }
         .onChange(of: settings.isLight) { _ in loadButtonImage() }

@@ -109,6 +109,12 @@ A pill-shaped Moon/Sun toggle in Settings switches between **Dark** and **Light*
 - **Dark mode** — green accent color, phosphor-style LCD, dark surfaces, glowing LEDs
 - **Light mode** — red accent color, bold LCD font, light surfaces, no halos or glows
 
+<p align="center">
+  <img src="screenshots/UI Dark.png" height="450" alt="Dark Mode" />
+  &nbsp;&nbsp;
+  <img src="screenshots/UI Light.png" height="450" alt="Light Mode" />
+</p>
+
 ### Schedule
 Three schedule controls grouped in a collapsible section in Settings:
 
