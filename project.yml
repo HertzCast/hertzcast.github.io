@@ -6,6 +6,23 @@ options:
   xcodeVersion: "15.0"
   generateEmptyDirectories: true
 
+schemes:
+  HertzCast:
+    build:
+      targets:
+        HertzCast: all
+        HertzCastHelper: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+
 settings:
   base:
     SWIFT_VERSION: "5.9"

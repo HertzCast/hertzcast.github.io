@@ -266,7 +266,7 @@ No external Swift packages. No CocoaPods. No SPM dependencies. Pure Apple framew
 
 ### 1. Install
 
-1. Download `HertzCast-v2.2.0.dmg` from [Releases](../../releases)
+1. Download `HertzCast-v2.2.1.dmg` from [Releases](../../releases)
 2. Open the DMG and drag **HertzCast** to your Applications folder
 3. Launch **HertzCast** — it will appear in your menu bar as a small icon
 

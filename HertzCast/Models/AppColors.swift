@@ -36,8 +36,8 @@ extension HertzSettings {
 
     // MARK: — Theme-aware colors
 
-    var appBackground: Color { isLight ? .white : Color(white: 0.08) }
-    var appSurface: Color    { isLight ? Color(white: 0.96) : Color(white: 0.12) }
+    var appBackground: Color { isLight ? .white : Color(white: 0.12) }
+    var appSurface: Color    { isLight ? Color(white: 0.96) : Color(white: 0.16) }
     var appDivider: Color    { isLight ? Color(white: 0.85) : Color(white: 0.18) }
     var appText: Color       { isLight ? Color(white: 0.10) : .white }
     var appTextDim: Color    { isLight ? Color(white: 0.50) : Color(white: 0.40) }

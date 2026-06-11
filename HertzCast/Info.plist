@@ -39,7 +39,6 @@
 	<false/>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>HertzCast sends notifications when your receiver is turned on or off by a schedule.</string>
-	<key>SMPrivilegedExecutables</key>
-	<dict/>
+
 </dict>
 </plist>
