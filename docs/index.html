@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HertzCast — Yamaha Receiver Control for Mac</title>
+  <meta name="description" content="Full control of your Yamaha AV receiver from your Mac. No subscription, no cloud." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #2ef28c;
+      --green-dim: #1bbd6b;
+      --bg: #0e0e0e;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f0f0f0;
+      --dim: #888;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 24px 60px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      margin-bottom: 28px;
+      box-shadow: 0 0 40px rgba(46, 242, 140, 0.25);
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--dim);
+      margin-top: 10px;
+      max-width: 480px;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 14px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .btn-primary {
+      background: var(--green);
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: #000;
+      color: var(--green);
+      border-radius: 4px;
+      padding: 2px 6px;
+      letter-spacing: 0.05em;
+    }
+
+    section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 0;
+    }
+
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .feature p {
+      font-size: 0.875rem;
+      color: var(--dim);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .req {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-size: 0.9rem;
+      color: var(--dim);
+      text-align: center;
+    }
+
+    .req strong { color: var(--text); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--dim);
+    }
+
+    footer a { color: var(--dim); }
+    footer a:hover { color: var(--text); }
+
+    .accent { color: var(--green); }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="icon.png" alt="HertzCast icon" class="logo" onerror="this.style.display='none'" />
+  <h1>Hertz<span class="accent">Cast</span></h1>
+  <p class="subtitle">Full control of your Yamaha AV receiver from your Mac. No subscription, no cloud.</p>
+  <div class="cta-group">
+    <a class="btn btn-primary" href="https://github.com/theDanButuc/HertzCast/releases/latest">
+      Download <span class="badge">FREE</span>
+    </a>
+    <a class="btn btn-secondary" href="https://github.com/theDanButuc/HertzCast">
+      View on GitHub
+    </a>
+  </div>
+</header>
+
+<section>
+  <h2 class="section-title">Everything you need</h2>
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">📻</div>
+      <h3>Retro LCD Display</h3>
+      <p>Real-time receiver state: input, volume in dB, sound mode, album art, and scrolling track names.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🎚️</div>
+      <h3>Volume Knob</h3>
+      <p>A metallic rotating knob with circular drag gesture or scroll wheel — exactly like the real thing.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🎵</div>
+      <h3>Transport Controls</h3>
+      <p>Play, pause, stop, previous, next, shuffle, repeat. Adapts to the active source automatically.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📡</div>
+      <h3>Net Radio & Favourites</h3>
+      <p>Browse the full Net Radio directory, save favourite stations, and view recently played.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⏰</div>
+      <h3>Schedule</h3>
+      <p>Morning Alarm and Auto Off — power on or standby your receiver automatically on any schedule.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔊</div>
+      <h3>Zone 2</h3>
+      <p>Independent power, input, volume, and mute for a secondary audio zone.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🎛️</div>
+      <h3>Audio Settings</h3>
+      <p>Bass, treble, subwoofer, Pure Direct, Enhancer, sound programs — all from your Mac.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">☰</div>
+      <h3>Menu Bar Mini Player</h3>
+      <p>Quick access to playback and volume from the macOS menu bar without opening the full app.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="req">
+    <strong>Requirements:</strong> macOS 13.0 or later &nbsp;·&nbsp; Yamaha receiver with YXC API support &nbsp;·&nbsp; Same local network
+  </div>
+</section>
+
+<footer>
+  <p>
+    &copy; 2026 HertzCast &nbsp;·&nbsp;
+    <a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="https://github.com/theDanButuc/HertzCast">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>
