@@ -211,20 +211,23 @@
       background: var(--surface);
     }
 
-    .theme-card img {
-      width: 100%;
-      display: block;
-    }
-
     .theme-card-label {
       padding: 14px 18px;
       font-size: 0.85rem;
       font-weight: 600;
       color: var(--dim);
-      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .theme-card-img {
+      width: 100%;
+      height: 480px;
+      object-fit: contain;
+      display: block;
+      background: var(--bg);
     }
 
     .dot {
@@ -254,15 +257,13 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       overflow: hidden;
-    }
-
-    .shot-card img {
-      width: 100%;
-      display: block;
+      display: flex;
+      flex-direction: column;
     }
 
     .shot-card-body {
-      padding: 14px 16px 16px;
+      padding: 16px 16px 14px;
+      border-bottom: 1px solid var(--border);
     }
 
     .shot-card-body h3 {
@@ -274,6 +275,14 @@
     .shot-card-body p {
       font-size: 0.8rem;
       color: var(--dim);
+    }
+
+    .shot-card-img {
+      width: 100%;
+      height: 300px;
+      object-fit: contain;
+      display: block;
+      background: var(--bg);
     }
 
     /* ── FEATURES GRID ── */
@@ -389,16 +398,16 @@
     <p class="section-sub">Switch between green phosphor and clean red accent with a single toggle. Both themes are fully polished.</p>
     <div class="theme-split">
       <div class="theme-card">
-        <img src="ui-dark.png" alt="Dark theme" />
         <div class="theme-card-label">
           <span class="dot dot-green"></span> Dark — green phosphor
         </div>
+        <img class="theme-card-img" src="ui-dark.png" alt="Dark theme" />
       </div>
       <div class="theme-card">
-        <img src="ui-light.png" alt="Light theme" />
         <div class="theme-card-label">
           <span class="dot dot-red"></span> Light — red accent
         </div>
+        <img class="theme-card-img" src="ui-light.png" alt="Light theme" />
       </div>
     </div>
   </div>
@@ -414,46 +423,46 @@
     <p class="section-sub">From volume and source switching to Net Radio browsing and audio tuning — HertzCast covers it all.</p>
     <div class="shot-grid">
       <div class="shot-card">
-        <img src="ui-1.png" alt="Main player view" />
         <div class="shot-card-body">
           <h3>Retro LCD Display</h3>
           <p>Input, volume in dB, sound mode, album art, scrolling track names.</p>
         </div>
+        <img class="shot-card-img" src="ui-1.png" alt="Main player view" />
       </div>
       <div class="shot-card">
-        <img src="ui-2.png" alt="Volume and transport" />
         <div class="shot-card-body">
           <h3>Volume Knob</h3>
           <p>Metallic rotating knob — drag in a circle or use the scroll wheel.</p>
         </div>
+        <img class="shot-card-img" src="ui-2.png" alt="Volume and transport" />
       </div>
       <div class="shot-card">
-        <img src="ui-3.png" alt="Music Center" />
         <div class="shot-card-body">
           <h3>Music Center</h3>
           <p>Browse Net Radio, manage favourites, view recently played stations.</p>
         </div>
+        <img class="shot-card-img" src="ui-3.png" alt="Music Center" />
       </div>
       <div class="shot-card">
-        <img src="ui-4.png" alt="Audio settings" />
         <div class="shot-card-body">
           <h3>Audio Settings</h3>
           <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
         </div>
+        <img class="shot-card-img" src="ui-4.png" alt="Audio settings" />
       </div>
       <div class="shot-card">
-        <img src="ui-5.png" alt="Schedule" />
         <div class="shot-card-body">
           <h3>Schedule</h3>
           <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
         </div>
+        <img class="shot-card-img" src="ui-5.png" alt="Schedule" />
       </div>
       <div class="shot-card">
-        <img src="ui-6.png" alt="Zone 2 and mini player" />
         <div class="shot-card-body">
           <h3>Zone 2 & Mini Player</h3>
           <p>Secondary zone control and quick access from the menu bar.</p>
         </div>
+        <img class="shot-card-img" src="ui-6.png" alt="Zone 2 and mini player" />
       </div>
     </div>
   </div>
