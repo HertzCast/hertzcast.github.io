@@ -10,10 +10,8 @@
 
     :root {
       --green: #2ef28c;
-      --green-dim: rgba(46,242,140,0.15);
       --bg: #0c0c0c;
       --surface: #161616;
-      --surface2: #1e1e1e;
       --border: #2c2c2c;
       --text: #f0f0f0;
       --dim: #888;
@@ -28,7 +26,7 @@
       line-height: 1.6;
     }
 
-    /* ── NAV ── */
+    /* NAV */
     nav {
       position: sticky;
       top: 0;
@@ -37,7 +35,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 14px 32px;
-      background: rgba(12,12,12,0.85);
+      background: rgba(12,12,12,0.9);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
@@ -54,62 +52,39 @@
 
     .nav-brand img { width: 28px; height: 28px; border-radius: 6px; }
 
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+
     nav a.nav-link {
       color: var(--dim);
       text-decoration: none;
       font-size: 0.9rem;
-      transition: color 0.15s;
     }
     nav a.nav-link:hover { color: var(--text); }
 
-    .nav-links { display: flex; gap: 24px; align-items: center; }
-
-    .btn {
+    .btn-nav {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 22px;
-      border-radius: 9px;
+      padding: 9px 20px;
+      border-radius: 8px;
       font-size: 0.9rem;
       font-weight: 600;
       text-decoration: none;
-      transition: opacity 0.15s, transform 0.1s;
-      cursor: pointer;
-    }
-    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-
-    .btn-primary { background: var(--green); color: #000; }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
+      background: var(--green);
+      color: #000;
     }
 
-    /* ── HERO ── */
+    @media (max-width: 600px) { .nav-links { display: none; } }
+
+    /* HERO */
     .hero {
       text-align: center;
-      padding: 100px 24px 60px;
-      max-width: 860px;
+      padding: 100px 24px 80px;
+      max-width: 760px;
       margin: 0 auto;
     }
 
-    .hero-eyebrow {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--green);
-      background: var(--green-dim);
-      border: 1px solid rgba(46,242,140,0.3);
-      border-radius: 20px;
-      padding: 4px 14px;
-      margin-bottom: 24px;
-    }
-
     .hero h1 {
-      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
       font-weight: 800;
       letter-spacing: -1px;
       line-height: 1.1;
@@ -119,58 +94,61 @@
     .hero h1 span { color: var(--green); }
 
     .hero-sub {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       color: var(--dim);
-      max-width: 520px;
+      max-width: 500px;
       margin: 0 auto 36px;
     }
 
-    .cta-row {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
+    .appstore-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 0.85rem;
+      color: var(--dim);
     }
 
+    .appstore-badge strong { color: var(--text); font-size: 1rem; }
+
     .req-note {
+      margin-top: 20px;
       font-size: 0.8rem;
       color: var(--dim);
     }
 
-    /* ── HERO SCREENSHOT ── */
+    /* HERO IMAGE */
     .hero-shot {
-      margin: 60px auto 0;
-      max-width: 700px;
+      display: flex;
+      justify-content: center;
       padding: 0 24px;
-      position: relative;
-    }
-
-    .hero-shot::before {
-      content: '';
-      position: absolute;
-      inset: -40px -40px 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(46,242,140,0.12) 0%, transparent 70%);
-      pointer-events: none;
+      margin-bottom: 100px;
     }
 
     .hero-shot img {
-      width: 100%;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+      height: 560px;
+      width: auto;
+      max-width: 100%;
+      border-radius: 14px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.7);
     }
 
-    /* ── SECTION ── */
+    /* DIVIDER */
+    hr { border: none; border-top: 1px solid var(--border); }
+
+    /* SECTIONS */
     section { padding: 100px 24px; }
 
     .section-inner {
-      max-width: 1000px;
+      max-width: 1060px;
       margin: 0 auto;
     }
 
     .section-label {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -179,113 +157,104 @@
     }
 
     .section-title {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
       font-weight: 700;
       letter-spacing: -0.5px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .section-sub {
       font-size: 1rem;
       color: var(--dim);
-      max-width: 540px;
+      max-width: 520px;
       margin-bottom: 52px;
     }
 
-    /* ── THEME SPLIT ── */
+    /* WHY BLOCK */
+    .why-block {
+      max-width: 680px;
+    }
+
+    .why-p {
+      font-size: 1.05rem;
+      color: #bbb;
+      margin-bottom: 20px;
+      line-height: 1.75;
+    }
+
+    .why-p:last-child { margin-bottom: 0; }
+
+    /* THEME SPLIT */
     .theme-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
     }
 
-    @media (max-width: 680px) {
-      .theme-split { grid-template-columns: 1fr; }
-      nav .nav-links { display: none; }
+    .theme-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
     }
 
-    .theme-card {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .theme-card-label {
-      padding: 14px 18px;
+    .theme-label {
       font-size: 0.85rem;
       font-weight: 600;
       color: var(--dim);
-      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .theme-card-img {
-      width: 100%;
-      height: 480px;
-      object-fit: contain;
-      display: block;
-      background: var(--bg);
-    }
-
-    .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      display: inline-block;
-    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
     .dot-green { background: var(--green); }
     .dot-red { background: #ff4f42; }
 
-    /* ── SCREENSHOT GRID ── */
+    .theme-item img {
+      display: block;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+    }
+
+    /* SCREENSHOT GRID */
     .shot-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px 40px;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    @media (max-width: 760px) {
-      .shot-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 500px) {
-      .shot-grid { grid-template-columns: 1fr; }
-    }
-
-    .shot-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
+    .shot-item {
       display: flex;
       flex-direction: column;
+      gap: 10px;
     }
 
-    .shot-card-body {
-      padding: 16px 16px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .shot-card-body h3 {
-      font-size: 0.9rem;
+    .shot-item h3 {
+      font-size: 0.95rem;
       font-weight: 600;
-      margin-bottom: 4px;
     }
 
-    .shot-card-body p {
-      font-size: 0.8rem;
+    .shot-item p {
+      font-size: 0.82rem;
       color: var(--dim);
+      max-width: 300px;
     }
 
-    .shot-card-img {
-      width: 100%;
-      height: 300px;
-      object-fit: contain;
+    .shot-item img {
       display: block;
-      background: var(--bg);
+      align-self: flex-start;
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     }
 
-    /* ── FEATURES GRID ── */
+    /* FEATURES GRID */
     .features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -297,26 +266,16 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
-      transition: border-color 0.2s;
     }
-    .feature:hover { border-color: rgba(46,242,140,0.3); }
 
-    .feature-icon { font-size: 1.5rem; margin-bottom: 10px; }
+    .feature-icon { font-size: 1.4rem; margin-bottom: 10px; }
     .feature h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
     .feature p { font-size: 0.8rem; color: var(--dim); }
 
-    /* ── DIVIDER ── */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0;
-    }
-
-    /* ── BOTTOM CTA ── */
+    /* BOTTOM CTA */
     .bottom-cta {
       text-align: center;
       padding: 100px 24px;
-      background: radial-gradient(ellipse at 50% 0%, rgba(46,242,140,0.07) 0%, transparent 60%);
     }
 
     .bottom-cta h2 {
@@ -325,13 +284,9 @@
       margin-bottom: 14px;
     }
 
-    .bottom-cta p {
-      color: var(--dim);
-      margin-bottom: 36px;
-      font-size: 1rem;
-    }
+    .bottom-cta p { color: var(--dim); margin-bottom: 36px; }
 
-    /* ── FOOTER ── */
+    /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
       padding: 28px 32px;
@@ -358,37 +313,53 @@
     HertzCast
   </a>
   <div class="nav-links">
-    <a class="nav-link" href="#features">Features</a>
     <a class="nav-link" href="#screenshots">Screenshots</a>
-    <a class="nav-link" href="https://github.com/theDanButuc/HertzCast">GitHub</a>
-    <a class="btn btn-primary" href="https://github.com/theDanButuc/HertzCast/releases/latest">Download</a>
+    <a class="nav-link" href="#features">Features</a>
+    <a class="btn-nav" href="#">Coming to App Store</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow">macOS Menu Bar App</div>
   <h1>Your Yamaha receiver,<br /><span>fully controlled</span> from your Mac</h1>
   <p class="hero-sub">
     Retro LCD display, metallic volume knob, transport controls, Net Radio favourites,
     scheduling — all over your local network. No subscription, no cloud.
   </p>
-  <div class="cta-row">
-    <a class="btn btn-primary" href="https://github.com/theDanButuc/HertzCast/releases/latest">
-      ↓ Download Free
-    </a>
-    <a class="btn btn-ghost" href="https://github.com/theDanButuc/HertzCast">
-      View on GitHub
-    </a>
+  <div class="appstore-badge">
+    <strong>Coming to Mac App Store</strong> &nbsp;·&nbsp; macOS 13.0+
   </div>
-  <p class="req-note">macOS 13.0+ · Yamaha receiver with YXC API</p>
+  <p class="req-note">Yamaha receiver with YXC API on the same local network</p>
 </div>
 
 <div class="hero-shot">
   <img src="ui-dark.png" alt="HertzCast — Dark theme" />
 </div>
 
-<hr class="divider" style="margin-top: 100px;" />
+<hr />
+
+<!-- WHY -->
+<section>
+  <div class="section-inner">
+    <div class="why-block">
+      <div class="why-text">
+        <div class="section-label">Why HertzCast</div>
+        <h2 class="section-title">Your receiver is right there.<br />Your phone shouldn't be.</h2>
+        <p class="why-p">
+          HertzCast puts your Yamaha receiver on your Mac — a full retro-style interface with a
+          real rotating volume knob, transport controls, Net Radio browsing, audio settings, and a
+          mini player in the menu bar for when you don't even want to open the app.
+          Everything your receiver can do, available from your keyboard.
+        </p>
+        <p class="why-p">
+          No subscription. No cloud. No account. Just your Mac and your receiver on the same Wi-Fi.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr />
 
 <!-- THEME -->
 <section id="screenshots">
@@ -397,23 +368,19 @@
     <h2 class="section-title">Dark mode or Light mode</h2>
     <p class="section-sub">Switch between green phosphor and clean red accent with a single toggle. Both themes are fully polished.</p>
     <div class="theme-split">
-      <div class="theme-card">
-        <div class="theme-card-label">
-          <span class="dot dot-green"></span> Dark — green phosphor
-        </div>
-        <img class="theme-card-img" src="ui-dark.png" alt="Dark theme" />
+      <div class="theme-item">
+        <div class="theme-label"><span class="dot dot-green"></span> Dark — green phosphor</div>
+        <img src="ui-dark.png" height="450" alt="Dark theme" />
       </div>
-      <div class="theme-card">
-        <div class="theme-card-label">
-          <span class="dot dot-red"></span> Light — red accent
-        </div>
-        <img class="theme-card-img" src="ui-light.png" alt="Light theme" />
+      <div class="theme-item">
+        <div class="theme-label"><span class="dot dot-red"></span> Light — red accent</div>
+        <img src="ui-light.png" height="450" alt="Light theme" />
       </div>
     </div>
   </div>
 </section>
 
-<hr class="divider" />
+<hr />
 
 <!-- SCREENSHOT GRID -->
 <section>
@@ -422,60 +389,48 @@
     <h2 class="section-title">Everything in one place</h2>
     <p class="section-sub">From volume and source switching to Net Radio browsing and audio tuning — HertzCast covers it all.</p>
     <div class="shot-grid">
-      <div class="shot-card">
-        <div class="shot-card-body">
-          <h3>Retro LCD Display</h3>
-          <p>Input, volume in dB, sound mode, album art, scrolling track names.</p>
-        </div>
-        <img class="shot-card-img" src="ui-1.png" alt="Main player view" />
+      <div class="shot-item">
+        <h3>Retro LCD Display</h3>
+        <p>Input, volume in dB, sound mode, album art, scrolling track names.</p>
+        <img src="ui-1.png" height="450" alt="Main player view" />
       </div>
-      <div class="shot-card">
-        <div class="shot-card-body">
-          <h3>Volume Knob</h3>
-          <p>Metallic rotating knob — drag in a circle or use the scroll wheel.</p>
-        </div>
-        <img class="shot-card-img" src="ui-2.png" alt="Volume and transport" />
+      <div class="shot-item">
+        <h3>Volume Knob</h3>
+        <p>Metallic rotating knob — drag in a circle or use the scroll wheel.</p>
+        <img src="ui-2.png" height="450" alt="Volume and transport" />
       </div>
-      <div class="shot-card">
-        <div class="shot-card-body">
-          <h3>Music Center</h3>
-          <p>Browse Net Radio, manage favourites, view recently played stations.</p>
-        </div>
-        <img class="shot-card-img" src="ui-3.png" alt="Music Center" />
+      <div class="shot-item">
+        <h3>Music Center</h3>
+        <p>Browse Net Radio, manage favourites, view recently played stations.</p>
+        <img src="ui-3.png" height="450" alt="Music Center" />
       </div>
-      <div class="shot-card">
-        <div class="shot-card-body">
-          <h3>Audio Settings</h3>
-          <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
-        </div>
-        <img class="shot-card-img" src="ui-4.png" alt="Audio settings" />
+      <div class="shot-item">
+        <h3>Audio Settings</h3>
+        <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
+        <img src="ui-4.png" height="450" alt="Audio settings" />
       </div>
-      <div class="shot-card">
-        <div class="shot-card-body">
-          <h3>Schedule</h3>
-          <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
-        </div>
-        <img class="shot-card-img" src="ui-5.png" alt="Schedule" />
+      <div class="shot-item">
+        <h3>Schedule</h3>
+        <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
+        <img src="ui-5.png" height="450" alt="Schedule" />
       </div>
-      <div class="shot-card">
-        <div class="shot-card-body">
-          <h3>Zone 2 & Mini Player</h3>
-          <p>Secondary zone control and quick access from the menu bar.</p>
-        </div>
-        <img class="shot-card-img" src="ui-6.png" alt="Zone 2 and mini player" />
+      <div class="shot-item">
+        <h3>Zone 2 & Mini Player</h3>
+        <p>Secondary zone control and quick access from the menu bar.</p>
+        <img src="ui-6.png" width="300" alt="Zone 2 and mini player" />
       </div>
     </div>
   </div>
 </section>
 
-<hr class="divider" />
+<hr />
 
 <!-- FEATURES -->
 <section id="features">
   <div class="section-inner">
     <div class="section-label">Features</div>
     <h2 class="section-title">Built for your receiver</h2>
-    <p class="section-sub">Every feature maps to something real your Yamaha can do — no fluff, no filler.</p>
+    <p class="section-sub">Every feature maps to something real your Yamaha can do.</p>
     <div class="features">
       <div class="feature">
         <div class="feature-icon">📻</div>
@@ -521,21 +476,15 @@
   </div>
 </section>
 
-<hr class="divider" />
+<hr />
 
 <!-- BOTTOM CTA -->
 <div class="bottom-cta">
   <h2>Take control of your receiver</h2>
-  <p>Free to download. No account needed. Works entirely on your local network.</p>
-  <div class="cta-row">
-    <a class="btn btn-primary" href="https://github.com/theDanButuc/HertzCast/releases/latest">
-      ↓ Download HertzCast
-    </a>
-    <a class="btn btn-ghost" href="https://github.com/theDanButuc/HertzCast">
-      GitHub
-    </a>
+  <p>Works entirely on your local network. No account needed.</p>
+  <div class="appstore-badge">
+    <strong>Coming to Mac App Store</strong> &nbsp;·&nbsp; macOS 13 Ventura or later
   </div>
-  <p class="req-note" style="margin-top:16px;">macOS 13 Ventura or later · Yamaha receiver with YXC API on the same local network</p>
 </div>
 
 <!-- FOOTER -->
@@ -543,8 +492,7 @@
   <span>&copy; 2026 HertzCast</span>
   <div class="footer-links">
     <a href="privacy.html">Privacy Policy</a>
-    <a href="https://github.com/theDanButuc/HertzCast/issues">Support</a>
-    <a href="https://github.com/theDanButuc/HertzCast">GitHub</a>
+    <a href="mailto:danbutuc@gmail.com">Support</a>
   </div>
 </footer>
 
