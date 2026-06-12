@@ -4,241 +4,539 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HertzCast — Yamaha Receiver Control for Mac</title>
-  <meta name="description" content="Full control of your Yamaha AV receiver from your Mac. No subscription, no cloud." />
+  <meta name="description" content="Full control of your Yamaha AV receiver from your Mac. Retro LCD display, volume knob, schedule, Net Radio favourites — no subscription, no cloud." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --green: #2ef28c;
-      --green-dim: #1bbd6b;
-      --bg: #0e0e0e;
-      --surface: #1a1a1a;
-      --border: #2a2a2a;
+      --green-dim: rgba(46,242,140,0.15);
+      --bg: #0c0c0c;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2c2c2c;
       --text: #f0f0f0;
       --dim: #888;
     }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
     }
 
-    header {
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      padding: 80px 24px 60px;
-      text-align: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      background: rgba(12,12,12,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .logo {
-      width: 96px;
-      height: 96px;
-      border-radius: 22px;
-      margin-bottom: 28px;
-      box-shadow: 0 0 40px rgba(46, 242, 140, 0.25);
-    }
-
-    h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    .subtitle {
-      font-size: 1.2rem;
-      color: var(--dim);
-      margin-top: 10px;
-      max-width: 480px;
-    }
-
-    .cta-group {
+    .nav-brand {
       display: flex;
-      gap: 14px;
-      margin-top: 36px;
-      flex-wrap: wrap;
-      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      color: var(--text);
     }
+
+    .nav-brand img { width: 28px; height: 28px; border-radius: 6px; }
+
+    nav a.nav-link {
+      color: var(--dim);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.15s;
+    }
+    nav a.nav-link:hover { color: var(--text); }
+
+    .nav-links { display: flex; gap: 24px; align-items: center; }
 
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 13px 26px;
-      border-radius: 10px;
-      font-size: 1rem;
+      padding: 10px 22px;
+      border-radius: 9px;
+      font-size: 0.9rem;
       font-weight: 600;
       text-decoration: none;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s, transform 0.1s;
+      cursor: pointer;
     }
-    .btn:hover { opacity: 0.85; }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
 
-    .btn-primary {
-      background: var(--green);
-      color: #000;
-    }
-
-    .btn-secondary {
-      background: var(--surface);
+    .btn-primary { background: var(--green); color: #000; }
+    .btn-ghost {
+      background: transparent;
       color: var(--text);
       border: 1px solid var(--border);
     }
 
-    .badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: #000;
-      color: var(--green);
-      border-radius: 4px;
-      padding: 2px 6px;
-      letter-spacing: 0.05em;
-    }
-
-    section {
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 60px;
       max-width: 860px;
       margin: 0 auto;
-      padding: 0 24px 80px;
     }
 
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: var(--green-dim);
+      border: 1px solid rgba(46,242,140,0.3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span { color: var(--green); }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--dim);
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .req-note {
+      font-size: 0.8rem;
+      color: var(--dim);
+    }
+
+    /* ── HERO SCREENSHOT ── */
+    .hero-shot {
+      margin: 60px auto 0;
+      max-width: 700px;
+      padding: 0 24px;
+      position: relative;
+    }
+
+    .hero-shot::before {
+      content: '';
+      position: absolute;
+      inset: -40px -40px 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(46,242,140,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-shot img {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    /* ── SECTION ── */
+    section { padding: 100px 24px; }
+
+    .section-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--dim);
+      max-width: 540px;
+      margin-bottom: 52px;
+    }
+
+    /* ── THEME SPLIT ── */
+    .theme-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 680px) {
+      .theme-split { grid-template-columns: 1fr; }
+      nav .nav-links { display: none; }
+    }
+
+    .theme-card {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .theme-card img {
+      width: 100%;
+      display: block;
+    }
+
+    .theme-card-label {
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dim);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-green { background: var(--green); }
+    .dot-red { background: #ff4f42; }
+
+    /* ── SCREENSHOT GRID ── */
+    .shot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 760px) {
+      .shot-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .shot-grid { grid-template-columns: 1fr; }
+    }
+
+    .shot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .shot-card img {
+      width: 100%;
+      display: block;
+    }
+
+    .shot-card-body {
+      padding: 14px 16px 16px;
+    }
+
+    .shot-card-body h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .shot-card-body p {
+      font-size: 0.8rem;
+      color: var(--dim);
+    }
+
+    /* ── FEATURES GRID ── */
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-top: 0;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
     }
 
     .feature {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 22px;
+      padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .feature:hover { border-color: rgba(46,242,140,0.3); }
+
+    .feature-icon { font-size: 1.5rem; margin-bottom: 10px; }
+    .feature h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
+    .feature p { font-size: 0.8rem; color: var(--dim); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
     }
 
-    .feature-icon {
-      font-size: 1.6rem;
-      margin-bottom: 10px;
+    /* ── BOTTOM CTA ── */
+    .bottom-cta {
+      text-align: center;
+      padding: 100px 24px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(46,242,140,0.07) 0%, transparent 60%);
     }
 
-    .feature h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .feature p {
-      font-size: 0.875rem;
-      color: var(--dim);
-    }
-
-    .section-title {
-      font-size: 1.5rem;
+    .bottom-cta h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
       font-weight: 700;
-      margin-bottom: 24px;
-      text-align: center;
+      margin-bottom: 14px;
     }
 
-    .req {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 24px;
-      font-size: 0.9rem;
+    .bottom-cta p {
       color: var(--dim);
-      text-align: center;
+      margin-bottom: 36px;
+      font-size: 1rem;
     }
 
-    .req strong { color: var(--text); }
-
+    /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 28px 24px;
-      text-align: center;
-      font-size: 0.85rem;
+      padding: 28px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.82rem;
       color: var(--dim);
     }
 
-    footer a { color: var(--dim); }
+    footer a { color: var(--dim); text-decoration: none; }
     footer a:hover { color: var(--text); }
-
-    .accent { color: var(--green); }
+    .footer-links { display: flex; gap: 20px; }
   </style>
 </head>
 <body>
 
-<header>
-  <img src="icon.png" alt="HertzCast icon" class="logo" onerror="this.style.display='none'" />
-  <h1>Hertz<span class="accent">Cast</span></h1>
-  <p class="subtitle">Full control of your Yamaha AV receiver from your Mac. No subscription, no cloud.</p>
-  <div class="cta-group">
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <img src="icon.png" alt="HertzCast" />
+    HertzCast
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#features">Features</a>
+    <a class="nav-link" href="#screenshots">Screenshots</a>
+    <a class="nav-link" href="https://github.com/theDanButuc/HertzCast">GitHub</a>
+    <a class="btn btn-primary" href="https://github.com/theDanButuc/HertzCast/releases/latest">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">macOS Menu Bar App</div>
+  <h1>Your Yamaha receiver,<br /><span>fully controlled</span> from your Mac</h1>
+  <p class="hero-sub">
+    Retro LCD display, metallic volume knob, transport controls, Net Radio favourites,
+    scheduling — all over your local network. No subscription, no cloud.
+  </p>
+  <div class="cta-row">
     <a class="btn btn-primary" href="https://github.com/theDanButuc/HertzCast/releases/latest">
-      Download <span class="badge">FREE</span>
+      ↓ Download Free
     </a>
-    <a class="btn btn-secondary" href="https://github.com/theDanButuc/HertzCast">
+    <a class="btn btn-ghost" href="https://github.com/theDanButuc/HertzCast">
       View on GitHub
     </a>
   </div>
-</header>
+  <p class="req-note">macOS 13.0+ · Yamaha receiver with YXC API</p>
+</div>
 
-<section>
-  <h2 class="section-title">Everything you need</h2>
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon">📻</div>
-      <h3>Retro LCD Display</h3>
-      <p>Real-time receiver state: input, volume in dB, sound mode, album art, and scrolling track names.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🎚️</div>
-      <h3>Volume Knob</h3>
-      <p>A metallic rotating knob with circular drag gesture or scroll wheel — exactly like the real thing.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🎵</div>
-      <h3>Transport Controls</h3>
-      <p>Play, pause, stop, previous, next, shuffle, repeat. Adapts to the active source automatically.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📡</div>
-      <h3>Net Radio & Favourites</h3>
-      <p>Browse the full Net Radio directory, save favourite stations, and view recently played.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">⏰</div>
-      <h3>Schedule</h3>
-      <p>Morning Alarm and Auto Off — power on or standby your receiver automatically on any schedule.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🔊</div>
-      <h3>Zone 2</h3>
-      <p>Independent power, input, volume, and mute for a secondary audio zone.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🎛️</div>
-      <h3>Audio Settings</h3>
-      <p>Bass, treble, subwoofer, Pure Direct, Enhancer, sound programs — all from your Mac.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">☰</div>
-      <h3>Menu Bar Mini Player</h3>
-      <p>Quick access to playback and volume from the macOS menu bar without opening the full app.</p>
+<div class="hero-shot">
+  <img src="ui-dark.png" alt="HertzCast — Dark theme" />
+</div>
+
+<hr class="divider" style="margin-top: 100px;" />
+
+<!-- THEME -->
+<section id="screenshots">
+  <div class="section-inner">
+    <div class="section-label">Theme</div>
+    <h2 class="section-title">Dark mode or Light mode</h2>
+    <p class="section-sub">Switch between green phosphor and clean red accent with a single toggle. Both themes are fully polished.</p>
+    <div class="theme-split">
+      <div class="theme-card">
+        <img src="ui-dark.png" alt="Dark theme" />
+        <div class="theme-card-label">
+          <span class="dot dot-green"></span> Dark — green phosphor
+        </div>
+      </div>
+      <div class="theme-card">
+        <img src="ui-light.png" alt="Light theme" />
+        <div class="theme-card-label">
+          <span class="dot dot-red"></span> Light — red accent
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
+<hr class="divider" />
+
+<!-- SCREENSHOT GRID -->
 <section>
-  <div class="req">
-    <strong>Requirements:</strong> macOS 13.0 or later &nbsp;·&nbsp; Yamaha receiver with YXC API support &nbsp;·&nbsp; Same local network
+  <div class="section-inner">
+    <div class="section-label">Interface</div>
+    <h2 class="section-title">Everything in one place</h2>
+    <p class="section-sub">From volume and source switching to Net Radio browsing and audio tuning — HertzCast covers it all.</p>
+    <div class="shot-grid">
+      <div class="shot-card">
+        <img src="ui-1.png" alt="Main player view" />
+        <div class="shot-card-body">
+          <h3>Retro LCD Display</h3>
+          <p>Input, volume in dB, sound mode, album art, scrolling track names.</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="ui-2.png" alt="Volume and transport" />
+        <div class="shot-card-body">
+          <h3>Volume Knob</h3>
+          <p>Metallic rotating knob — drag in a circle or use the scroll wheel.</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="ui-3.png" alt="Music Center" />
+        <div class="shot-card-body">
+          <h3>Music Center</h3>
+          <p>Browse Net Radio, manage favourites, view recently played stations.</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="ui-4.png" alt="Audio settings" />
+        <div class="shot-card-body">
+          <h3>Audio Settings</h3>
+          <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="ui-5.png" alt="Schedule" />
+        <div class="shot-card-body">
+          <h3>Schedule</h3>
+          <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="ui-6.png" alt="Zone 2 and mini player" />
+        <div class="shot-card-body">
+          <h3>Zone 2 & Mini Player</h3>
+          <p>Secondary zone control and quick access from the menu bar.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
+<hr class="divider" />
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Built for your receiver</h2>
+    <p class="section-sub">Every feature maps to something real your Yamaha can do — no fluff, no filler.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">📻</div>
+        <h3>LCD Display</h3>
+        <p>Real-time state: input, volume, sound mode, album art, scrolling track names.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎚️</div>
+        <h3>Volume Knob</h3>
+        <p>Circular drag or scroll wheel. Exactly like the real thing.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎵</div>
+        <h3>Transport Controls</h3>
+        <p>Play, pause, stop, skip, shuffle, repeat. Adapts to the active source.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📡</div>
+        <h3>Net Radio & Favourites</h3>
+        <p>Browse the full directory, save favourites, view recently played.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⏰</div>
+        <h3>Scheduling</h3>
+        <p>Morning Alarm, Auto Off, and Sleep Timer — fully automated.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔊</div>
+        <h3>Zone 2</h3>
+        <p>Independent power, input, volume and mute for a second audio zone.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎛️</div>
+        <h3>Audio Tuning</h3>
+        <p>Bass, treble, subwoofer, Pure Direct, Enhancer, full sound programs.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">☰</div>
+        <h3>Menu Bar Mini Player</h3>
+        <p>Playback and volume from the menu bar — no need to open the app.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- BOTTOM CTA -->
+<div class="bottom-cta">
+  <h2>Take control of your receiver</h2>
+  <p>Free to download. No account needed. Works entirely on your local network.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="https://github.com/theDanButuc/HertzCast/releases/latest">
+      ↓ Download HertzCast
+    </a>
+    <a class="btn btn-ghost" href="https://github.com/theDanButuc/HertzCast">
+      GitHub
+    </a>
+  </div>
+  <p class="req-note" style="margin-top:16px;">macOS 13 Ventura or later · Yamaha receiver with YXC API on the same local network</p>
+</div>
+
+<!-- FOOTER -->
 <footer>
-  <p>
-    &copy; 2026 HertzCast &nbsp;·&nbsp;
-    <a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+  <span>&copy; 2026 HertzCast</span>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="https://github.com/theDanButuc/HertzCast/issues">Support</a>
     <a href="https://github.com/theDanButuc/HertzCast">GitHub</a>
-  </p>
+  </div>
 </footer>
 
 </body>
