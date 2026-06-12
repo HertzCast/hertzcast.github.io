@@ -78,7 +78,7 @@
     /* HERO */
     .hero {
       text-align: center;
-      padding: 100px 24px 80px;
+      padding: 100px 24px 48px;
       max-width: 760px;
       margin: 0 auto;
     }
@@ -88,16 +88,33 @@
       font-weight: 800;
       letter-spacing: -1px;
       line-height: 1.1;
-      margin-bottom: 20px;
     }
 
     .hero h1 span { color: var(--green); }
 
-    .hero-sub {
-      font-size: 1.1rem;
-      color: var(--dim);
-      max-width: 500px;
-      margin: 0 auto 36px;
+    /* HERO IMAGE */
+    .hero-shot {
+      display: flex;
+      justify-content: center;
+      padding: 0 24px;
+    }
+
+    .hero-shot img {
+      height: 560px;
+      width: auto;
+      max-width: 100%;
+      border-radius: 14px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+    }
+
+    /* HERO META — below image */
+    .hero-meta {
+      text-align: center;
+      padding: 32px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
     }
 
     .appstore-badge {
@@ -115,25 +132,8 @@
     .appstore-badge strong { color: var(--text); font-size: 1rem; }
 
     .req-note {
-      margin-top: 20px;
       font-size: 0.8rem;
       color: var(--dim);
-    }
-
-    /* HERO IMAGE */
-    .hero-shot {
-      display: flex;
-      justify-content: center;
-      padding: 0 24px;
-      margin-bottom: 100px;
-    }
-
-    .hero-shot img {
-      height: 560px;
-      width: auto;
-      max-width: 100%;
-      border-radius: 14px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.7);
     }
 
     /* DIVIDER */
@@ -272,19 +272,62 @@
     .feature h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
     .feature p { font-size: 0.8rem; color: var(--dim); }
 
-    /* BOTTOM CTA */
-    .bottom-cta {
-      text-align: center;
-      padding: 100px 24px;
+    /* FAQ */
+    .faq-group { margin-bottom: 56px; }
+
+    .faq-group-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
     }
 
-    .bottom-cta h2 {
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 700;
-      margin-bottom: 14px;
+    .faq-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
     }
 
-    .bottom-cta p { color: var(--dim); margin-bottom: 36px; }
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-q {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .faq-a {
+      font-size: 0.9rem;
+      color: #bbb;
+      line-height: 1.7;
+    }
+
+    .faq-a a { color: var(--green); text-decoration: none; }
+    .faq-a a:hover { text-decoration: underline; }
+
+    .faq-a code {
+      font-family: "SF Mono", "Fira Mono", monospace;
+      font-size: 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--green);
+    }
+
+    .tip {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: rgba(46,242,140,0.06);
+      border-left: 3px solid var(--green);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.85rem;
+      color: #bbb;
+    }
 
     /* FOOTER */
     footer {
@@ -315,7 +358,7 @@
   <div class="nav-links">
     <a class="nav-link" href="#screenshots">Screenshots</a>
     <a class="nav-link" href="#features">Features</a>
-    <a class="nav-link" href="faq.html">FAQ</a>
+    <a class="nav-link" href="#faq">FAQ</a>
     <a class="nav-link" href="privacy.html">Privacy</a>
     <a class="btn-nav" href="#">Coming to App Store</a>
   </div>
@@ -324,18 +367,17 @@
 <!-- HERO -->
 <div class="hero">
   <h1>Your Yamaha receiver,<br /><span>fully controlled</span> from your Mac</h1>
-  <p class="hero-sub">
-    Retro LCD display, metallic volume knob, transport controls, Net Radio favourites,
-    scheduling — all over your local network. No subscription, no cloud.
-  </p>
-  <div class="appstore-badge">
-    <strong>Coming to Mac App Store</strong> &nbsp;·&nbsp; macOS 13.0+
-  </div>
-  <p class="req-note">Yamaha receiver with YXC API on the same local network</p>
 </div>
 
 <div class="hero-shot">
   <img src="ui-dark.png" alt="HertzCast — Dark theme" />
+</div>
+
+<div class="hero-meta">
+  <div class="appstore-badge">
+    <strong>Coming to Mac App Store</strong>
+  </div>
+  <p class="req-note">Requires a Yamaha receiver with YXC API on the same local network</p>
 </div>
 
 <hr />
@@ -480,20 +522,117 @@
 
 <hr />
 
-<!-- BOTTOM CTA -->
-<div class="bottom-cta">
-  <h2>Take control of your receiver</h2>
-  <p>Works entirely on your local network. No account needed.</p>
-  <div class="appstore-badge">
-    <strong>Coming to Mac App Store</strong> &nbsp;·&nbsp; macOS 13 Ventura or later
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner" style="max-width: 720px;">
+    <div class="section-label">Support</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+
+    <div class="faq-group">
+      <div class="faq-group-title">Setup</div>
+      <div class="faq-item">
+        <div class="faq-q">Which Yamaha receivers are compatible?</div>
+        <div class="faq-a">
+          HertzCast works with any Yamaha AV receiver that supports the Yamaha Extended Control (YXC) API —
+          typically models from 2015 onwards with network connectivity. If your receiver works with the
+          official Yamaha MusicCast Controller app, it will work with HertzCast.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I connect HertzCast to my receiver?</div>
+        <div class="faq-a">
+          Open HertzCast, go to <strong>Settings</strong>, and enter your receiver's local IP address.
+          You can find the IP in your router's device list or in the receiver's own network settings menu.
+          <div class="tip">Make sure your Mac and your receiver are on the same Wi-Fi network.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does HertzCast require an internet connection?</div>
+        <div class="faq-a">
+          No. HertzCast communicates exclusively with your receiver over your local network.
+          No internet connection is required, and no data ever leaves your home network.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-group">
+      <div class="faq-group-title">Connection</div>
+      <div class="faq-item">
+        <div class="faq-q">HertzCast can't connect to my receiver. What should I check?</div>
+        <div class="faq-a">
+          <p>A few things to verify:</p>
+          <ul style="margin-top:8px; padding-left:18px; color:#bbb; font-size:0.9rem; line-height:2;">
+            <li>Your Mac and receiver are on the same Wi-Fi network (not guest vs. main)</li>
+            <li>The IP address in Settings matches your receiver's current IP</li>
+            <li>Your receiver is powered on and fully booted</li>
+            <li>No firewall or router rule is blocking local HTTP traffic on port 80</li>
+          </ul>
+          <div class="tip">IP addresses on home networks can change when a device reconnects. Consider assigning a static IP to your receiver in your router settings.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">The app connects but album art or track info isn't showing.</div>
+        <div class="faq-a">
+          HertzCast displays exactly what your receiver reports. If track info or album art is missing,
+          it means your receiver isn't providing it for the current input or source.
+          This is normal for some inputs (e.g. FM Tuner, Bluetooth) that don't transmit metadata.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-group">
+      <div class="faq-group-title">Features</div>
+      <div class="faq-item">
+        <div class="faq-q">Can I use Spotify with HertzCast?</div>
+        <div class="faq-a">
+          Yes. Use Spotify Connect on your phone or computer to cast audio to your receiver,
+          then switch HertzCast to the Spotify input. Transport controls (play, pause, skip) work
+          from HertzCast once Spotify is active.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How does the Morning Alarm work?</div>
+        <div class="faq-a">
+          Go to the <strong>Schedule</strong> tab, enable Morning Alarm, pick a time and days of the week,
+          and select which input to power on to. HertzCast will turn on your receiver automatically
+          at that time — even if the app isn't open.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is Zone 2?</div>
+        <div class="faq-a">
+          Zone 2 is a secondary audio output available on some Yamaha receivers, typically used
+          to send audio to a different room. HertzCast lets you control Zone 2 power, input, volume,
+          and mute independently from the main zone.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I control multiple receivers?</div>
+        <div class="faq-a">
+          Not in the current version. HertzCast is designed for a single receiver. You can change
+          the IP address in Settings at any time to switch between receivers manually.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-group">
+      <div class="faq-group-title">Other</div>
+      <div class="faq-item">
+        <div class="faq-q">I have a question that isn't answered here.</div>
+        <div class="faq-a">
+          Reach out at <a href="mailto:danbutuc@gmail.com">danbutuc@gmail.com</a> or open an issue on
+          <a href="https://github.com/theDanButuc/HertzCast/issues">GitHub</a>.
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
 <!-- FOOTER -->
 <footer>
   <span>&copy; 2026 HertzCast</span>
   <div class="footer-links">
-    <a href="faq.html">FAQ</a>
+    <a href="#faq">FAQ</a>
     <a href="privacy.html">Privacy Policy</a>
     <a href="mailto:danbutuc@gmail.com">Support</a>
   </div>
