@@ -51,12 +51,28 @@
 
     .nav-brand img { width: 28px; height: 28px; border-radius: 6px; }
 
-    nav a.nav-back {
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+
+    nav a.nav-link {
       color: var(--dim);
       text-decoration: none;
       font-size: 0.9rem;
     }
-    nav a.nav-back:hover { color: var(--text); }
+    nav a.nav-link:hover { color: var(--text); }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      background: var(--green);
+      color: #000;
+    }
+
+    @media (max-width: 600px) { .nav-links { display: none; } }
 
     main {
       max-width: 720px;
@@ -166,7 +182,12 @@
     <img src="icon.png" alt="HertzCast" />
     HertzCast
   </a>
-  <a class="nav-back" href="index.html">← Back</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html#screenshots">Screenshots</a>
+    <a class="nav-link" href="index.html#features">Features</a>
+    <a class="nav-link" href="faq.html">FAQ</a>
+    <a class="btn-nav" href="index.html">Coming to App Store</a>
+  </div>
 </nav>
 
 <main>
