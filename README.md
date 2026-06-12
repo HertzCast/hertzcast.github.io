@@ -406,4 +406,6 @@ All settings stored in **App Group UserDefaults** (`group.com.danbutuc.hertzcast
 
 ## License
 
-MIT License. Feel free to use HertzCast and contribute.
+Copyright © 2026 Dan Butuc. All rights reserved.
+
+HertzCast is proprietary software. Unauthorized copying, distribution, or modification is prohibited.
