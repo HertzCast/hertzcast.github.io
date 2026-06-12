@@ -6,6 +6,8 @@
 
 A native macOS application for controlling **Yamaha AV receivers** over your local network — no third-party apps, no subscriptions, no cloud.
 
+**Website:** [thedanbutuc.github.io/HertzCast](https://thedanbutuc.github.io/HertzCast/)
+
 <p align="center">
   <img src="screenshots/UI 1.png" height="450" alt="Main UI — Net Radio Now Playing" />
   &nbsp;&nbsp;
