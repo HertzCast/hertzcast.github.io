@@ -9,6 +9,12 @@ struct HertzCastApp: App {
             MainWindowView()
         }
         .windowResizability(.contentSize)
+        .commands {
+            CommandGroup(replacing: .windowSize) { }
+            CommandGroup(replacing: .windowArrangement) { }
+            CommandGroup(replacing: .windowList) { }
+            CommandGroup(replacing: .help) { }
+        }
 
         Settings {
             SettingsView()

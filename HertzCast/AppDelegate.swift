@@ -208,6 +208,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         muteItem.keyEquivalentModifierMask = []
         pbMenu.addItem(muteItem)
 
+        // ── Help menu ────────────────────────────────────────────────────
+        let helpItem = NSMenuItem()
+        mainMenu.addItem(helpItem)
+        let helpMenu = NSMenu(title: "Help")
+        helpItem.submenu = helpMenu
+
+        helpMenu.addItem(withTitle: "Learn More", action: #selector(openWebsite), keyEquivalent: "")
+
         NSApp.mainMenu = mainMenu
     }
 
@@ -248,6 +256,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     @objc private func menuVolumeUp()   { HertzAPIService.shared.volumeUp() }
     @objc private func menuVolumeDown() { HertzAPIService.shared.volumeDown() }
     @objc private func menuMute()       { HertzAPIService.shared.toggleMute() }
+
+    @objc private func openWebsite() {
+        NSWorkspace.shared.open(URL(string: "https://thedanbutuc.github.io/HertzCast/")!)
+    }
 
     // MARK: - Notifications
 
