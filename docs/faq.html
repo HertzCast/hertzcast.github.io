@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — HertzCast</title>
+  <meta name="description" content="Frequently asked questions about HertzCast — Yamaha receiver control for Mac." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #2ef28c;
+      --bg: #0c0c0c;
+      --surface: #161616;
+      --border: #2c2c2c;
+      --text: #f0f0f0;
+      --dim: #888;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      background: rgba(12,12,12,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-brand img { width: 28px; height: 28px; border-radius: 6px; }
+
+    nav a.nav-back {
+      color: var(--dim);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    nav a.nav-back:hover { color: var(--text); }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 72px 24px 100px;
+    }
+
+    .page-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 48px;
+    }
+
+    .faq-group {
+      margin-bottom: 56px;
+    }
+
+    .faq-group-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-q {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .faq-a {
+      font-size: 0.9rem;
+      color: #bbb;
+      line-height: 1.7;
+    }
+
+    .faq-a a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .faq-a a:hover { text-decoration: underline; }
+
+    .faq-a code {
+      font-family: "SF Mono", "Fira Mono", monospace;
+      font-size: 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--green);
+    }
+
+    .tip {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: rgba(46,242,140,0.06);
+      border-left: 3px solid var(--green);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.85rem;
+      color: #bbb;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.82rem;
+      color: var(--dim);
+    }
+
+    footer a { color: var(--dim); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+    .footer-links { display: flex; gap: 20px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <img src="icon.png" alt="HertzCast" />
+    HertzCast
+  </a>
+  <a class="nav-back" href="index.html">← Back</a>
+</nav>
+
+<main>
+  <div class="page-label">Support</div>
+  <h1>Frequently Asked Questions</h1>
+
+  <!-- SETUP -->
+  <div class="faq-group">
+    <div class="faq-group-title">Setup</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Which Yamaha receivers are compatible?</div>
+      <div class="faq-a">
+        HertzCast works with any Yamaha AV receiver that supports the Yamaha Extended Control (YXC) API —
+        typically models from 2015 onwards with network connectivity. If your receiver works with the
+        official Yamaha MusicCast Controller app, it will work with HertzCast.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I connect HertzCast to my receiver?</div>
+      <div class="faq-a">
+        Open HertzCast, go to <strong>Settings</strong>, and enter your receiver's local IP address.
+        You can find the IP in your router's device list or in the receiver's own network settings menu.
+        <div class="tip">Make sure your Mac and your receiver are on the same Wi-Fi network.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Does HertzCast require an internet connection?</div>
+      <div class="faq-a">
+        No. HertzCast communicates exclusively with your receiver over your local network.
+        No internet connection is required, and no data ever leaves your home network.
+      </div>
+    </div>
+  </div>
+
+  <!-- CONNECTION -->
+  <div class="faq-group">
+    <div class="faq-group-title">Connection</div>
+
+    <div class="faq-item">
+      <div class="faq-q">HertzCast can't connect to my receiver. What should I check?</div>
+      <div class="faq-a">
+        <p>A few things to verify:</p>
+        <ul style="margin-top:8px; padding-left:18px; color:#bbb; font-size:0.9rem; line-height:2;">
+          <li>Your Mac and receiver are on the same Wi-Fi network (not guest vs. main)</li>
+          <li>The IP address in Settings matches your receiver's current IP</li>
+          <li>Your receiver is powered on and fully booted</li>
+          <li>No firewall or router rule is blocking local HTTP traffic on port 80</li>
+        </ul>
+        <div class="tip">IP addresses on home networks can change when a device reconnects. Consider assigning a static IP to your receiver in your router settings.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">The app connects but album art or track info isn't showing.</div>
+      <div class="faq-a">
+        HertzCast displays exactly what your receiver reports. If track info or album art is missing,
+        it means your receiver isn't providing it for the current input or source.
+        This is normal for some inputs (e.g. FM Tuner, Bluetooth) that don't transmit metadata.
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="faq-group">
+    <div class="faq-group-title">Features</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I use Spotify with HertzCast?</div>
+      <div class="faq-a">
+        Yes. Use Spotify Connect on your phone or computer to cast audio to your receiver,
+        then switch HertzCast to the Spotify input. Transport controls (play, pause, skip) work
+        from HertzCast once Spotify is active.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How does the Morning Alarm work?</div>
+      <div class="faq-a">
+        Go to the <strong>Schedule</strong> tab, enable Morning Alarm, pick a time and days of the week,
+        and select which input to power on to. HertzCast will turn on your receiver automatically
+        at that time — even if the app isn't open.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is Zone 2?</div>
+      <div class="faq-a">
+        Zone 2 is a secondary audio output available on some Yamaha receivers, typically used
+        to send audio to a different room. HertzCast lets you control Zone 2 power, input, volume,
+        and mute independently from the main zone.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I control multiple receivers?</div>
+      <div class="faq-a">
+        Not in the current version. HertzCast is designed for a single receiver. You can change
+        the IP address in Settings at any time to switch between receivers manually.
+      </div>
+    </div>
+  </div>
+
+  <!-- OTHER -->
+  <div class="faq-group">
+    <div class="faq-group-title">Other</div>
+
+    <div class="faq-item">
+      <div class="faq-q">I have a question that isn't answered here.</div>
+      <div class="faq-a">
+        Reach out at <a href="mailto:danbutuc@gmail.com">danbutuc@gmail.com</a> or open an issue on
+        <a href="https://github.com/theDanButuc/HertzCast/issues">GitHub</a>.
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>&copy; 2026 HertzCast</span>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="mailto:danbutuc@gmail.com">Support</a>
+  </div>
+</footer>
+
+</body>
+</html>
