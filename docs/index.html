@@ -1,10 +1,22 @@
-No subscription. No cloud. No account.
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="HertzCast — Yamaha Receiver Control for Mac" />
+  <meta property="og:description" content="Retro LCD display, metallic volume knob, Net Radio, scheduling and full audio control — over your local network. No subscription. No cloud." />
+  <meta property="og:image" content="https://thedanbutuc.github.io/HertzCast/ui-dark.png" />
+  <meta property="og:url" content="https://thedanbutuc.github.io/HertzCast/" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HertzCast — Yamaha Receiver Control for Mac" />
+  <meta name="twitter:description" content="Retro LCD display, metallic volume knob, Net Radio, scheduling and full audio control — over your local network. No subscription. No cloud." />
+  <meta name="twitter:image" content="https://thedanbutuc.github.io/HertzCast/ui-dark.png" />
+
   <title>HertzCast — Yamaha Receiver Control for Mac</title>
   <meta name="description" content="Full control of your Yamaha AV receiver from your Mac. Retro LCD display, volume knob, schedule, Net Radio favourites — no subscription, no cloud." />
   <style>
@@ -265,16 +277,16 @@ No subscription. No cloud. No account.
       gap: 14px;
     }
 
-    .feature {
+    .feature-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
     }
 
-    .feature-icon { font-size: 1.4rem; margin-bottom: 10px; }
-    .feature h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
-    .feature p { font-size: 0.8rem; color: var(--dim); }
+    .feature-card .feature-icon { font-size: 1.4rem; margin-bottom: 10px; }
+    .feature-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
+    .feature-card p { font-size: 0.8rem; color: var(--dim); }
 
     /* FAQ */
     .faq-group { margin-bottom: 56px; }
@@ -291,24 +303,51 @@ No subscription. No cloud. No account.
     }
 
     .faq-item {
-      padding: 20px 0;
       border-bottom: 1px solid var(--border);
     }
 
     .faq-item:last-child { border-bottom: none; }
 
     .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 20px 0;
       font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 8px;
       color: var(--text);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
     }
 
+    .faq-q:hover { color: var(--green); }
+
+    .faq-arrow {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      color: var(--dim);
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    .faq-item.is-open .faq-arrow { transform: rotate(180deg); }
+
     .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
       font-size: 0.9rem;
       color: #bbb;
       line-height: 1.7;
     }
+
+    .faq-item.is-open .faq-a { max-height: 500px; }
+
+    .faq-a-inner { padding-bottom: 20px; }
 
     .faq-a a { color: var(--green); text-decoration: none; }
     .faq-a a:hover { text-decoration: underline; }
@@ -396,6 +435,7 @@ No subscription. No cloud. No account.
           mini player in the menu bar for when you don't even want to open the app.
           Everything your receiver can do, available from your keyboard.
         </p>
+        <p class="why-p"><strong>No subscription. No cloud. No account.</strong></p>
       </div>
     </div>
   </div>
@@ -457,7 +497,7 @@ No subscription. No cloud. No account.
         <img src="ui-5.png" height="450" alt="Schedule" />
       </div>
       <div class="shot-item">
-        <h3>Zone 2 & Mini Player</h3>
+        <h3>Zone 2 &amp; Mini Player</h3>
         <p>Secondary zone control and quick access from the menu bar.</p>
         <img src="ui-6.png" width="300" alt="Zone 2 and mini player" />
       </div>
@@ -474,42 +514,42 @@ No subscription. No cloud. No account.
     <h2 class="section-title">Built for your receiver</h2>
     <p class="section-sub">Every feature maps to something real your Yamaha can do.</p>
     <div class="features">
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">📻</div>
         <h3>LCD Display</h3>
         <p>Real-time state: input, volume, sound mode, album art, scrolling track names.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">🎚️</div>
         <h3>Volume Knob</h3>
         <p>Circular drag or scroll wheel. Exactly like the real thing.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">🎵</div>
         <h3>Transport Controls</h3>
         <p>Play, pause, stop, skip, shuffle, repeat. Adapts to the active source.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">📡</div>
         <h3>Net Radio & Favourites</h3>
         <p>Browse the full directory, save favourites, view recently played.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">⏰</div>
         <h3>Scheduling</h3>
         <p>Morning Alarm, Auto Off, and Sleep Timer — fully automated.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">🔊</div>
         <h3>Zone 2</h3>
         <p>Independent power, input, volume and mute for a second audio zone.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">🎛️</div>
         <h3>Audio Tuning</h3>
         <p>Bass, treble, subwoofer, Pure Direct, Enhancer, full sound programs.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">
         <div class="feature-icon">☰</div>
         <h3>Menu Bar Mini Player</h3>
         <p>Playback and volume from the menu bar — no need to open the app.</p>
@@ -528,36 +568,36 @@ No subscription. No cloud. No account.
 
     <div class="faq-group">
       <div class="faq-group-title">Setup</div>
-      <div class="faq-item">
-        <div class="faq-q">Which Yamaha receivers are compatible?</div>
-        <div class="faq-a">
+      <div class="faq-item is-open">
+        <button class="faq-q">Which Yamaha receivers are compatible?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           HertzCast works with any Yamaha AV receiver that supports the Yamaha Extended Control (YXC) API —
           typically models from 2015 onwards with network connectivity. If your receiver works with the
           official Yamaha MusicCast Controller app, it will work with HertzCast.
-        </div>
+        </div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">How do I connect HertzCast to my receiver?</div>
-        <div class="faq-a">
+        <button class="faq-q">How do I connect HertzCast to my receiver?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           Open HertzCast, go to <strong>Settings</strong>, and enter your receiver's local IP address.
           You can find the IP in your router's device list or in the receiver's own network settings menu.
           <div class="tip">Make sure your Mac and your receiver are on the same Wi-Fi network.</div>
-        </div>
+        </div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Does HertzCast require an internet connection?</div>
-        <div class="faq-a">
+        <button class="faq-q">Does HertzCast require an internet connection?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           No. HertzCast communicates exclusively with your receiver over your local network.
           No internet connection is required, and no data ever leaves your home network.
-        </div>
+        </div></div>
       </div>
     </div>
 
     <div class="faq-group">
       <div class="faq-group-title">Connection</div>
       <div class="faq-item">
-        <div class="faq-q">HertzCast can't connect to my receiver. What should I check?</div>
-        <div class="faq-a">
+        <button class="faq-q">HertzCast can't connect to my receiver. What should I check?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           <p>A few things to verify:</p>
           <ul style="margin-top:8px; padding-left:18px; color:#bbb; font-size:0.9rem; line-height:2;">
             <li>Your Mac and receiver are on the same Wi-Fi network (not guest vs. main)</li>
@@ -566,61 +606,61 @@ No subscription. No cloud. No account.
             <li>No firewall or router rule is blocking local HTTP traffic on port 80</li>
           </ul>
           <div class="tip">IP addresses on home networks can change when a device reconnects. Consider assigning a static IP to your receiver in your router settings.</div>
-        </div>
+        </div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">The app connects but album art or track info isn't showing.</div>
-        <div class="faq-a">
+        <button class="faq-q">The app connects but album art or track info isn't showing.<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           HertzCast displays exactly what your receiver reports. If track info or album art is missing,
           it means your receiver isn't providing it for the current input or source.
           This is normal for some inputs (e.g. FM Tuner, Bluetooth) that don't transmit metadata.
-        </div>
+        </div></div>
       </div>
     </div>
 
     <div class="faq-group">
       <div class="faq-group-title">Features</div>
       <div class="faq-item">
-        <div class="faq-q">Can I use Spotify with HertzCast?</div>
-        <div class="faq-a">
+        <button class="faq-q">Can I use Spotify with HertzCast?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           Yes. Use Spotify Connect on your phone or computer to cast audio to your receiver,
           then switch HertzCast to the Spotify input. Transport controls (play, pause, skip) work
           from HertzCast once Spotify is active.
-        </div>
+        </div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">How does the Morning Alarm work?</div>
-        <div class="faq-a">
+        <button class="faq-q">How does the Morning Alarm work?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           Go to the <strong>Schedule</strong> tab, enable Morning Alarm, pick a time and days of the week,
           and select which input to power on to. HertzCast will turn on your receiver automatically
           at that time — even if the app isn't open.
-        </div>
+        </div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">What is Zone 2?</div>
-        <div class="faq-a">
+        <button class="faq-q">What is Zone 2?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           Zone 2 is a secondary audio output available on some Yamaha receivers, typically used
           to send audio to a different room. HertzCast lets you control Zone 2 power, input, volume,
           and mute independently from the main zone.
-        </div>
+        </div></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Can I control multiple receivers?</div>
-        <div class="faq-a">
+        <button class="faq-q">Can I control multiple receivers?<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
           Not in the current version. HertzCast is designed for a single receiver. You can change
           the IP address in Settings at any time to switch between receivers manually.
-        </div>
+        </div></div>
       </div>
     </div>
 
     <div class="faq-group">
       <div class="faq-group-title">Other</div>
       <div class="faq-item">
-        <div class="faq-q">I have a question that isn't answered here.</div>
-        <div class="faq-a">
-          Reach out at <a href="mailto:danbutuc@gmail.com">danbutuc@gmail.com</a> or open an issue on
+        <button class="faq-q">I have a question that isn't answered here.<span class="faq-arrow">▼</span></button>
+        <div class="faq-a"><div class="faq-a-inner">
+          Reach out at <a href="mailto:danbutuc@gmail.com" aria-label="Send email to HertzCast support">Email support</a> or open an issue on
           <a href="https://github.com/theDanButuc/HertzCast/issues">GitHub</a>.
-        </div>
+        </div></div>
       </div>
     </div>
   </div>
@@ -628,13 +668,47 @@ No subscription. No cloud. No account.
 
 <!-- FOOTER -->
 <footer>
-  <span>&copy; 2026 HertzCast</span>
+  <span>&copy; 2026 HertzCast &middot; Built by <a href="https://pinecone.design" target="_blank" rel="noopener">PINECONE</a></span>
   <div class="footer-links">
     <a href="#faq">FAQ</a>
     <a href="privacy.html">Privacy Policy</a>
-    <a href="mailto:danbutuc@gmail.com">Support</a>
+    <a href="mailto:danbutuc@gmail.com" aria-label="Send email to HertzCast support">Contact</a>
   </div>
 </footer>
 
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.timeline()
+    .from(".hero h1",   { opacity: 0, y: 40, duration: 0.9, ease: "power3.out" }, 0.1)
+    .from(".hero-sub",  { opacity: 0, y: 30, duration: 0.7, ease: "power3.out" }, 0.3)
+    .from(".hero-shot img", { opacity: 0, scale: 0.96, duration: 1.1, ease: "power3.out" }, 0.1);
+
+  // FAQ accordion
+  document.querySelectorAll(".faq-item .faq-q").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest(".faq-item");
+      const isOpen = item.classList.contains("is-open");
+      document.querySelectorAll(".faq-item.is-open").forEach(el => el.classList.remove("is-open"));
+      if (!isOpen) item.classList.add("is-open");
+    });
+  });
+
+  gsap.from(".feature-card", {
+    opacity: 0,
+    y: 30,
+    duration: 0.5,
+    ease: "power2.out",
+    stagger: 0.08,
+    scrollTrigger: {
+      trigger: "#features",
+      start: "top 80%",
+      toggleActions: "play none none none"
+    }
+  });
+</script>
 </body>
 </html>
