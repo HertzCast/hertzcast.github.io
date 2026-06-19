@@ -6,7 +6,7 @@
 
 A native macOS application for controlling **Yamaha AV receivers** over your local network — no third-party apps, no subscriptions, no cloud.
 
-**Website:** [thedanbutuc.github.io/HertzCast](https://thedanbutuc.github.io/HertzCast/)
+**Website:** [hertzcast.github.io](https://hertzcast.github.io/)
 
 <p align="center">
   <img src="screenshots/UI 1.png" height="450" alt="Main UI — Net Radio Now Playing" />
@@ -301,7 +301,7 @@ The theme defaults to **Dark** mode. Switch to **Light** mode anytime via the Mo
 ### Using Xcode (recommended)
 
 ```bash
-git clone https://github.com/theDanButuc/HertzCast.git
+git clone https://github.com/HertzCast/hertzcast.github.io.git
 cd HertzCast
 brew install xcodegen
 xcodegen generate

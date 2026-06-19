@@ -10,6 +10,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     private var popover: NSPopover?
     private var cancellables = Set<AnyCancellable>()
     private var eventMonitor: Any?
+    private var keyMonitor: Any?
     private var playbackMenu: NSMenu?
     private var aboutWindow: NSWindow?
 
@@ -131,11 +132,41 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                 self?.popover?.contentViewController?.view.window?.makeKey()
             }
             HertzAPIService.shared.fetchStatus()
+            startKeyMonitor()
         }
     }
 
     @objc private func closePopover() {
         popover?.performClose(nil)
+        stopKeyMonitor()
+    }
+
+    private func startKeyMonitor() {
+        guard keyMonitor == nil else { return }
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            let cmd = event.modifierFlags.contains(.command)
+            switch event.keyCode {
+            case 126 where cmd: // Cmd+↑
+                HertzAPIService.shared.volumeUp()
+                return nil
+            case 125 where cmd: // Cmd+↓
+                HertzAPIService.shared.volumeDown()
+                return nil
+            default: break
+            }
+            if event.charactersIgnoringModifiers?.lowercased() == "m", !cmd {
+                HertzAPIService.shared.toggleMute()
+                return nil
+            }
+            return event
+        }
+    }
+
+    private func stopKeyMonitor() {
+        if let monitor = keyMonitor {
+            NSEvent.removeMonitor(monitor)
+            keyMonitor = nil
+        }
     }
 
     // MARK: - Main Menu
@@ -258,7 +289,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     @objc private func menuMute()       { HertzAPIService.shared.toggleMute() }
 
     @objc private func openWebsite() {
-        NSWorkspace.shared.open(URL(string: "https://thedanbutuc.github.io/HertzCast/")!)
+        NSWorkspace.shared.open(URL(string: "https://hertzcast.github.io/")!)
     }
 
     // MARK: - Notifications
