@@ -6,6 +6,7 @@ struct PopoverView: View {
 
     @State private var sliderVolume: Double = 0
     @State private var isDraggingVolume: Bool = false
+    @State private var lastSentSliderVolume: Int = -1
 
     private let btnW: CGFloat = 38
 
@@ -105,11 +106,16 @@ struct PopoverView: View {
                     isDisabled: !api.powerState.isOn,
                     onEditingChanged: { editing in
                         isDraggingVolume = editing
-                        if !editing {
-                            api.setVolume(Int(sliderVolume)) { _ in }
-                        }
+                        if !editing { lastSentSliderVolume = -1 }
                     }
                 )
+                .onChange(of: sliderVolume) { newVal in
+                    guard isDraggingVolume else { return }
+                    let intVal = Int(newVal)
+                    guard intVal != lastSentSliderVolume else { return }
+                    lastSentSliderVolume = intVal
+                    api.setVolume(intVal) { _ in }
+                }
                 .onChange(of: api.volume) { newVal in
                     if !isDraggingVolume { sliderVolume = Double(newVal) }
                 }
