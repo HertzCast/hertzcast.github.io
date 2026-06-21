@@ -43,16 +43,18 @@ targets:
         CFBundleName: HertzCast
         CFBundleDisplayName: HertzCast
         CFBundleExecutable: HertzCast
-        CFBundleVersion: "2.0.0"
-        CFBundleShortVersionString: "2.0.0"
+        CFBundleVersion: "3"
+        CFBundleShortVersionString: "2.2.2"
         CFBundleIconFile: AppIcon
         NSHighResolutionCapable: true
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         NSUserNotificationsUsageDescription: "HertzCast sends notifications when your receiver is turned on or off by a schedule."
+        LSApplicationCategoryType: public.app-category.music
         ATSApplicationFontsPath: "."
         LSUIElement: false
         SMPrivilegedExecutables: {}
+        ITSAppUsesNonExemptEncryption: false
     entitlements:
       path: HertzCast/HertzCast.entitlements
     settings:
@@ -60,8 +62,10 @@ targets:
         PRODUCT_NAME: HertzCast
         PRODUCT_BUNDLE_IDENTIFIER: com.danbutuc.hertzcast
         CODE_SIGN_STYLE: Automatic
-        CODE_SIGN_IDENTITY: "-"
+        DEVELOPMENT_TEAM: WZHRK74J98
         ENABLE_APP_SANDBOX: YES
+        SKIP_INSTALL: NO
+        INSTALL_PATH: /Applications
     dependencies:
       - target: HertzCastHelper
         embed: false
@@ -73,7 +77,8 @@ targets:
           SRC="${BUILT_PRODUCTS_DIR}/HertzCastHelper.app"
           DEST="${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Contents/Library/LoginItems"
           mkdir -p "$DEST"
-          rsync -a --delete "$SRC" "$DEST/"
+          rm -rf "$DEST/HertzCastHelper.app"
+          ditto "$SRC" "$DEST/HertzCastHelper.app"
         inputFiles:
           - $(BUILT_PRODUCTS_DIR)/HertzCastHelper.app
         outputFiles:
@@ -101,8 +106,8 @@ targets:
         CFBundleIdentifier: com.danbutuc.hertzcast.helper
         CFBundleName: HertzCastHelper
         CFBundleExecutable: HertzCastHelper
-        CFBundleVersion: "2.0.0"
-        CFBundleShortVersionString: "2.0.0"
+        CFBundleVersion: "3"
+        CFBundleShortVersionString: "2.2.2"
         LSUIElement: true
         LSBackgroundOnly: true
     entitlements:
@@ -112,8 +117,9 @@ targets:
         PRODUCT_NAME: HertzCastHelper
         PRODUCT_BUNDLE_IDENTIFIER: com.danbutuc.hertzcast.helper
         CODE_SIGN_STYLE: Automatic
-        CODE_SIGN_IDENTITY: "-"
+        DEVELOPMENT_TEAM: WZHRK74J98
         ENABLE_APP_SANDBOX: YES
+        SKIP_INSTALL: YES
     sources:
       - path: HertzCastHelper
         excludes:
