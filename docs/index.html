@@ -847,7 +847,7 @@
       var scrollable = zone.offsetHeight - window.innerHeight;
       var scrolled   = Math.max(-rect.top, 0);
       var progress   = Math.min(scrolled / scrollable, 1);
-      ring.style.transform = 'rotateY(' + (progress * 360) + 'deg)';
+      ring.style.transform = 'rotateY(' + (progress * -360) + 'deg)';
       orbitTicking = false;
     }
 
