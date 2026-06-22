@@ -92,51 +92,6 @@
 
     @media (max-width: 600px) { .nav-links { display: none; } }
 
-    @media (max-width: 768px) {
-      #orbit-zone { height: auto; }
-
-      #orbit-sticky {
-        position: relative;
-        top: auto;
-        height: auto;
-        padding: 48px 0 56px;
-        overflow: visible;
-      }
-
-      .orbit-header { padding: 0 24px 28px; }
-
-      .orbit-scene {
-        perspective: none;
-        overflow-x: auto;
-        overflow-y: visible;
-        justify-content: flex-start;
-        align-items: flex-start;
-        padding: 0 24px 16px;
-        gap: 20px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-
-      .orbit-scene::-webkit-scrollbar { display: none; }
-
-      #orbit-ring {
-        transform-style: flat;
-        transform: none !important;
-        width: auto;
-        height: auto;
-        display: flex;
-        gap: 20px;
-        position: static;
-      }
-
-      .orbit-card {
-        position: static;
-        transform: none !important;
-        flex-shrink: 0;
-        width: 200px;
-      }
-    }
-
     /* HERO */
     .hero {
       text-align: center;
@@ -539,6 +494,59 @@
     footer a { color: var(--dim); text-decoration: none; }
     footer a:hover { color: var(--text); }
     .footer-links { display: flex; gap: 20px; }
+
+    @media (max-width: 768px) {
+      /* Video scrub → autoplay inline pe mobil */
+      #screenshots { height: auto !important; }
+      #video-sticky {
+        position: relative !important;
+        height: auto !important;
+        padding: 40px 16px;
+      }
+      #scrub-video {
+        max-width: 85vw;
+        margin: 0 auto;
+        display: block;
+        border-radius: 10px;
+      }
+
+      /* Orbit gallery → scroll orizontal pe mobil */
+      #orbit-zone { height: auto !important; }
+      #orbit-sticky {
+        position: relative !important;
+        height: auto !important;
+        padding: 48px 0 56px;
+        overflow: visible;
+      }
+      .orbit-header { padding: 0 24px 28px; }
+      .orbit-scene {
+        perspective: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 0 24px 16px;
+        gap: 20px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .orbit-scene::-webkit-scrollbar { display: none; }
+      #orbit-ring {
+        transform-style: flat !important;
+        transform: none !important;
+        width: auto !important;
+        height: auto !important;
+        display: flex !important;
+        position: static !important;
+        gap: 20px;
+      }
+      .orbit-card {
+        position: static !important;
+        transform: none !important;
+        flex-shrink: 0;
+        width: 200px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -842,6 +850,7 @@
     var orbitTicking = false;
 
     function updateOrbit() {
+      if (window.innerWidth <= 768) { orbitTicking = false; return; }
       var rect       = zone.getBoundingClientRect();
       var scrollable = zone.offsetHeight - window.innerHeight;
       var scrolled   = Math.max(-rect.top, 0);
@@ -863,6 +872,12 @@
     var video = document.getElementById('scrub-video');
     var zone  = document.getElementById('screenshots');
     if (!video || !zone) return;
+
+    if (window.innerWidth <= 768) {
+      video.loop = true;
+      video.play().catch(function(){});
+      return;
+    }
 
     var ticking = false;
 
