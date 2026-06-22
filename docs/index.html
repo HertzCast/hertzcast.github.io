@@ -92,6 +92,51 @@
 
     @media (max-width: 600px) { .nav-links { display: none; } }
 
+    @media (max-width: 768px) {
+      #orbit-zone { height: auto; }
+
+      #orbit-sticky {
+        position: relative;
+        top: auto;
+        height: auto;
+        padding: 48px 0 56px;
+        overflow: visible;
+      }
+
+      .orbit-header { padding: 0 24px 28px; }
+
+      .orbit-scene {
+        perspective: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 0 24px 16px;
+        gap: 20px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .orbit-scene::-webkit-scrollbar { display: none; }
+
+      #orbit-ring {
+        transform-style: flat;
+        transform: none !important;
+        width: auto;
+        height: auto;
+        display: flex;
+        gap: 20px;
+        position: static;
+      }
+
+      .orbit-card {
+        position: static;
+        transform: none !important;
+        flex-shrink: 0;
+        width: 200px;
+      }
+    }
+
     /* HERO */
     .hero {
       text-align: center;
@@ -545,38 +590,38 @@
           </div>
         </div>
         <div class="orbit-card" style="--i:1">
-          <img src="ui-2.png" alt="Volume Knob" />
-          <div class="orbit-card-text">
-            <h3>Volume Knob</h3>
-            <p>Metallic rotating knob — drag in a circle or use the scroll wheel.</p>
-          </div>
-        </div>
-        <div class="orbit-card" style="--i:2">
-          <img src="ui-3.png" alt="Music Center" />
+          <img src="ui-2.png" alt="Music Center" />
           <div class="orbit-card-text">
             <h3>Music Center</h3>
             <p>Browse Net Radio, manage favourites, view recently played stations.</p>
           </div>
         </div>
-        <div class="orbit-card" style="--i:3">
-          <img src="ui-4.png" alt="Audio Settings" />
+        <div class="orbit-card" style="--i:2">
+          <img src="ui-3.png" alt="Audio Settings" />
           <div class="orbit-card-text">
             <h3>Audio Settings</h3>
             <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
           </div>
         </div>
-        <div class="orbit-card" style="--i:4">
-          <img src="ui-5.png" alt="Schedule" />
+        <div class="orbit-card" style="--i:3">
+          <img src="ui-4.png" alt="Schedule" />
           <div class="orbit-card-text">
             <h3>Schedule</h3>
             <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
           </div>
         </div>
-        <div class="orbit-card" style="--i:5">
-          <img src="ui-6.png" alt="Zone 2 &amp; Mini Player" />
+        <div class="orbit-card" style="--i:4">
+          <img src="ui-5.png" alt="Zone 2" />
           <div class="orbit-card-text">
-            <h3>Zone 2 &amp; Mini Player</h3>
-            <p>Secondary zone control and quick access from the menu bar.</p>
+            <h3>Zone 2</h3>
+            <p>Secondary zone control.</p>
+          </div>
+        </div>
+        <div class="orbit-card" style="--i:5">
+          <img src="ui-6.png" alt="Mini Player" />
+          <div class="orbit-card-text">
+            <h3>Mini Player</h3>
+            <p>Quick access from mini bar.</p>
           </div>
         </div>
       </div>
