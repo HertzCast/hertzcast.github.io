@@ -505,43 +505,6 @@
       }
       #scrub-video { width: 100% !important; max-height: none !important; border-radius: 12px; }
 
-      /* Orbit gallery → scroll orizontal pe mobil */
-      #orbit-zone { height: auto !important; }
-      #orbit-sticky {
-        position: relative !important;
-        height: auto !important;
-        padding: 48px 0 56px;
-        overflow: visible;
-      }
-      .orbit-header { padding: 0 24px 28px; }
-      .orbit-scene {
-        perspective: none;
-        overflow-x: auto;
-        overflow-y: visible;
-        justify-content: flex-start;
-        align-items: flex-start;
-        padding: 0 24px 16px;
-        gap: 20px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      .orbit-scene::-webkit-scrollbar { display: none; }
-      #orbit-ring {
-        transform-style: flat !important;
-        transform: none !important;
-        width: max-content !important;
-        height: auto !important;
-        display: flex !important;
-        position: static !important;
-        flex-shrink: 0;
-        gap: 20px;
-      }
-      .orbit-card {
-        position: static !important;
-        transform: none !important;
-        flex-shrink: 0;
-        width: 200px;
-      }
     }
   </style>
 </head>
@@ -846,7 +809,6 @@
     var orbitTicking = false;
 
     function updateOrbit() {
-      if (window.innerWidth <= 768) { orbitTicking = false; return; }
       var rect       = zone.getBoundingClientRect();
       var scrollable = zone.offsetHeight - window.innerHeight;
       var scrolled   = Math.max(-rect.top, 0);
