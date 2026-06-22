@@ -496,6 +496,15 @@
     .footer-links { display: flex; gap: 20px; }
 
     @media (max-width: 768px) {
+      /* Video → autoplay simplu pe mobil, fara scroll scrubbing */
+      #screenshots { height: auto !important; }
+      #video-sticky {
+        position: relative !important;
+        height: auto !important;
+        padding: 24px 16px 0;
+      }
+      #scrub-video { width: 100% !important; max-height: none !important; border-radius: 12px; }
+
       /* Orbit gallery → scroll orizontal pe mobil */
       #orbit-zone { height: auto !important; }
       #orbit-sticky {
@@ -859,6 +868,12 @@
     var video = document.getElementById('scrub-video');
     var zone  = document.getElementById('screenshots');
     if (!video || !zone) return;
+
+    if (window.innerWidth <= 768) {
+      video.loop = true;
+      video.play().catch(function(){});
+      return;
+    }
 
     var ticking = false;
 
