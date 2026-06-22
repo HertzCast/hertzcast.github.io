@@ -25,7 +25,7 @@
 
     :root {
       --green: #2ef28c;
-      --bg: #0c0c0c;
+      --bg: #000000;
       --surface: #161616;
       --border: #2c2c2c;
       --text: #f0f0f0;
@@ -375,6 +375,109 @@
       color: #bbb;
     }
 
+    /* ORBIT GALLERY */
+    #orbit-zone {
+      position: relative;
+      height: 400vh;
+    }
+
+    #orbit-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--bg);
+      overflow: hidden;
+      padding-top: 57px;
+    }
+
+    .orbit-header {
+      text-align: center;
+      padding: 28px 24px 0;
+      flex-shrink: 0;
+    }
+
+    .orbit-scene {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+    }
+
+    #orbit-ring {
+      transform-style: preserve-3d;
+      width: 240px;
+      height: 480px;
+      position: relative;
+    }
+
+    .orbit-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 240px;
+      transform: rotateY(calc(var(--i) * 60deg)) translateZ(360px);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .orbit-card-text {
+      padding: 20px 4px 0;
+    }
+
+    .orbit-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .orbit-card:first-child img {
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    .orbit-card-text h3 {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .orbit-card-text p {
+      font-size: 0.76rem;
+      color: var(--dim);
+      line-height: 1.5;
+    }
+
+    /* VIDEO SCRUB */
+    #screenshots {
+      position: relative;
+      height: 300vh;
+    }
+
+    #video-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      padding-top: 57px;
+      overflow: hidden;
+    }
+
+    #scrub-video {
+      display: block;
+      width: 100%;
+      max-height: calc(100vh - 80px);
+      object-fit: contain;
+    }
+
     /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
@@ -418,98 +521,68 @@
   <h1>Your Yamaha receiver,<br /><span>fully controlled</span> from your Mac</h1>
 </div>
 
-<div class="hero-shot">
-  <img src="ui-dark.png" alt="HertzCast — Dark theme" />
+<!-- VIDEO SCRUB -->
+<div id="screenshots">
+  <div id="video-sticky">
+    <video id="scrub-video" src="0622.mp4" preload="auto" muted playsinline></video>
+  </div>
 </div>
 
-<div class="hero-meta">
-  <p class="hero-sub">Retro LCD display, metallic volume knob, transport controls, Net Radio favourites, scheduling — all over your local network. No subscription, no cloud.</p>
+<!-- ORBIT GALLERY -->
+<div id="orbit-zone">
+  <div id="orbit-sticky">
+    <div class="orbit-header">
+      <div class="section-label">Interface</div>
+      <h2 class="section-title">Everything in one place</h2>
+    </div>
+    <div class="orbit-scene">
+      <div id="orbit-ring">
+        <div class="orbit-card" style="--i:0">
+          <img src="ui-1.png" alt="Retro LCD Display" />
+          <div class="orbit-card-text">
+            <h3>Retro LCD Display</h3>
+            <p>Input, volume in dB, sound mode, album art, scrolling track names.</p>
+          </div>
+        </div>
+        <div class="orbit-card" style="--i:1">
+          <img src="ui-2.png" alt="Volume Knob" />
+          <div class="orbit-card-text">
+            <h3>Volume Knob</h3>
+            <p>Metallic rotating knob — drag in a circle or use the scroll wheel.</p>
+          </div>
+        </div>
+        <div class="orbit-card" style="--i:2">
+          <img src="ui-3.png" alt="Music Center" />
+          <div class="orbit-card-text">
+            <h3>Music Center</h3>
+            <p>Browse Net Radio, manage favourites, view recently played stations.</p>
+          </div>
+        </div>
+        <div class="orbit-card" style="--i:3">
+          <img src="ui-4.png" alt="Audio Settings" />
+          <div class="orbit-card-text">
+            <h3>Audio Settings</h3>
+            <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
+          </div>
+        </div>
+        <div class="orbit-card" style="--i:4">
+          <img src="ui-5.png" alt="Schedule" />
+          <div class="orbit-card-text">
+            <h3>Schedule</h3>
+            <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
+          </div>
+        </div>
+        <div class="orbit-card" style="--i:5">
+          <img src="ui-6.png" alt="Zone 2 &amp; Mini Player" />
+          <div class="orbit-card-text">
+            <h3>Zone 2 &amp; Mini Player</h3>
+            <p>Secondary zone control and quick access from the menu bar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<hr />
-
-<!-- WHY -->
-<section>
-  <div class="section-inner">
-    <div class="why-block">
-      <div class="why-text">
-        <div class="section-label">Why HertzCast</div>
-        <h2 class="section-title">Your receiver is right there.</h2>
-        <p class="why-p">
-          HertzCast puts your Yamaha receiver on your Mac — a full retro-style interface with a
-          real rotating volume knob, transport controls, Net Radio browsing, audio settings, and a
-          mini player in the menu bar for when you don't even want to open the app.
-          Everything your receiver can do, available from your keyboard.
-        </p>
-        <p class="why-p"><strong>No subscription. No cloud. No account.</strong></p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr />
-
-<!-- THEME -->
-<section id="screenshots">
-  <div class="section-inner">
-    <div class="section-label">Theme</div>
-    <h2 class="section-title">Dark mode or Light mode</h2>
-    <p class="section-sub">Switch between green phosphor and clean red accent with a single toggle. Both themes are fully polished.</p>
-    <div class="theme-split">
-      <div class="theme-item">
-        <div class="theme-label"><span class="dot dot-green"></span> Dark — green phosphor</div>
-        <img src="ui-dark.png" height="450" alt="Dark theme" />
-      </div>
-      <div class="theme-item">
-        <div class="theme-label"><span class="dot dot-red"></span> Light — red accent</div>
-        <img src="ui-light.png" height="450" alt="Light theme" />
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr />
-
-<!-- SCREENSHOT GRID -->
-<section>
-  <div class="section-inner">
-    <div class="section-label">Interface</div>
-    <h2 class="section-title">Everything in one place</h2>
-    <p class="section-sub">From volume and source switching to Net Radio browsing and audio tuning — HertzCast covers it all.</p>
-    <div class="shot-grid">
-      <div class="shot-item">
-        <h3>Retro LCD Display</h3>
-        <p>Input, volume in dB, sound mode, album art, scrolling track names.</p>
-        <img src="ui-1.png" height="450" alt="Main player view" />
-      </div>
-      <div class="shot-item">
-        <h3>Volume Knob</h3>
-        <p>Metallic rotating knob — drag in a circle or use the scroll wheel.</p>
-        <img src="ui-2.png" height="450" alt="Volume and transport" />
-      </div>
-      <div class="shot-item">
-        <h3>Music Center</h3>
-        <p>Browse Net Radio, manage favourites, view recently played stations.</p>
-        <img src="ui-3.png" height="450" alt="Music Center" />
-      </div>
-      <div class="shot-item">
-        <h3>Audio Settings</h3>
-        <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
-        <img src="ui-4.png" height="450" alt="Audio settings" />
-      </div>
-      <div class="shot-item">
-        <h3>Schedule</h3>
-        <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
-        <img src="ui-5.png" height="450" alt="Schedule" />
-      </div>
-      <div class="shot-item">
-        <h3>Zone 2 &amp; Mini Player</h3>
-        <p>Secondary zone control and quick access from the menu bar.</p>
-        <img src="ui-6.png" width="300" alt="Zone 2 and mini player" />
-      </div>
-    </div>
-  </div>
-</section>
 
 <hr />
 
@@ -526,7 +599,7 @@
         <p>Real-time state: input, volume, sound mode, album art, scrolling track names.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🎚️</div>
+        <div class="feature-icon"><img src="volume-knob.png" alt="Volume Knob" style="width:28px;height:28px;object-fit:contain;" /></div>
         <h3>Volume Knob</h3>
         <p>Circular drag or scroll wheel. Exactly like the real thing.</p>
       </div>
@@ -574,7 +647,7 @@
 
     <div class="faq-group">
       <div class="faq-group-title">Setup</div>
-      <div class="faq-item is-open">
+      <div class="faq-item">
         <button class="faq-q">Which Yamaha receivers are compatible?<span class="faq-arrow">▼</span></button>
         <div class="faq-a"><div class="faq-a-inner">
           HertzCast works with any Yamaha AV receiver that supports the Yamaha Extended Control (YXC) API —
@@ -715,6 +788,58 @@
       toggleActions: "play none none none"
     }
   });
+
+  // scroll-driven orbit gallery
+  (function () {
+    var ring = document.getElementById('orbit-ring');
+    var zone = document.getElementById('orbit-zone');
+    if (!ring || !zone) return;
+
+    var orbitTicking = false;
+
+    function updateOrbit() {
+      var rect       = zone.getBoundingClientRect();
+      var scrollable = zone.offsetHeight - window.innerHeight;
+      var scrolled   = Math.max(-rect.top, 0);
+      var progress   = Math.min(scrolled / scrollable, 1);
+      ring.style.transform = 'rotateY(' + (progress * 360) + 'deg)';
+      orbitTicking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!orbitTicking) {
+        requestAnimationFrame(updateOrbit);
+        orbitTicking = true;
+      }
+    }, { passive: true });
+  }());
+
+  // scroll-driven video scrubbing
+  (function () {
+    var video = document.getElementById('scrub-video');
+    var zone  = document.getElementById('screenshots');
+    if (!video || !zone) return;
+
+    var ticking = false;
+
+    function scrub() {
+      var rect       = zone.getBoundingClientRect();
+      var scrollable = zone.offsetHeight - window.innerHeight;
+      var scrolled   = Math.max(-rect.top, 0);
+      var progress   = Math.min(scrolled / scrollable, 1);
+      if (video.duration) {
+        video.currentTime = progress * video.duration;
+      }
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        requestAnimationFrame(scrub);
+        ticking = true;
+      }
+    }, { passive: true });
+  }());
 </script>
 </body>
 </html>
