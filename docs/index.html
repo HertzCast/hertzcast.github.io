@@ -496,20 +496,6 @@
     .footer-links { display: flex; gap: 20px; }
 
     @media (max-width: 768px) {
-      /* Video scrub → autoplay inline pe mobil */
-      #screenshots { height: auto !important; }
-      #video-sticky {
-        position: relative !important;
-        height: auto !important;
-        padding: 40px 16px;
-      }
-      #scrub-video {
-        max-width: 85vw;
-        margin: 0 auto;
-        display: block;
-        border-radius: 10px;
-      }
-
       /* Orbit gallery → scroll orizontal pe mobil */
       #orbit-zone { height: auto !important; }
       #orbit-sticky {
@@ -872,12 +858,6 @@
     var video = document.getElementById('scrub-video');
     var zone  = document.getElementById('screenshots');
     if (!video || !zone) return;
-
-    if (window.innerWidth <= 768) {
-      video.loop = true;
-      video.play().catch(function(){});
-      return;
-    }
 
     var ticking = false;
 
