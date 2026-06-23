@@ -17,7 +17,7 @@ DIST_DIR="$PROJECT_DIR/dist"
 APP_NAME="HertzCast"
 EXECUTABLE="HertzCast"
 BUNDLE_ID="com.danbutuc.hertzcast"
-VERSION="2.2.2"
+VERSION="2.2.3"
 UNIVERSAL=false
 
 while [[ $# -gt 0 ]]; do

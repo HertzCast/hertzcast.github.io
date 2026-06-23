@@ -43,8 +43,8 @@ targets:
         CFBundleName: HertzCast
         CFBundleDisplayName: HertzCast
         CFBundleExecutable: HertzCast
-        CFBundleVersion: "3"
-        CFBundleShortVersionString: "2.2.2"
+        CFBundleVersion: "4"
+        CFBundleShortVersionString: "2.2.3"
         CFBundleIconFile: AppIcon
         NSHighResolutionCapable: true
         NSAppTransportSecurity:
@@ -106,8 +106,8 @@ targets:
         CFBundleIdentifier: com.danbutuc.hertzcast.helper
         CFBundleName: HertzCastHelper
         CFBundleExecutable: HertzCastHelper
-        CFBundleVersion: "3"
-        CFBundleShortVersionString: "2.2.2"
+        CFBundleVersion: "4"
+        CFBundleShortVersionString: "2.2.3"
         LSUIElement: true
         LSBackgroundOnly: true
     entitlements:
