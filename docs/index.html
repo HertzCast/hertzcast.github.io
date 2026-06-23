@@ -420,7 +420,7 @@
       top: 0;
       left: 0;
       width: 240px;
-      transform: rotateY(calc(var(--i) * 60deg)) translateZ(360px);
+      transform: rotateY(calc(var(--i) * (360deg / 7))) translateZ(360px);
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
@@ -578,6 +578,13 @@
           <div class="orbit-card-text">
             <h3>Mini Player</h3>
             <p>Quick access from mini bar.</p>
+          </div>
+        </div>
+        <div class="orbit-card" style="--i:6">
+          <img src="ui-7.png" alt="Light Mode" />
+          <div class="orbit-card-text">
+            <h3>Light Mode</h3>
+            <p>Switch between Dark / Light mode.</p>
           </div>
         </div>
       </div>
