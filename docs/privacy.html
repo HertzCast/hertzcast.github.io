@@ -149,19 +149,19 @@
 
 <main>
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: June 2026</p>
+  <p class="updated">Last updated: July 2026</p>
 
   <h2>Overview</h2>
   <p>
     HertzCast does not collect, transmit, or store any personal data. All communication happens
-    exclusively on your local network between your Mac and your Yamaha receiver.
+    exclusively on your local network between your device and your Yamaha receiver.
   </p>
 
   <h2>What HertzCast does</h2>
   <ul>
     <li>Sends HTTP requests to your Yamaha receiver on your local network using the Yamaha Extended Control (YXC) API.</li>
     <li>Listens for push events from your receiver on UDP port 41100 (local network only).</li>
-    <li>Stores your receiver's IP address and scheduling preferences in macOS UserDefaults — on your Mac only.</li>
+    <li>Stores your receiver's IP address and scheduling preferences locally on your device only (see "Data stored locally" below).</li>
     <li>Displays album art fetched from your receiver's metadata — no external image services are used.</li>
   </ul>
 
@@ -176,8 +176,10 @@
 
   <h2>Data stored locally</h2>
   <p>
-    HertzCast stores the following in macOS UserDefaults (on your Mac only, never transmitted):
+    HertzCast stores the following settings locally on your device only. This data never leaves your device.
   </p>
+
+  <p><strong>macOS</strong><br />Stored in macOS UserDefaults:</p>
   <ul>
     <li>Receiver IP address</li>
     <li>Morning Alarm and Auto Off schedule settings</li>
@@ -185,7 +187,15 @@
     <li>Theme preference (Dark / Light)</li>
     <li>Favourite Net Radio stations</li>
   </ul>
-  <p>This data never leaves your device.</p>
+
+  <p><strong>Windows</strong><br />Stored in the Windows Registry / local application settings:</p>
+  <ul>
+    <li>Receiver IP address</li>
+    <li>Morning Alarm and Auto Off schedule settings</li>
+    <li>Selected input source and preset preferences</li>
+    <li>Theme preference (Dark / Light)</li>
+    <li>Favourite Net Radio stations</li>
+  </ul>
 
   <h2>Third-party services</h2>
   <p>HertzCast uses no third-party SDKs, analytics libraries, or external services of any kind.</p>
