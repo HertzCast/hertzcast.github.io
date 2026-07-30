@@ -4,21 +4,140 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <link rel="canonical" href="https://hertzcast.github.io/" />
+
   <!-- Open Graph -->
+  <meta property="og:site_name" content="HertzCast" />
   <meta property="og:title" content="HertzCast — Yamaha Receiver Control for Mac" />
   <meta property="og:description" content="Retro LCD display, metallic volume knob, Net Radio, scheduling and full audio control — over your local network. No subscription. No cloud." />
-  <meta property="og:image" content="https://thedanbutuc.github.io/HertzCast/ui-dark.png" />
-  <meta property="og:url" content="https://thedanbutuc.github.io/HertzCast/" />
+  <meta property="og:image" content="https://hertzcast.github.io/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="HertzCast app window on a dark background, showing the retro LCD display and the metallic volume knob" />
+  <meta property="og:url" content="https://hertzcast.github.io/" />
   <meta property="og:type" content="website" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="HertzCast — Yamaha Receiver Control for Mac" />
   <meta name="twitter:description" content="Retro LCD display, metallic volume knob, Net Radio, scheduling and full audio control — over your local network. No subscription. No cloud." />
-  <meta name="twitter:image" content="https://thedanbutuc.github.io/HertzCast/ui-dark.png" />
+  <meta name="twitter:image" content="https://hertzcast.github.io/og-image.png" />
+  <meta name="twitter:image:alt" content="HertzCast app window on a dark background, showing the retro LCD display and the metallic volume knob" />
 
   <title>HertzCast — Yamaha Receiver Control for Mac</title>
   <meta name="description" content="Full control of your Yamaha AV receiver from your Mac. Retro LCD display, volume knob, schedule, Net Radio favourites — no subscription, no cloud." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "HertzCast",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "macOS",
+    "softwareVersion": "2.4.0",
+    "url": "https://hertzcast.github.io/",
+    "downloadUrl": "https://apps.apple.com/app/id6779581253",
+    "author": {
+      "@type": "Person",
+      "name": "Dan Butuc"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "9.99",
+      "priceCurrency": "EUR"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which Yamaha receivers are compatible?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HertzCast works with any Yamaha AV receiver that supports the Yamaha Extended Control (YXC) API — typically models from 2015 onwards with network connectivity. If your receiver works with the official Yamaha MusicCast Controller app, it will work with HertzCast."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I connect HertzCast to my receiver?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Open HertzCast, go to Settings, and enter your receiver's local IP address. You can find the IP in your router's device list or in the receiver's own network settings menu. Make sure your Mac and your receiver are on the same Wi-Fi network."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does HertzCast require an internet connection?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. HertzCast communicates exclusively with your receiver over your local network. No internet connection is required, and no data ever leaves your home network."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "HertzCast can't connect to my receiver. What should I check?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A few things to verify: Your Mac and receiver are on the same Wi-Fi network (not guest vs. main). The IP address in Settings matches your receiver's current IP. Your receiver is powered on and fully booted. No firewall or router rule is blocking local HTTP traffic on port 80. IP addresses on home networks can change when a device reconnects. Consider assigning a static IP to your receiver in your router settings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "The app connects but album art or track info isn't showing.",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "HertzCast displays exactly what your receiver reports. If track info or album art is missing, it means your receiver isn't providing it for the current input or source. This is normal for some inputs (e.g. FM Tuner, Bluetooth) that don't transmit metadata."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use Spotify with HertzCast?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Use Spotify Connect on your phone or computer to cast audio to your receiver, then switch HertzCast to the Spotify input. Transport controls (play, pause, skip) work from HertzCast once Spotify is active."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the Morning Alarm work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Go to the Schedule tab, enable Morning Alarm, pick a time and days of the week, and select which input to power on to. HertzCast will turn on your receiver automatically at that time — even if the app isn't open."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Zone 2?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Zone 2 is a secondary audio output available on some Yamaha receivers, typically used to send audio to a different room. HertzCast lets you control Zone 2 power, input, volume, and mute independently from the main zone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I control multiple receivers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not in the current version. HertzCast is designed for a single receiver. You can change the IP address in Settings at any time to switch between receivers manually."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "I have a question that isn't answered here.",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Reach out at Email support or open an issue on GitHub."
+        }
+      }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -504,7 +623,7 @@
 <!-- NAV -->
 <nav>
   <a class="nav-brand" href="/">
-    <img src="icon.png" alt="HertzCast" />
+    <img src="icon.png" alt="HertzCast app icon" />
     HertzCast
   </a>
   <div class="nav-links">
@@ -526,7 +645,7 @@
 <!-- VIDEO SCRUB -->
 <div id="screenshots">
   <div id="video-sticky">
-    <video id="scrub-video" src="0622.mp4" preload="auto" muted playsinline></video>
+    <video id="scrub-video" src="0622.mp4" poster="video-poster.jpg" preload="auto" muted playsinline></video>
   </div>
 </div>
 
@@ -540,49 +659,49 @@
     <div class="orbit-scene">
       <div id="orbit-ring">
         <div class="orbit-card" style="--i:0">
-          <img src="ui-1.png" alt="Retro LCD Display" />
+          <img src="ui-1.png" alt="HertzCast retro LCD display showing the current input, volume in dB, sound mode, album art and a scrolling track name" />
           <div class="orbit-card-text">
             <h3>Retro LCD Display</h3>
             <p>Input, volume in dB, sound mode, album art, scrolling track names.</p>
           </div>
         </div>
         <div class="orbit-card" style="--i:1">
-          <img src="ui-2.png" alt="Music Center" />
+          <img src="ui-2.png" alt="HertzCast Music Center panel listing Net Radio stations, saved favourites and recently played stations" />
           <div class="orbit-card-text">
             <h3>Music Center</h3>
             <p>Browse Net Radio, manage favourites, view recently played stations.</p>
           </div>
         </div>
         <div class="orbit-card" style="--i:2">
-          <img src="ui-3.png" alt="Audio Settings" />
+          <img src="ui-3.png" alt="HertzCast audio settings panel with bass, treble and subwoofer sliders, Pure Direct toggle and sound program selection" />
           <div class="orbit-card-text">
             <h3>Audio Settings</h3>
             <p>Bass, treble, subwoofer, Pure Direct, sound programs and more.</p>
           </div>
         </div>
         <div class="orbit-card" style="--i:3">
-          <img src="ui-4.png" alt="Schedule" />
+          <img src="ui-4.png" alt="HertzCast schedule panel with Morning Alarm and Auto Off, each with a time picker, day selection and input source" />
           <div class="orbit-card-text">
             <h3>Schedule</h3>
             <p>Morning Alarm and Auto Off — power on or standby on any schedule.</p>
           </div>
         </div>
         <div class="orbit-card" style="--i:4">
-          <img src="ui-5.png" alt="Zone 2" />
+          <img src="ui-5.png" alt="HertzCast Zone 2 panel with independent power, input, volume and mute controls for the secondary zone" />
           <div class="orbit-card-text">
             <h3>Zone 2</h3>
             <p>Secondary zone control.</p>
           </div>
         </div>
         <div class="orbit-card" style="--i:5">
-          <img src="ui-6.png" alt="Mini Player" />
+          <img src="ui-6.png" alt="HertzCast mini player in the macOS menu bar showing the current track with play, pause and skip controls" />
           <div class="orbit-card-text">
             <h3>Mini Player</h3>
             <p>Quick access from mini bar.</p>
           </div>
         </div>
         <div class="orbit-card" style="--i:6">
-          <img src="ui-7.png" alt="Light Mode" />
+          <img src="ui-7.png" alt="HertzCast main window in macOS Light Mode, showing the LCD display on a light background" />
           <div class="orbit-card-text">
             <h3>Light Mode</h3>
             <p>Switch between Dark / Light mode.</p>
@@ -608,7 +727,7 @@
         <p>Real-time state: input, volume, sound mode, album art, scrolling track names.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><img src="volume-knob.png" alt="Volume Knob" style="width:28px;height:28px;object-fit:contain;" /></div>
+        <div class="feature-icon"><img src="volume-knob.png" alt="Metallic rotary volume knob" style="width:28px;height:28px;object-fit:contain;" /></div>
         <h3>Volume Knob</h3>
         <p>Circular drag or scroll wheel. Exactly like the real thing.</p>
       </div>
