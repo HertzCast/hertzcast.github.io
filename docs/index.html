@@ -214,7 +214,7 @@
     /* HERO */
     .hero {
       text-align: center;
-      padding: 100px 24px 48px;
+      padding: 100px 24px 24px;
       max-width: 760px;
       margin: 0 auto;
     }
@@ -392,6 +392,8 @@
       box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     }
 
+    #features { padding-top: 24px; }
+
     /* FEATURES GRID */
     .features {
       display: grid;
@@ -512,17 +514,12 @@
       padding-top: 57px;
     }
 
-    .orbit-header {
-      text-align: center;
-      padding: 28px 24px 32px;
-      flex-shrink: 0;
-    }
-
     .orbit-scene {
       flex: 1;
       width: 100%;
       display: flex;
       align-items: center;
+      transform: translateY(var(--orbit-shift, 0px)) scale(var(--orbit-scale, 1));
       justify-content: center;
       perspective: 1200px;
     }
@@ -573,31 +570,6 @@
       line-height: 1.5;
     }
 
-    /* VIDEO SCRUB */
-    #screenshots {
-      position: relative;
-      height: 300vh;
-    }
-
-    #video-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg);
-      padding-top: 57px;
-      overflow: hidden;
-    }
-
-    #scrub-video {
-      display: block;
-      width: 100%;
-      max-height: calc(100vh - 80px);
-      object-fit: contain;
-    }
-
     /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
@@ -642,20 +614,9 @@
   <h1>Your Yamaha receiver,<br /><span>fully controlled</span> from your Mac</h1>
 </div>
 
-<!-- VIDEO SCRUB -->
-<div id="screenshots">
-  <div id="video-sticky">
-    <video id="scrub-video" src="0622.mp4" poster="video-poster.jpg" preload="auto" muted playsinline></video>
-  </div>
-</div>
-
 <!-- ORBIT GALLERY -->
 <div id="orbit-zone">
   <div id="orbit-sticky">
-    <div class="orbit-header">
-      <div class="section-label">Interface</div>
-      <h2 class="section-title">Everything in one place</h2>
-    </div>
     <div class="orbit-scene">
       <div id="orbit-ring">
         <div class="orbit-card" style="--i:0">
@@ -921,7 +882,17 @@
   (function () {
     var ring = document.getElementById('orbit-ring');
     var zone = document.getElementById('orbit-zone');
+    var scene = document.querySelector('.orbit-scene');
     if (!ring || !zone) return;
+
+    // galeria creste odata cu inaltimea ferestrei, ca sa nu ramana gol sub ea
+    function fitScene() {
+      var s = Math.min(2, Math.max(1, (window.innerHeight - 140) / 517));
+      scene.style.setProperty('--orbit-scale', s);
+      scene.style.setProperty('--orbit-shift', (76 * s) + 'px');
+    }
+    fitScene();
+    window.addEventListener('resize', fitScene);
 
     var orbitTicking = false;
 
@@ -938,33 +909,6 @@
       if (!orbitTicking) {
         requestAnimationFrame(updateOrbit);
         orbitTicking = true;
-      }
-    }, { passive: true });
-  }());
-
-  // scroll-driven video scrubbing
-  (function () {
-    var video = document.getElementById('scrub-video');
-    var zone  = document.getElementById('screenshots');
-    if (!video || !zone) return;
-
-    var ticking = false;
-
-    function scrub() {
-      var rect       = zone.getBoundingClientRect();
-      var scrollable = zone.offsetHeight - window.innerHeight;
-      var scrolled   = Math.max(-rect.top, 0);
-      var progress   = Math.min(scrolled / scrollable, 1);
-      if (video.duration) {
-        video.currentTime = progress * video.duration;
-      }
-      ticking = false;
-    }
-
-    window.addEventListener('scroll', function () {
-      if (!ticking) {
-        requestAnimationFrame(scrub);
-        ticking = true;
       }
     }, { passive: true });
   }());
