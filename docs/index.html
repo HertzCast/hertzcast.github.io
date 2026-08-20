@@ -519,7 +519,7 @@
       width: 100%;
       display: flex;
       align-items: center;
-      transform: translateY(var(--orbit-shift, 0px)) scale(var(--orbit-scale, 1));
+      transform: translateY(76px);
       justify-content: center;
       perspective: 1200px;
     }
@@ -882,17 +882,7 @@
   (function () {
     var ring = document.getElementById('orbit-ring');
     var zone = document.getElementById('orbit-zone');
-    var scene = document.querySelector('.orbit-scene');
     if (!ring || !zone) return;
-
-    // galeria creste odata cu inaltimea ferestrei, ca sa nu ramana gol sub ea
-    function fitScene() {
-      var s = Math.min(2, Math.max(1, (window.innerHeight - 140) / 517));
-      scene.style.setProperty('--orbit-scale', s);
-      scene.style.setProperty('--orbit-shift', (76 * s) + 'px');
-    }
-    fitScene();
-    window.addEventListener('resize', fitScene);
 
     var orbitTicking = false;
 
